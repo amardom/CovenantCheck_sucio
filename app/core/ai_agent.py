@@ -1,62 +1,66 @@
 import google.generativeai as genai
+from google.generativeai import types
 import json
 import re
-import os
 
 class CovenantAIAgent:
     def __init__(self, api_key: str):
-        if not api_key:
-            raise ValueError("API Key is missing!")
-        
         genai.configure(api_key=api_key)
-        
-        # 'gemini-3-flash-preview' is the stable alias. 
-        # If this still fails, your API key might not have 'v1beta' access enabled.
+        # Using your confirmed available model from diagnosis
         self.model_name = 'gemini-3-flash-preview'
-        self.model = genai.GenerativeModel(self.model_name)
+        
+        # Define the STRICT JSON schema for Z3
+        self.schema = {
+            "type": "object",
+            "properties": {
+                "threshold": {"type": "number"},
+                "operator": {"type": "string", "enum": ["le", "ge"]},
+                "recipe": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "target": {"type": "string"},
+                            "components": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {"type": "string"},
+                                        "weight": {"type": "number"},
+                                        # FORCE THE TYPE ENUM
+                                        "cap_type": {"type": "string", "enum": ["none", "relative"]},
+                                        "cap_percentage": {"type": "number"},
+                                        "cap_reference": {"type": "string"}
+                                    },
+                                    "required": ["name", "weight", "cap_type"]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     def generate_recipe(self, defs_text: str, covs_text: str):
         prompt = f"""
-        TASK: Extract financial covenant logic into a Z3-compatible JSON recipe.
+        Extract financial covenant logic. 
+        RULES:
+        1. Variable names must be strictly snake_case (e.g., 'operating_profit').
+        2. Identify components for 'total_net_debt' and 'adjusted_ebitda'.
+        3. If a component is capped (e.g. 10% of EBITDA), include 'cap_percentage': 0.1 and 'cap_reference': 'adjusted_ebitda'.
         
-        SECTION 1 (DEFINITIONS):
-        {defs_text}
-        
-        SECTION 2 (COVENANTS):
-        {covs_text}
-        
-        INSTRUCTIONS:
-        1. Identify components for 'TOTAL_NET_DEBT' and 'ADJUSTED_EBITDA'.
-        2. Detect percentage-based caps (e.g., restructuring costs limited to 10% of EBITDA).
-        3. Identify the threshold and operator ('le' for <=, 'ge' for >=).
-        
-        OUTPUT FORMAT (JSON ONLY):
-        {{
-            "threshold": float,
-            "operator": "le",
-            "recipe": [
-                {{ "target": "TOTAL_NET_DEBT", "components": [ {{ "name": "str", "weight": 1 }} ] }},
-                {{ "target": "ADJUSTED_EBITDA", "components": [ {{ "name": "str", "weight": 1 }} ] }},
-                {{ "target": "FINAL_RATIO", "op": "div", "args": ["TOTAL_NET_DEBT", "ADJUSTED_EBITDA"] }}
-            ]
-        }}
+        DEFINITIONS: {defs_text}
+        COVENANTS: {covs_text}
         """
 
-        try:
-            # We call the model. If it fails with 404, we try the 'latest' alias.
-            response = self.model.generate_content(prompt)
-            text_content = response.text
-        except Exception as e:
-            if "404" in str(e):
-                print(f"Warning: {self.model_name} not found. Trying 'gemini-1.5-flash-latest'...")
-                self.model = genai.GenerativeModel('gemini-1.5-flash-latest')
-                response = self.model.generate_content(prompt)
-                text_content = response.text
-            else:
-                raise e
+        # Enforce the schema via generation_config
+        response = genai.GenerativeModel(self.model_name).generate_content(
+            prompt,
+            generation_config=types.GenerationConfig(
+                response_mime_type="application/json",
+                response_schema=self.schema
+            )
+        )
 
-        # Standard JSON extraction logic
-        json_match = re.search(r'\{.*\}', text_content, re.DOTALL)
-        if json_match:
-            return json.loads(json_match.group())
-        raise ValueError("Gemini returned content but no valid JSON was found.")
+        return json.loads(response.text)

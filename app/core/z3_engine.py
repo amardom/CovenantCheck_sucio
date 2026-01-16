@@ -19,11 +19,11 @@ class CovenantCheckEngine:
                 val = self._get_var(comp['name'])
                 weight = comp['weight']
                 
-                # Logic for the "10% of EBITDA" circularity
+                # Matches the 'enum' we forced in the AI schema
                 if comp.get('cap_type') == 'relative':
                     ref_var = self._get_var(comp['cap_reference'])
                     limit = ref_var * comp['cap_percentage']
-                    # Z3 solves: term = weight * min(actual_value, 10% * EBITDA)
+                    # The Circular Logic
                     term = weight * If(val > limit, limit, val)
                 else:
                     term = weight * val
