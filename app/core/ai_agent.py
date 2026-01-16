@@ -4,11 +4,11 @@ import json
 
 class CovenantAIAgent:
     def __init__(self, api_key: str):
-        # We use 'rest' transport to prevent gRPC connection hangs
+        # Usamos transporte 'rest' para mayor estabilidad en procesos largos
         genai.configure(api_key=api_key, transport='rest')
         self.model_name = 'gemini-3-flash-preview'
         
-        # Robust schema: Focuses on flat parameters to prevent token loops
+        # Esquema robusto para capturar componentes de EBITDA y Deuda
         self.recipe_schema = {
             "type": "object",
             "properties": {
@@ -22,8 +22,8 @@ class CovenantAIAgent:
                             "name": {"type": "string"},
                             "group": {"type": "string", "enum": ["debt", "ebitda"]},
                             "weight": {"type": "number"},
-                            "cap_percentage": {"type": "number"}, # e.g., 0.10 for 10%
-                            "cap_reference": {"type": "string"}    # e.g., "ebitda"
+                            "cap_percentage": {"type": "number"},
+                            "cap_reference": {"type": "string"}
                         },
                         "required": ["name", "group", "weight"]
                     }
@@ -32,32 +32,10 @@ class CovenantAIAgent:
             "required": ["threshold", "operator", "components"]
         }
 
-    def identify_sections(self, pdf_skeleton: str):
-        """Pass 0: Locates pages for definitions and covenants."""
-        model = genai.GenerativeModel(self.model_name)
-        prompt = f"""
-        Analyze the following PDF structure:
-        {pdf_skeleton}
-        
-        Identify page numbers for:
-        1. Financial Definitions (where Adjusted EBITDA or Net Debt are defined).
-        2. Financial Covenants (where the Leverage Ratio limit is stated).
-        
-        Return ONLY JSON: {{"definitions_pages": [int], "covenants_pages": [int]}}
-        """
-        
-        try:
-            response = model.generate_content(
-                prompt, 
-                generation_config={"response_mime_type": "application/json"}
-            )
-            return json.loads(response.text)
-        except Exception:
-            return {"definitions_pages": [1], "covenants_pages": [1]}
-
     def generate_recipe(self, combined_text: str):
-        """Pass 1: Extracts parameters for Z3 logic construction."""
-        # Fixed list of labels to ensure alignment with CFO data
+        """
+        Mapea dinámicamente el lenguaje legal a etiquetas financieras estándar.
+        """
         CFO_LABELS = [
             "bonds", "bank_loans", "cash_and_cash_equivalents",
             "operating_profit", "interest_expense", "depreciation_and_amortization",
@@ -65,15 +43,16 @@ class CovenantAIAgent:
         ]
 
         prompt = f"""
-        TASK: Extract financial covenant parameters from the text.
-        ALLOWED LABELS: {", ".join(CFO_LABELS)}
+        TASK: Act as a expert Financial Controller. 
+        Extract the mathematical recipe for the 'Consolidated Leverage Ratio' from this Credit Agreement.
 
-        INSTRUCTIONS:
-        1. Map contract terms to ALLOWED LABELS (e.g., 'Borrowings' maps to 'bonds' and 'bank_loans').
-        2. Identify the 'threshold' (the limit value) and 'operator' ('le' for maximum, 'ge' for minimum).
-        3. Assign each label to either 'debt' or 'ebitda' group.
-        4. If a component is capped (e.g., 'Extraordinary costs not to exceed 10% of EBITDA'), 
-           set 'cap_percentage' to 0.10 and 'cap_reference' to 'ebitda'.
+        MAPPING RULES:
+        1. Map all forms of debt (Revolving Loans, Term Loans, Notes) to 'bank_loans' or 'bonds'.
+        2. Map 'Consolidated Net Income' or 'Operating Profit' to 'operating_profit'.
+        3. Identify all 'Add-backs' for EBITDA (Depreciation, Interest, etc.).
+        4. If you find a limit like 'not to exceed 15% of EBITDA', set 'cap_percentage' to 0.15.
+
+        ALLOWED LABELS: {", ".join(CFO_LABELS)}
 
         CONTRACT TEXT:
         {combined_text}
@@ -81,19 +60,20 @@ class CovenantAIAgent:
 
         model = genai.GenerativeModel(self.model_name)
         
-        # Safety settings to BLOCK_NONE to prevent false positives in financial terms
-        safety = [
-            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"}
-        ]
-
+        # Configuramos la respuesta estructurada
         response = model.generate_content(
             prompt,
             generation_config=types.GenerationConfig(
                 response_mime_type="application/json",
                 response_schema=self.recipe_schema,
                 temperature=0.0
-            ),
-            safety_settings=safety
+            )
         )
+        return json.loads(response.text)
+
+    def identify_sections(self, pdf_skeleton: str):
+        """Metodo auxiliar para identificar paginas (opcional si usas extract_relevant_context)"""
+        model = genai.GenerativeModel(self.model_name)
+        prompt = f"Identify sections in this skeleton:\n{pdf_skeleton}\nReturn ONLY JSON: {{\"definitions_pages\": [int], \"covenants_pages\": [int]}}"
+        response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
         return json.loads(response.text)
