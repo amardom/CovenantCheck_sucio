@@ -39,7 +39,7 @@ def main():
     # 4. Datos del CFO Hardcoded (Para probar el contrato 001)
     # Supongamos estos números para PDF Solutions Inc.
     cfo_inputs = {
-        "bank_loans": 35000000,           # $35M de deuda bancaria
+        "bank_loans": 85000000,           # $35M de deuda bancaria
         "cash_and_cash_equivalents": 8000000,  # $8M en caja
         "operating_profit": 10000000,      # $10M beneficio
         "interest_expense": 1200000,

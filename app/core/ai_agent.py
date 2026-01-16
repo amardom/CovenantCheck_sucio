@@ -13,6 +13,7 @@ class CovenantAIAgent:
             "type": "object",
             "properties": {
                 "threshold": {"type": "number"},
+                "threshold_evidence": {"type": "string"},
                 "operator": {"type": "string", "enum": ["le", "ge"]},
                 "components": {
                     "type": "array",
@@ -23,13 +24,14 @@ class CovenantAIAgent:
                             "group": {"type": "string", "enum": ["debt", "ebitda"]},
                             "weight": {"type": "number"},
                             "cap_percentage": {"type": "number"},
-                            "cap_reference": {"type": "string"}
+                            "cap_reference": {"type": "string"},
+                            "evidence": {"type": "string"}
                         },
-                        "required": ["name", "group", "weight"]
+                        "required": ["name", "group", "weight", "evidence"]
                     }
                 }
             },
-            "required": ["threshold", "operator", "components"]
+            "required": ["threshold", "threshold_evidence", "operator", "components"]
         }
 
     def generate_recipe(self, combined_text: str):
@@ -57,12 +59,22 @@ class CovenantAIAgent:
         CONTRACT TEXT:
         {combined_text}
         """
-
+        # Justo antes de la llamada al modelo, añade este refuerzo:
+        audit_instruction = """
+        --- FINANCIAL LOGIC RULE ---
+        For each 'evidence' field, you MUST explain the mathematical direction:
+        1. If it's DEBT: Explain if it's a 'Gross Debt' component (weight 1.0) or a 'Deduction' like Cash (weight -1.0).
+        2. If it's EBITDA: Explain if it's the 'Base Income' or an 'Add-back' (adjustment that increases EBITDA).
+        3. Always mention if a CAP applies (e.g. 'This is capped at 20% to avoid inflating earnings').
+        """
+        
+        full_prompt = prompt + audit_instruction # Concatenamos sin borrar nada de lo tuyo
+        
         model = genai.GenerativeModel(self.model_name)
         
         # Configuramos la respuesta estructurada
         response = model.generate_content(
-            prompt,
+            full_prompt,
             generation_config=types.GenerationConfig(
                 response_mime_type="application/json",
                 response_schema=self.recipe_schema,
