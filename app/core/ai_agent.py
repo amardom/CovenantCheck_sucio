@@ -1,12 +1,12 @@
 import google.generativeai as genai
 import json
-import os
 import re
 
 class CovenantAIAgent:
     def __init__(self, api_key: str):
-        # Setup Gemini
         genai.configure(api_key=api_key)
+        # Change 'gemini-1.5-flash' to 'gemini-1.5-flash-latest' 
+        # or simply 'gemini-1.5-flash' but ensure the call is standard
         self.model = genai.GenerativeModel('gemini-1.5-flash')
 
     def generate_recipe(self, defs_text: str, covs_text: str):
@@ -22,29 +22,31 @@ class CovenantAIAgent:
         INSTRUCTIONS:
         1. Identify components for 'TOTAL_NET_DEBT' and 'ADJUSTED_EBITDA'.
         2. Strictly detect percentage-based caps (e.g., restructuring costs limited to 10% of EBITDA).
-        3. Identify the threshold (e.g., 3.0) and operator ('le' for <=, 'ge' for >=).
+        3. Identify the threshold and operator ('le' for <=, 'ge' for >=).
         
         OUTPUT FORMAT (JSON ONLY):
         {{
-            "threshold": float,
-            "operator": "le" | "ge",
+            "threshold": 3.0,
+            "operator": "le",
             "recipe": [
-                {{ "target": "TOTAL_NET_DEBT", "components": [ {{ "name": "str", "weight": 1/-1 }} ] }},
-                {{ 
-                  "target": "ADJUSTED_EBITDA", 
-                  "components": [ 
-                    {{ "name": "str", "weight": 1, "cap_type": "relative", "cap_percentage": 0.10, "cap_reference": "ADJUSTED_EBITDA" }} 
-                  ] 
-                }},
+                {{ "target": "TOTAL_NET_DEBT", "components": [ {{ "name": "gross_debt", "weight": 1 }} ] }},
+                {{ "target": "ADJUSTED_EBITDA", "components": [ {{ "name": "net_income", "weight": 1 }} ] }},
                 {{ "target": "FINAL_RATIO", "op": "div", "args": ["TOTAL_NET_DEBT", "ADJUSTED_EBITDA"] }}
             ]
         }}
         """
 
+        # Using the standard generation call
         response = self.model.generate_content(prompt)
         
-        # Clean the response to ensure it only contains JSON
-        text_content = response.text
+        # Defensive check for response.text
+        try:
+            text_content = response.text
+        except ValueError:
+            # If the response was blocked or empty
+            print("Error: The model returned an empty response or was blocked.")
+            return None
+
         json_match = re.search(r'\{.*\}', text_content, re.DOTALL)
         
         if json_match:
