@@ -1,0 +1,37 @@
+{
+  "contract_name": "Project Apollo - Senior Loan",
+  "covenant_id": "LEV_01",
+  "threshold": 3.25,
+  "operator": "le",
+  "recipe": [
+    {
+      "target": "TOTAL_NET_DEBT",
+      "components": [
+        { "name": "gross_loans", "weight": 1 },
+        { "name": "bonds_outstanding", "weight": 1 },
+        { "name": "cash_on_hand", "weight": -1 }
+      ]
+    },
+    {
+      "target": "ADJUSTED_EBITDA",
+      "components": [
+        { "name": "net_income", "weight": 1 },
+        { "name": "interest_expense", "weight": 1 },
+        { "name": "tax_expense", "weight": 1 },
+        { "name": "depreciation_and_amortization", "weight": 1 },
+        { 
+          "name": "extraordinary_restructuring_costs", 
+          "weight": 1,
+          "cap_type": "relative",
+          "cap_percentage": 0.10,
+          "cap_reference": "ADJUSTED_EBITDA"
+        }
+      ]
+    },
+    {
+      "target": "FINAL_RATIO",
+      "op": "div",
+      "args": ["TOTAL_NET_DEBT", "ADJUSTED_EBITDA"]
+    }
+  ]
+}
