@@ -1,53 +1,45 @@
-import fitz  # PyMuPDF
-import json
+import pymupdf
 
 class PDFContractReader:
-    @staticmethod
-    def extract_text(pdf_path: str) -> str:
-        """Extrae todo el texto (mantiene compatibilidad con archivos pequeños)."""
-        text = ""
+    def __init__(self, file_path):
+        """
+        Initializes the reader with the path to the PDF contract.
+        """
+        self.file_path = file_path
+
+    def get_skeleton(self):
+        """
+        Extracts a lightweight version of the PDF (first lines of each page)
+        to help the AI identify where the definitions and covenants are located.
+        """
         try:
-            with fitz.open(pdf_path) as doc:
-                for page in doc:
-                    text += page.get_text("text") + "\n"
-            return text
+            doc = pymupdf.open(self.file_path)
+            skeleton = ""
+            for i, page in enumerate(doc):
+                # Extract text and take only the first 200 characters for the skeleton
+                text = page.get_text().strip()
+                preview = text[:200].replace('\n', ' ')
+                skeleton += f"Page {i+1}: {preview}...\n"
+            doc.close()
+            return skeleton
         except Exception as e:
-            print(f"Error reading PDF: {e}")
+            print(f"[ERROR] Could not read PDF skeleton: {e}")
             return ""
 
-    @staticmethod
-    def get_skeleton(pdf_path: str, max_chars_per_page: int = 500) -> str:
+    def extract_pages(self, page_numbers):
         """
-        Extrae solo el inicio de cada página para que la IA identifique dónde 
-        están las secciones sin leer todo el contenido. Ideal para el 'Navigator'.
+        Extracts the full text content from specific page numbers.
         """
-        skeleton = []
         try:
-            with fitz.open(pdf_path) as doc:
-                for page_num, page in enumerate(doc):
-                    # Solo tomamos el principio de la página (títulos/encabezados)
-                    page_text = page.get_text("text")[:max_chars_per_page].replace('\n', ' ')
-                    skeleton.append(f"Page {page_num + 1}: {page_text}...")
-            return "\n".join(skeleton)
+            doc = pymupdf.open(self.file_path)
+            content = ""
+            for p in page_numbers:
+                # Page numbers in pymupdf are 0-indexed
+                if 0 < p <= len(doc):
+                    content += f"--- PAGE {p} ---\n"
+                    content += doc[p-1].get_text()
+            doc.close()
+            return content
         except Exception as e:
-            print(f"Error creating skeleton: {e}")
-            return ""
-
-    @staticmethod
-    def extract_specific_pages(pdf_path: str, page_numbers: list) -> str:
-        """
-        Extrae el texto completo de una lista de páginas específicas.
-        Esto ahorra tokens y evita ruido de páginas irrelevantes.
-        """
-        text = ""
-        try:
-            with fitz.open(pdf_path) as doc:
-                for p_num in page_numbers:
-                    # fitz usa índice 0, pero los humanos usamos 1
-                    if 0 <= p_num - 1 < len(doc):
-                        text += doc[p_num - 1].get_text("text") + "\n"
-            text = text.encode("ascii", "ignore").decode("ascii") # Limpia caracteres no-textuales
-            return text
-        except Exception as e:
-            print(f"Error extracting specific pages: {e}")
+            print(f"[ERROR] Could not extract pages {page_numbers}: {e}")
             return ""
