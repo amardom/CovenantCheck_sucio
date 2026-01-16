@@ -60,7 +60,7 @@ def main():
 
     # Scenario: 5M in Bonds to test the BREACH condition
     cfo_inputs = {
-        "bonds": 5000000,
+        "bonds": 1000000,
         "bank_loans": 1500000,
         "cash_and_cash_equivalents": 500000,
         "operating_profit": 1000000,
