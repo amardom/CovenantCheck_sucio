@@ -1,38 +1,41 @@
 import os
 import json
 from dotenv import load_dotenv
+# Make sure to install: pip install pymupdf
+from app.utils.pdf_handler import PDFContractReader
 from app.core.ai_agent import CovenantAIAgent
 from app.core.z3_engine import CovenantCheckEngine
 
-# 1. Load configuration
+# 1. Configuration & API Key
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-def run_covenant_check():
+def run_pdf_covenant_check(pdf_path):
     if not GEMINI_API_KEY:
         print("CRITICAL ERROR: GEMINI_API_KEY not found in .env file.")
         return
 
-    # 2. Load sample texts
-    try:
-        with open("data/samples/definitions.txt", "r", encoding="utf-8") as f:
-            defs_text = f.read()
-        with open("data/samples/covenants.txt", "r", encoding="utf-8") as f:
-            covs_text = f.read()
-    except FileNotFoundError as e:
-        print(f"File Error: {e}")
+    print(f"\nProcessing File: {pdf_path}")
+
+    # 2. PDF Text Extraction
+    # We convert the PDF into a string that the AI can read
+    raw_text = PDFContractReader.extract_text(pdf_path)
+    if not raw_text:
+        print("Error: Could not extract text from PDF.")
         return
 
-    # 3. AI Logic Extraction Step
+    # 3. AI Logic Extraction (Step 1)
     print("\n" + "="*50)
     print("STEP 1: AI EXTRACTION (DEBUG MODE)")
     print("="*50)
+    
     agent = CovenantAIAgent(api_key=GEMINI_API_KEY)
     
     try:
-        contract_logic = agent.generate_recipe(defs_text, covs_text)
+        # We pass the same text to both fields since the PDF contains both
+        contract_logic = agent.generate_recipe(defs_text=raw_text, covs_text=raw_text)
         
-        # --- ESTA ES LA PARTE CLAVE PARA EL DEBUG ---
+        # PRESERVING DEBUG OUTPUT: Printing the JSON recipe
         print("\n[AI JSON OUTPUT]:")
         print(json.dumps(contract_logic, indent=4))
         print("="*50 + "\n")
@@ -41,7 +44,7 @@ def run_covenant_check():
         print(f"AI Extraction Failed: {e}")
         return
 
-    # 4. Z3 Formalization Step
+    # 4. Z3 Formalization (Step 2)
     print("--- Step 2: Z3 Mathematical Formalization ---")
     engine = CovenantCheckEngine()
     
@@ -53,7 +56,7 @@ def run_covenant_check():
         print(f"Z3 Construction Failed: {e}")
         return
 
-    # 5. CFO Input Data
+    # 5. CFO Input Data (Normalized Labels)
     cfo_inputs = {
         "bonds": 2000000,
         "bank_loans": 1500000,
@@ -64,11 +67,12 @@ def run_covenant_check():
         "extraordinary_restructuring_costs": 500000 
     }
 
-    # 6. Compliance Verification
+    # 6. Compliance Verification (Step 3)
     print("\n--- Step 3: Compliance Verification ---")
     threshold = contract_logic.get('threshold')
     operator = contract_logic.get('operator')
     
+    # This will trigger the [Z3 Solver Proof] internally if it finds a BREACH
     status = engine.verify(cfo_inputs, threshold, operator)
 
     print("\n" + "#"*40)
@@ -78,4 +82,5 @@ def run_covenant_check():
     print("#"*40)
 
 if __name__ == "__main__":
-    run_covenant_check()
+    # Ensure the path matches the filename you uploaded
+    run_pdf_covenant_check("data/samples/loan_contract.pdf")
