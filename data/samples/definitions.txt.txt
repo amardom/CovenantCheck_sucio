@@ -1,0 +1,11 @@
+"Adjusted EBITDA" means, in relation to a Measurement Period, operating profit 
+for that period before taxation:
+(a) before deducting any Interest Expense;
+(b) before taking into account any Depreciation and Amortization; and
+(c) before taking into account any Extraordinary Restructuring Costs, provided 
+    that the aggregate amount of such costs shall not exceed 10% of 
+    Adjusted EBITDA for that Measurement Period.
+
+"Total Net Debt" means, at any time, the aggregate amount of all obligations 
+for Borrowings (including Bonds and Bank Loans) less the aggregate amount of 
+Cash and Cash Equivalents held by the Group.

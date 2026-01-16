@@ -1,0 +1,5 @@
+18.1 Financial Condition
+(a) Leverage: The Borrower shall ensure that the Leverage Ratio in respect 
+    of any Measurement Period shall not exceed 3.00:1.
+(b) For the purposes of this Clause:
+    "Leverage Ratio" means the ratio of Total Net Debt to Adjusted EBITDA.
