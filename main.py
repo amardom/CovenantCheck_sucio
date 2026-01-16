@@ -4,28 +4,57 @@ from dotenv import load_dotenv
 from app.core.ai_agent import CovenantAIAgent
 from app.core.z3_engine import CovenantCheckEngine
 
+# 1. Load configuration
 load_dotenv()
-
-def clean_key(key: str) -> str:
-    return key.lower().replace(" ", "_").replace("-", "_")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 def run_covenant_check():
-    agent = CovenantAIAgent(api_key=os.getenv("GEMINI_API_KEY"))
-    
-    # Load your files from data/samples/
-    with open("data/samples/definitions.txt", "r") as f: defs = f.read()
-    with open("data/samples/covenants.txt", "r") as f: covs = f.read()
+    if not GEMINI_API_KEY:
+        print("CRITICAL ERROR: GEMINI_API_KEY not found in .env file.")
+        return
 
-    # 1. AI Extraction
-    contract_logic = agent.generate_recipe(defs, covs)
+    # 2. Load sample texts
+    try:
+        with open("data/samples/definitions.txt", "r", encoding="utf-8") as f:
+            defs_text = f.read()
+        with open("data/samples/covenants.txt", "r", encoding="utf-8") as f:
+            covs_text = f.read()
+    except FileNotFoundError as e:
+        print(f"File Error: {e}")
+        return
+
+    # 3. AI Logic Extraction Step
+    print("\n" + "="*50)
+    print("STEP 1: AI EXTRACTION (DEBUG MODE)")
+    print("="*50)
+    agent = CovenantAIAgent(api_key=GEMINI_API_KEY)
     
-    # 2. Z3 Setup
+    try:
+        contract_logic = agent.generate_recipe(defs_text, covs_text)
+        
+        # --- ESTA ES LA PARTE CLAVE PARA EL DEBUG ---
+        print("\n[AI JSON OUTPUT]:")
+        print(json.dumps(contract_logic, indent=4))
+        print("="*50 + "\n")
+        
+    except Exception as e:
+        print(f"AI Extraction Failed: {e}")
+        return
+
+    # 4. Z3 Formalization Step
+    print("--- Step 2: Z3 Mathematical Formalization ---")
     engine = CovenantCheckEngine()
-    for step in contract_logic['recipe']:
-        engine.add_logic_step(step)
+    
+    try:
+        for step in contract_logic['recipe']:
+            engine.add_logic_step(step)
+        print("Z3 Logic Model constructed successfully.")
+    except Exception as e:
+        print(f"Z3 Construction Failed: {e}")
+        return
 
-    # 3. CFO Inputs - Standardized keys
-    raw_inputs = {
+    # 5. CFO Input Data
+    cfo_inputs = {
         "bonds": 2000000,
         "bank_loans": 1500000,
         "cash_and_cash_equivalents": 500000,
@@ -34,13 +63,19 @@ def run_covenant_check():
         "depreciation_and_amortization": 100000,
         "extraordinary_restructuring_costs": 500000 
     }
-    cfo_inputs = {clean_key(k): v for k, v in raw_inputs.items()}
 
-    # 4. Verify
-    result = engine.verify(cfo_inputs, contract_logic['threshold'], contract_logic['operator'])
+    # 6. Compliance Verification
+    print("\n--- Step 3: Compliance Verification ---")
+    threshold = contract_logic.get('threshold')
+    operator = contract_logic.get('operator')
     
-    print(f"Final Result: {result}")
-    print(f"Formula used by AI: {json.dumps(contract_logic['recipe'], indent=2)}")
+    status = engine.verify(cfo_inputs, threshold, operator)
+
+    print("\n" + "#"*40)
+    print(f"FINAL VERDICT: {status}")
+    print(f"USING THRESHOLD: {threshold}")
+    print(f"USING OPERATOR: {operator}")
+    print("#"*40)
 
 if __name__ == "__main__":
     run_covenant_check()
