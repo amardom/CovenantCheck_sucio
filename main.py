@@ -48,13 +48,12 @@ def run_production_check(pdf_path):
 
     # --- STEP 3: VERIFICATION ---
     cfo_inputs = {
-        "bonds": 2000000, 
-        "bank_loans": 1500000, 
+        "borrowings": 3500000, # (2M de bonds + 1.5M de loans)
         "cash_and_cash_equivalents": 500000,
         "operating_profit": 1000000, 
         "interest_expense": 200000,
         "depreciation_and_amortization": 100000, 
-        "extraordinary_restructuring_costs": 500000 
+        "extraordinary_restructuring_costs": 130000 # (Cap del 10% ya calculado)
     }
 
     print("\n--- Step 3: Compliance Verification ---")

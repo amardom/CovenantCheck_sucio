@@ -46,6 +46,7 @@ class PDFContractReader:
                     # fitz usa índice 0, pero los humanos usamos 1
                     if 0 <= p_num - 1 < len(doc):
                         text += doc[p_num - 1].get_text("text") + "\n"
+            text = text.encode("ascii", "ignore").decode("ascii") # Limpia caracteres no-textuales
             return text
         except Exception as e:
             print(f"Error extracting specific pages: {e}")
