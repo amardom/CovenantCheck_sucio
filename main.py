@@ -26,13 +26,13 @@ def run_covenant_check():
 
     # 3. CFO Inputs - Standardized keys
     raw_inputs = {
-        "Operating Profit Before Taxation": 1000000,
-        "Interest Expense": 200000,
-        "Depreciation and Amortization": 100000,
-        "Extraordinary Restructuring Costs": 500000,
-        "Bonds": 2000000,
-        "Bank Loans": 1500000,
-        "Cash and Cash Equivalents": 500000
+        "bonds": 2000000,
+        "bank_loans": 1500000,
+        "cash_and_cash_equivalents": 500000,
+        "operating_profit": 1000000,
+        "interest_expense": 200000,
+        "depreciation_and_amortization": 100000,
+        "extraordinary_restructuring_costs": 500000 
     }
     cfo_inputs = {clean_key(k): v for k, v in raw_inputs.items()}
 
