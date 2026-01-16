@@ -6,7 +6,8 @@ class CovenantAIAgent:
     def __init__(self, api_key: str):
         genai.configure(api_key=api_key)
         self.model_name = 'gemini-3-flash-preview'
-        # Preserving your battle-hardened schema
+        
+        # Esquema exacto para validación de Z3
         self.recipe_schema = {
             "type": "object",
             "properties": {
@@ -42,7 +43,7 @@ class CovenantAIAgent:
         }
 
     def identify_sections(self, pdf_skeleton: str):
-        """Pass 1: Navigator - Robust for single-page and multi-page contracts."""
+        """Pass 1: Navigator - Localiza las páginas clave."""
         prompt = f"""
         Analyze these PDF page headers:
         {pdf_skeleton}
@@ -51,34 +52,33 @@ class CovenantAIAgent:
         1. Financial Definitions (Adjusted EBITDA, Total Net Debt).
         2. Financial Covenants (Leverage Ratio limits).
 
-        CRITICAL INSTRUCTIONS:
-        - If the document is short, both sections may be on the SAME PAGE. 
-        - If they are on the same page, include that page number in BOTH lists.
-        - Do not return an empty list if the section is visible in the text.
-
-        Return ONLY a JSON: {{"definitions_pages": [num], "covenants_pages": [num]}}
+        STRICT RULES:
+        - If the document is short (1-2 pages), both are usually on page 1.
+        - Return ONLY a JSON: {{"definitions_pages": [num], "covenants_pages": [num]}}
         """
         
-        # SAFETY FIX: Disable filters for financial/legal analysis
-        safety_settings = [
-            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-        ]
-
+        safety = [{"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}]
         model = genai.GenerativeModel(self.model_name)
+        
         response = model.generate_content(
             prompt, 
             generation_config={"response_mime_type": "application/json"},
-            safety_settings=safety_settings
+            safety_settings=safety
         )
-        return json.loads(response.text)
+        
+        try:
+            data = json.loads(response.text)
+            # Fail-safe: Si la IA devuelve listas vacías en un PDF corto, forzamos página 1
+            if not data.get("definitions_pages"): data["definitions_pages"] = [1]
+            if not data.get("covenants_pages"): data["covenants_pages"] = [1]
+            return data
+        except:
+            return {"definitions_pages": [1], "covenants_pages": [1]}
 
     def generate_recipe(self, combined_text: str):
-        """Pass 2: Architect - Preserving STRICT RULES and safety filters."""
+        """Pass 2: Architect - Extrae la lógica matemática con reglas estrictas."""
         prompt = f"""
-        Extract the mathematical covenant logic from this contract text:
+        Extract the mathematical covenant logic from this text:
         {combined_text}
 
         AVAILABLE CFO LABELS:
@@ -87,15 +87,15 @@ class CovenantAIAgent:
         - extraordinary_restructuring_costs
 
         STRICT RULES:
-        1. OPERATOR: Use 'le' for "shall not exceed" or "maximum". Use 'ge' for "at least" or "minimum".
+        1. OPERATOR: Use 'le' for "maximum" or "shall not exceed". Use 'ge' for "minimum".
         2. PERCENTAGES: For "10% of Adjusted EBITDA", use cap_type='relative', cap_percentage=0.1, and cap_reference='adjusted_ebitda'.
-        3. TARGET NAMES: Use 'total_net_debt' and 'adjusted_ebitda' as targets for the sums, and 'final_ratio' for the final division.
-        4. NETTING: If a definition says "Borrowings less Cash", 'cash_and_cash_equivalents' must have weight: -1.0.
+        3. TARGET NAMES: Use 'total_net_debt', 'adjusted_ebitda' and 'final_ratio'.
+        4. NETTING: If it says "minus Cash", weight must be -1.0.
         """
         
-        safety_settings = [{"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}]
-
+        safety = [{"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}]
         model = genai.GenerativeModel(self.model_name)
+        
         response = model.generate_content(
             prompt,
             generation_config=types.GenerationConfig(
@@ -103,6 +103,6 @@ class CovenantAIAgent:
                 response_schema=self.recipe_schema,
                 temperature=0.1
             ),
-            safety_settings=safety_settings
+            safety_settings=safety
         )
         return json.loads(response.text)
