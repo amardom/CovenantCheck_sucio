@@ -1,33 +1,32 @@
-import json
+from app.core.ai_agent import CovenantAIAgent
 from app.core.z3_engine import CovenantCheckEngine
 
-# Load the AI-generated recipe
-with open('data/samples/contract_logic_v1.json', 'r') as f:
-    contract_data = json.load(f)
+# 1. Load your raw text files
+with open("data/samples/definitions.txt", "r") as f:
+    defs = f.read()
+with open("data/samples/covenants.txt", "r") as f:
+    covs = f.read()
 
+# 2. Extract Logic via AI
+agent = CovenantAIAgent(api_key="your_api_key_here")
+contract_logic = agent.generate_recipe(defs, covs)
+
+# 3. Initialize Z3 Engine
 engine = CovenantCheckEngine()
-
-# 1. Build the mathematical model from the JSON recipe
-for step in contract_data['recipe']:
+for step in contract_logic['recipe']:
     engine.add_logic_step(step)
 
-# 2. These are the values the CFO types into your web form
-cfo_inputs = {
-    "gross_loans": 5000000,
-    "bonds_outstanding": 2000000,
-    "cash_on_hand": 500000,
-    "net_income": 1200000,
+# 4. Manual Input from CFO (The "CovenantCheck_sucio" UI data)
+# In reality, these names come from the AI's recipe.
+cfo_data = {
+    "operating_profit": 1000000,
     "interest_expense": 200000,
-    "tax_expense": 100000,
-    "depreciation_and_amortization": 300000,
-    "extraordinary_restructuring_costs": 400000 
+    "depreciation_and_amortization": 100000,
+    "extraordinary_restructuring_costs": 500000, # This is > 10% of the total!
+    "gross_borrowings": 4000000,
+    "cash": 500000
 }
 
-# 3. Run the verification
-result = engine.verify_compliance(
-    cfo_inputs, 
-    contract_data['threshold'], 
-    contract_data['operator']
-)
-
-print(f"Compliance Result: {result}")
+# 5. The Verdict
+status = engine.verify(cfo_data, contract_logic['threshold'], contract_logic['operator'])
+print(f"Contract Status: {status}")
