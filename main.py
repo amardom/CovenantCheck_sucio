@@ -48,7 +48,8 @@ def run_production_check(pdf_path):
 
     # --- STEP 3: VERIFICATION ---
     cfo_inputs = {
-        "borrowings": 3500000, # (2M de bonds + 1.5M de loans)
+        "bonds": 2000000, 
+        "bank_loans": 1500000,
         "cash_and_cash_equivalents": 500000,
         "operating_profit": 1000000, 
         "interest_expense": 200000,

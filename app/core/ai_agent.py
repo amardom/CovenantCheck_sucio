@@ -77,19 +77,38 @@ class CovenantAIAgent:
             return {"definitions_pages": [1], "covenants_pages": [1]}
 
     def generate_recipe(self, combined_text: str):
-        """Pass 2: Architect - Extrae la lógica matemática."""
         print(f"[DEBUG] Architect procesando {len(combined_text)} caracteres...")
         
+        # DEFINIMOS TU LISTA DE TÉRMINOS AQUÍ PARA QUE SEA FÁCIL DE MANTENER
+        CFO_LABELS = [
+            "bonds", "bank_loans", "cash_and_cash_equivalents",
+            "operating_profit", "interest_expense", "depreciation_and_amortization",
+            "extraordinary_restructuring_costs"
+        ]
+
         prompt = f"""
-        Extract the mathematical covenant logic from this text:
-        {combined_text}
+        TASK: Extract mathematical covenant logic from the text below.
+        
+        ALLOWED CFO LABELS (YOU MUST USE ONLY THESE FOR COMPONENTS):
+        {", ".join(CFO_LABELS)}
 
         STRICT RULES:
-        1. Use 'le' for maximum/shall not exceed. Use 'ge' for minimum.
-        2. For 10% caps, use cap_type='relative', cap_percentage=0.1, cap_reference='adjusted_ebitda'.
-        3. Targets must be: 'total_net_debt', 'adjusted_ebitda', and 'final_ratio'.
-        4. Netting: Borrowings less cash means cash has weight -1.0.
+        1. Leverage Ratio = Total Net Debt / Adjusted EBITDA.
+        2. Total Net Debt = (bonds + bank_loans) - cash_and_cash_equivalents.
+        3. Adjusted EBITDA = operating_profit + interest_expense + depreciation_and_amortization + extraordinary_restructuring_costs.
+        4. THRESHOLD: The maximum limit for the ratio.
+
+        TARGET NAMES:
+        - Use 'total_net_debt' for the debt sum.
+        - Use 'adjusted_ebitda' for the profit sum.
+        - Use 'final_ratio' for the division (total_net_debt / adjusted_ebitda).
+
+        TEXT TO ANALYZE:
+        {combined_text}
         """
+
+        model = genai.GenerativeModel(self.model_name)
+        safety = [{"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}]
 
         model = genai.GenerativeModel(self.model_name)
         
