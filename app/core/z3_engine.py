@@ -45,6 +45,6 @@ def auditor_z3_pro(logic_json, cfo_inputs):
         print("ESTADO: ❌ INCUMPLIMIENTO O CONFLICTO (UNSAT)")
         print("El CFO ha violado una restricción o los datos son inconsistentes.")
 
-    missing = [v for v in vars if v not in cfo_inputs and v not in ['If', 'And', 'Or', 'Max']]
+    missing = [v for v in vars if v not in cfo_inputs and v not in ['If', 'And', 'Or', 'Max', 'Min']]
     if missing:
         print(f"💡 NOTA: Las variables {missing} se han calculado automáticamente para cumplir el contrato.")

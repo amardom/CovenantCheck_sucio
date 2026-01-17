@@ -4,7 +4,7 @@ from app.core.z3_engine import auditor_z3_pro
 
 def main():
     # 1. Cargar el JSON de lógica (el que validamos antes)
-    with open("data/samples/var_logic.json", "r") as f:
+    with open("data/samples/PDFSOLUTIONS/vars_and_logics_PDFSOLUTIONS.json", "r") as f:
         logic_data = json.load(f)
 
     # 2. Generar el PDF para el CFO
@@ -13,18 +13,8 @@ def main():
     
     print(f"Reporte generado exitosamente en: {output_pdf}")
 
-    cfo_data = {
-    "consolidated_net_income": 5000000,
-    "interest_expense": 1000000,
-    "tax_expense": 1200000,
-    "depreciation_amortization": 800000,
-    "restructuring_costs": 1500000,
-    "capped_ebitda_add_backs": 1500000,
-    "consolidated_funded_indebtedness": 12000000,
-    "unrestricted_cash": 2000000,
-    "purchase_money_indebtedness": 500000,
-    "consolidated_ttm_ebitda": 9500000
-    }
+    # 3. Leemos datos del CFO.
+    cfo_data = json.load(open('data/samples/PDFSOLUTIONS/cfo_data_PDFSOLUTIONS.json'))
 
     auditor_z3_pro(logic_data, cfo_data)
 

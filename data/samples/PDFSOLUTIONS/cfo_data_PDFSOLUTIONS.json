@@ -1,0 +1,14 @@
+{
+  "consolidated_net_income": 5000000.0,
+  "interest_expense": 1000000.0,
+  "tax_expense": 1200000.0,
+  "depreciation_amortization": 800000.0,
+  "capped_ebitda_add_backs": 1500000.0,
+  "consolidated_ebitda": 9500000.0,
+  "consolidated_funded_indebtedness": 12000000.0,
+  "unrestricted_cash": 2000000.0,
+  "consolidated_total_net_debt": 10000000.0,
+  "consolidated_total_net_leverage_ratio": 1.0526315789,
+  "purchase_money_indebtedness": 500000.0,
+  "consolidated_ttm_ebitda": 9500000.0
+}
