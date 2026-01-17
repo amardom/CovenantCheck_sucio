@@ -10,7 +10,7 @@ def main():
     api_key = os.getenv("GEMINI_API_KEY")
     
     # El contrato de 300 páginas (PDF Solutions 001)
-    pdf_path = "data/samples/loan_contract_001.pdf" 
+    pdf_path = "data/samples/loan_contract_005.pdf" 
     
     reader = PDFContractReader(pdf_path)
     agent = CovenantAIAgent(api_key)
