@@ -40,7 +40,11 @@ def auditor_z3_pro(logic_json, cfo_inputs):
                 val = m[vars[v]]
                 # Conversión estética de fracción a decimal
                 decimal = float(val.as_decimal(2).replace('?', '')) if hasattr(val, 'as_decimal') else val
-                print(f"  > {v:.<30} {decimal}")
+                print(f"  > {v:.<50} {decimal}")
     else:
         print("ESTADO: ❌ INCUMPLIMIENTO O CONFLICTO (UNSAT)")
         print("El CFO ha violado una restricción o los datos son inconsistentes.")
+
+    missing = [v for v in vars if v not in cfo_inputs and v not in ['If', 'And', 'Or', 'Max']]
+    if missing:
+        print(f"💡 NOTA: Las variables {missing} se han calculado automáticamente para cumplir el contrato.")
