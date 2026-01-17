@@ -1,0 +1,38 @@
+{
+  "contract_name": "Loan Agreement - Sample",
+  "audit_date": "2024-05-22",
+  "variables": [
+    { "name": "base_net_income", "context": "Operating profit before taxation" },
+    { "name": "interest_expense_add_back", "context": "Interest Expense" },
+    { "name": "depreciation_and_amortization", "context": "Depreciation and Amortization" },
+    { "name": "extraordinary_restructuring_costs", "context": "Extraordinary Restructuring Costs" },
+    { "name": "term_loan_debt", "context": "Borrowings (Bonds and Bank Loans)" },
+    { "name": "unrestricted_cash", "context": "Cash and Cash Equivalents" }
+  ],
+  "logical_conditions": [
+    {
+      "id": "1",
+      "formula": "adjusted_ebitda == base_net_income + interest_expense_add_back + depreciation_and_amortization + extraordinary_restructuring_costs",
+      "evidence": "Definition of Adjusted EBITDA: includes profit before tax, interest, D&A and restructuring costs.",
+      "page": 1
+    },
+    {
+      "id": "2",
+      "formula": "total_net_debt == term_loan_debt - unrestricted_cash",
+      "evidence": "Definition of Total Net Debt: Borrowings less Cash and Cash Equivalents.",
+      "page": 1
+    },
+    {
+      "id": "3",
+      "formula": "extraordinary_restructuring_costs <= 0.10 * adjusted_ebitda",
+      "evidence": "Clause (c): Restructuring costs shall not exceed 10% of Adjusted EBITDA.",
+      "page": 1
+    },
+    {
+      "id": "4",
+      "formula": "total_net_debt / adjusted_ebitda <= 3.00",
+      "evidence": "Clause 18.1 (a): Leverage Ratio shall not exceed 3.00:1.",
+      "page": 1
+    }
+  ]
+}
