@@ -2,6 +2,8 @@ from z3 import *
 
 def verify_logics(logic_json, cfo_inputs):
 
+    print(f"----- Z3 ENGINE: {logic_json.get('contract_name')} -----\n")
+
     # 1. Create the solver.
     s = Solver()
     s.set(unsat_core=True)
@@ -19,8 +21,6 @@ def verify_logics(logic_json, cfo_inputs):
     }
 
     context_eval = {**vars, **z3_helpers} # Dictionary for eval().
-
-    print(f"----- Z3 AUDIT: {logic_json.get('contract_name')} -----\n")
 
     # 3. Load rules.
     for i, rule in enumerate(logic_json['logical_conditions']):
@@ -66,10 +66,10 @@ def verify_logics(logic_json, cfo_inputs):
                 values = values + [val_float]
                 response["calculated_values"][var_name] = val_float
                 print(f"  > {var_name:.<50} {val_float}")
-    else:
 
-        print("STATUS: ❌ NON-COMPLIANT OR CONFLICT (UNSAT)")
-        print("CFO has violated a constraint or the data is inconsistent.\n")
+    elif result == unsat:
+
+        print("STATUS: ❌ NON-COMPLIANT OR CONFLICT (UNSAT - BREACH)")
 
         core = s.unsat_core()
         for label in core:
@@ -79,15 +79,13 @@ def verify_logics(logic_json, cfo_inputs):
             elif label_str.startswith("RULE_"):
                 response["conflict_rules"].append(label_str.replace("RULE_", ""))
 
-        # Printeo de Variables implicadas
         if response["conflict_variables"]:
             vars_str = ", ".join(response["conflict_variables"])
-            print(f"👉 Variables causing conflict: {vars_str}")
+            print(f"👉 Variables causing conflict: {vars_str}.")
         
-        # Printeo de Reglas rotas
         if response["conflict_rules"]:
             rules_str = ", ".join(response["conflict_rules"])
-            print(f"👉 Broken Rules (IDs): {rules_str}")
+            print(f"👉 Broken rules (IDs): {rules_str}.\n")
 
     missing = [v for v in vars if v not in cfo_inputs]
     if missing:
