@@ -5,7 +5,7 @@ def verify_logics(logic_json, cfo_inputs):
     # 1. Create the solver.
     s = Solver()
     
-    # 2. Declare variables dinymically as Real.
+    # 2. Declare variables dynamically as Real.
     vars = {v['name']: Real(v['name']) for v in logic_json['variables']}
 
     z3_helpers = {
