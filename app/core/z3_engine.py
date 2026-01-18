@@ -1,12 +1,11 @@
 from z3 import *
 
-def auditor_z3_pro(logic_json, cfo_inputs):
+def verify_logics(logic_json, cfo_inputs):
 
-    # 1. Crear el Solver
+    # 1. Create the solver.
     s = Solver()
     
-    # 2. Declarar variables dinámicamente como Reales
-    # Agregamos 'If' al diccionario para que eval() lo reconozca en las fórmulas
+    # 2. Declare variables dinymically as Real.
     vars = {v['name']: Real(v['name']) for v in logic_json['variables']}
 
     z3_helpers = {
@@ -18,44 +17,40 @@ def auditor_z3_pro(logic_json, cfo_inputs):
         'If': If
     }
 
-    # Este es el diccionario que usarás en el eval
-    contexto_eval = {**vars, **z3_helpers}
+    contexto_eval = {**vars, **z3_helpers} # Dictionary for eval().
 
-    print(f"--- Z3 AUDIT: {logic_json.get('contract_name')} ---\n")
+    print(f"----- Z3 AUDIT: {logic_json.get('contract_name')} -----\n")
 
-    # 3. Cargar Reglas (Identidades y Covenants)
+    # 3. Load rules.
     for i, rule in enumerate(logic_json['logical_conditions']):
         try:
-            # Reemplazamos '==' por '=' si es necesario para Z3 eval
-            # Pero en Python eval, '==' es correcto para comparaciones
             formula_z3 = eval(rule['formula'], {"__builtins__": None}, contexto_eval)
             print(f"DEBUG - Rule #{i+1}: {formula_z3}\n")
             s.add(formula_z3)
         except Exception as e:
-            print(f"⚠️ Error en Regla {rule['id']}: {e}")
+            print(f"⚠️ Error en Regla {rule['id']}: {e}\n")
 
-    # 4. Cargar Inputs del CFO
+    # 4. Load CFO data.
     for name, value in cfo_inputs.items():
         if name in vars:
             s.add(vars[name] == float(value))
 
-    # 5. Verificación
+    # 5. Verify logics.
     result = s.check()
     
     if result == sat:
-        print("ESTADO: ✅ CUMPLIMIENTO (SAT)")
+        print("STATUS: ✅ COMPLIANT (SAT)")
         m = s.model()
-        # Imprimir resultados numéricos finales
         for v in vars:
             if v not in ['If', 'And', 'Or']:
                 val = m[vars[v]]
-                # Conversión estética de fracción a decimal
+                # Fraction to decimal.
                 decimal = float(val.as_decimal(2).replace('?', '')) if hasattr(val, 'as_decimal') else val
                 print(f"  > {v:.<50} {decimal}")
     else:
-        print("ESTADO: ❌ INCUMPLIMIENTO O CONFLICTO (UNSAT)")
-        print("El CFO ha violado una restricción o los datos son inconsistentes.")
+        print("STATUS: ❌ NON-COMPLIANT OR CONFLICT (UNSAT)")
+        print("CFO has violated a constraint or the data is inconsistent.\n")
 
     missing = [v for v in vars if v not in cfo_inputs and v not in ['If', 'And', 'Or', 'Max', 'Min']]
     if missing:
-        print(f"💡 NOTA: Las variables {missing} se han calculado automáticamente para cumplir el contrato.")
+        print(f"💡 NOTE: The variables {missing} have been automatically calculated to satisfy the agreement.\n")

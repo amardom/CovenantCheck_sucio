@@ -1,6 +1,6 @@
 import json
 from app.utils.report_generator import generate_minimalist_report
-from app.core.z3_engine import auditor_z3_pro
+from app.core.z3_engine import verify_logics
 
 def main():
 
@@ -17,7 +17,7 @@ def main():
     cfo_data = json.load(open('data/samples/PDFSOLUTIONS/cfo_data_PDFSOLUTIONS.json'))
 
     # 4. Verify logics.
-    auditor_z3_pro(logic_data, cfo_data)
+    verify_logics(logic_data, cfo_data)
 
 if __name__ == "__main__":
     main()
