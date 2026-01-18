@@ -4,6 +4,7 @@ def verify_logics(logic_json, cfo_inputs):
 
     # 1. Create the solver.
     s = Solver()
+    s.set(unsat_core=True)
     
     # 2. Declare variables dynamically as Real.
     vars = {v['name']: Real(v['name']) for v in logic_json['variables']}
@@ -23,15 +24,14 @@ def verify_logics(logic_json, cfo_inputs):
 
     # 3. Load rules.
     for i, rule in enumerate(logic_json['logical_conditions']):
-
         formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
         print(f"Rule #{rule['id']}: {formula_z3}\n")
-        s.add(formula_z3)
+        s.assert_and_track(formula_z3, f"RULE_{rule['id']}")
 
     # 4. Load CFO data.
     for name, value in cfo_inputs.items():
         if name in vars:
-            s.add(vars[name] == float(value))
+            s.assert_and_track(vars[name] == float(value), f"DATA_{name}")
 
     # 5. Verify logics.
     result = s.check()
@@ -42,7 +42,9 @@ def verify_logics(logic_json, cfo_inputs):
         "calculated_values": {},
         "model": None,
         "missing": {},
-        "norm_metric" : 0
+        "norm_metric" : 0,
+        "conflict_variables": [],
+        "conflict_rules": []
     }
 
     values = []
@@ -63,12 +65,29 @@ def verify_logics(logic_json, cfo_inputs):
                 val_float = float(z3_val.as_decimal(2).replace('?', '')) if hasattr(z3_val, 'as_decimal') else z3_val
                 values = values + [val_float]
                 response["calculated_values"][var_name] = val_float
-                
                 print(f"  > {var_name:.<50} {val_float}")
     else:
 
         print("STATUS: ❌ NON-COMPLIANT OR CONFLICT (UNSAT)")
         print("CFO has violated a constraint or the data is inconsistent.\n")
+
+        core = s.unsat_core()
+        for label in core:
+            label_str = str(label)
+            if label_str.startswith("DATA_"):
+                response["conflict_variables"].append(label_str.replace("DATA_", ""))
+            elif label_str.startswith("RULE_"):
+                response["conflict_rules"].append(label_str.replace("RULE_", ""))
+
+        # Printeo de Variables implicadas
+        if response["conflict_variables"]:
+            vars_str = ", ".join(response["conflict_variables"])
+            print(f"👉 Variables causing conflict: {vars_str}")
+        
+        # Printeo de Reglas rotas
+        if response["conflict_rules"]:
+            rules_str = ", ".join(response["conflict_rules"])
+            print(f"👉 Broken Rules (IDs): {rules_str}")
 
     missing = [v for v in vars if v not in cfo_inputs]
     if missing:
