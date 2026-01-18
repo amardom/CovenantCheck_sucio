@@ -40,7 +40,8 @@ def verify_logics(logic_json, cfo_inputs):
         "status": str(result).upper(),
         "is_compliant": result == z3.sat,
         "calculated_values": {},
-        "model": None
+        "model": None,
+        "missing": {}
     }
 
     if result == sat:
@@ -67,7 +68,8 @@ def verify_logics(logic_json, cfo_inputs):
 
     missing = [v for v in vars if v not in cfo_inputs]
     if missing:
-
+        
+        response["missing"] = missing
         print(f"💡 NOTE: The variables {missing} have been automatically calculated to satisfy the agreement.\n")
 
     return response

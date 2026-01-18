@@ -1,0 +1,42 @@
+{
+  "contract_name": "Credit Agreement - NETFLIX, INC. (2009)",
+  "audit_date": "2026-01-18",
+  "variables": [
+    { "name": "consolidated_net_income", "context": "Net Income of Netflix and subsidiaries" },
+    { "name": "interest_expense", "context": "Total interest expense (add-back)" },
+    { "name": "tax_expense", "context": "Provision for taxes (add-back)" },
+    { "name": "depreciation_amortization", "context": "D&A expenses (add-back)" },
+    { "name": "share_based_compensation", "context": "Non-cash compensation (add-back per Section 1.01)" },
+    { "name": "consolidated_ebitda", "context": "Calculated EBITDA for the period" },
+    { "name": "consolidated_total_debt", "context": "Total Indebtedness of Netflix" },
+    { "name": "unrestricted_cash", "context": "Cash and Cash Equivalents" },
+    { "name": "consolidated_net_debt", "context": "Total debt minus unrestricted cash" },
+    { "name": "consolidated_leverage_ratio", "context": "Leverage Ratio (Section 7.12)" }
+  ],
+  "logical_conditions": [
+    {
+      "id": 1,
+      "formula": "consolidated_ebitda == consolidated_net_income + interest_expense + tax_expense + depreciation_amortization + share_based_compensation",
+      "evidence": "Definition of Consolidated EBITDA (Section 1.01)",
+      "page": 11
+    },
+    {
+      "id": 2,
+      "formula": "consolidated_net_debt == consolidated_total_debt - unrestricted_cash",
+      "evidence": "Definition of Consolidated Total Indebtedness and Netting (Section 1.01)",
+      "page": 13
+    },
+    {
+      "id": 3,
+      "formula": "consolidated_leverage_ratio == consolidated_net_debt / consolidated_ebitda",
+      "evidence": "Consolidated Leverage Ratio calculation (Section 1.01)",
+      "page": 10
+    },
+    {
+      "id": 4,
+      "formula": "consolidated_leverage_ratio <= 2.5",
+      "evidence": "Financial Covenant: Maximum Leverage Ratio (Section 7.12)",
+      "page": 76
+    }
+  ]
+}
