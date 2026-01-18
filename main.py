@@ -22,7 +22,7 @@ def main():
 
     # 5. Generate final report from z3 results.
     output_pdf = "report_final.pdf"
-    create_audit_pdf(res, "CONTRASTO--", cfo_data, output_pdf)
+    create_audit_pdf(res, {logic_data.get('contract_name', 'Unnamed')}, cfo_data, output_pdf)
     print(f"\nReport successfully generated in: {output_pdf}\n")
 
 if __name__ == "__main__":
