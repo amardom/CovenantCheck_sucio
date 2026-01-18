@@ -23,12 +23,10 @@ def verify_logics(logic_json, cfo_inputs):
 
     # 3. Load rules.
     for i, rule in enumerate(logic_json['logical_conditions']):
-        try:
-            formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
-            print(f"Rule #{rule['id']}: {formula_z3}\n")
-            s.add(formula_z3)
-        except Exception as e:
-            print(f"⚠️ Error in Rule {rule['id']}: {e}\n")
+
+        formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
+        print(f"Rule #{rule['id']}: {formula_z3}\n")
+        s.add(formula_z3)
 
     # 4. Load CFO data.
     for name, value in cfo_inputs.items():
