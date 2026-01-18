@@ -41,16 +41,18 @@ def verify_logics(logic_json, cfo_inputs):
         "is_compliant": result == z3.sat,
         "calculated_values": {},
         "model": None,
-        "missing": {}
+        "missing": {},
+        "norm_metric" : 0
     }
 
+    values = []
     if result == sat:
 
         print("STATUS: ✅ COMPLIANT (SAT)")
         
         m = s.model()
         response["model"] = m
-
+      
         for var_name in vars:
 
             var_obj = vars[var_name]
@@ -59,6 +61,7 @@ def verify_logics(logic_json, cfo_inputs):
             if z3_val is not None:
                 
                 val_float = float(z3_val.as_decimal(2).replace('?', '')) if hasattr(z3_val, 'as_decimal') else z3_val
+                values = values + [val_float]
                 response["calculated_values"][var_name] = val_float
                 
                 print(f"  > {var_name:.<50} {val_float}")
@@ -72,5 +75,8 @@ def verify_logics(logic_json, cfo_inputs):
         
         response["missing"] = missing
         print(f"💡 NOTE: The variables {missing} have been automatically calculated to satisfy the agreement.\n")
+
+    norm_metric = math.sqrt(sum(v**2 for v in values))/math.pi
+    response["norm_metric"] = norm_metric
 
     return response
