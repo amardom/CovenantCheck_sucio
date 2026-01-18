@@ -1,0 +1,33 @@
+{
+  "contract_name": "Complex Logic Test",
+  "audit_date": "2025-03-07",
+  "variables": [
+    { "name": "consolidated_ebitda", "context": "TTM EBITDA" },
+    { "name": "unrestricted_cash", "context": "Liquidity" },
+    { "name": "consolidated_total_net_leverage_ratio", "context": "Leverage" },
+    { "name": "purchase_money_indebtedness", "context": "Basket spending" },
+    { "name": "net_income_delta", "context": "Adjustment variance" }
+  ],
+  "logical_conditions": [
+    {
+      "id": 1,
+      "formula": "purchase_money_indebtedness <= max(12000000, 0.25 * consolidated_ebitda)",
+      "evidence": "Greater of fixed amount or percentage of EBITDA"
+    },
+    {
+      "id": 2,
+      "formula": "Or(consolidated_total_net_leverage_ratio <= 3.5, unrestricted_cash >= 20000000)",
+      "evidence": "Springing covenant: Compliance if ratio is low OR liquidity is high"
+    },
+    {
+      "id": 3,
+      "formula": "And(consolidated_ebitda > 0, abs(net_income_delta) < 1000000)",
+      "evidence": "EBITDA must be positive AND variance under 1M"
+    },
+    {
+      "id": 4,
+      "formula": "If(unrestricted_cash > 50000000, purchase_money_indebtedness <= 25000000, purchase_money_indebtedness <= 15000000)",
+      "evidence": "Conditional basket: Higher limit if cash is above 50M"
+    }
+  ]
+}
