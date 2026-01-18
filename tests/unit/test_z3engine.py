@@ -10,7 +10,8 @@ def test_all_scenarios():
     
     scenarios = [
         ("logic_data_pass_simple.json","cfo_data_pass_simple.json", True),
-        ("logic_data_pass_complex.json","cfo_data_pass_complex.json", True)
+        ("logic_data_pass_complex.json","cfo_data_pass_complex.json", True),
+        ("logic_data_pass_complex.json","cfo_data_pass_complex_fail.json", False)
     ]
 
     print(f"\n--- INICIANDO BUCLE DE PRUEBAS ---")
