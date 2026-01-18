@@ -43,7 +43,7 @@ def generate_minimalist_report(data, output_path):
         
         # Bloque de Fórmula (Gris)
         pdf.set_fill_color(245, 245, 245)
-        pdf.set_font("Courier", 'B', 10)
+        pdf.set_font("Arial", "", 9)
         # El truco: new_x="LMARGIN", new_y="NEXT" obliga al cursor a bajar SIEMPRE
         pdf.multi_cell(eff_width, 8, f"  {cond['formula']}  ", border=0, fill=True, align='L', new_x="LMARGIN", new_y="NEXT")
         
