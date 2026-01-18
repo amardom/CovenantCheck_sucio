@@ -17,15 +17,15 @@ def verify_logics(logic_json, cfo_inputs):
         'If': If
     }
 
-    contexto_eval = {**vars, **z3_helpers} # Dictionary for eval().
+    context_eval = {**vars, **z3_helpers} # Dictionary for eval().
 
     print(f"----- Z3 AUDIT: {logic_json.get('contract_name')} -----\n")
 
     # 3. Load rules.
     for i, rule in enumerate(logic_json['logical_conditions']):
         try:
-            formula_z3 = eval(rule['formula'], {"__builtins__": None}, contexto_eval)
-            print(f"DEBUG - Rule #{i+1}: {formula_z3}\n")
+            formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
+            print(f"Rule #{i+1}: {formula_z3}\n")
             s.add(formula_z3)
         except Exception as e:
             print(f"⚠️ Error en Regla {rule['id']}: {e}\n")
@@ -38,19 +38,38 @@ def verify_logics(logic_json, cfo_inputs):
     # 5. Verify logics.
     result = s.check()
     
+    response = {
+        "status": str(result).upper(),
+        "is_compliant": result == z3.sat,
+        "calculated_values": {},
+        "model": None
+    }
+
     if result == sat:
+
         print("STATUS: ✅ COMPLIANT (SAT)")
         m = s.model()
-        for v in vars:
-            if v not in ['If', 'And', 'Or']:
-                val = m[vars[v]]
-                # Fraction to decimal.
-                decimal = float(val.as_decimal(2).replace('?', '')) if hasattr(val, 'as_decimal') else val
-                print(f"  > {v:.<50} {decimal}")
+        response["model"] = m
+
+        for var_name in vars:
+
+            var_obj = vars[var_name]
+            z3_val = m[var_obj]
+            
+            if z3_val is not None:
+                
+                val_float = float(z3_val.as_decimal(2).replace('?', '')) if hasattr(z3_val, 'as_decimal') else z3_val
+                response["calculated_values"][var_name] = val_float
+                
+                print(f"  > {var_name:.<50} {val_float}")
     else:
+
         print("STATUS: ❌ NON-COMPLIANT OR CONFLICT (UNSAT)")
         print("CFO has violated a constraint or the data is inconsistent.\n")
 
-    missing = [v for v in vars if v not in cfo_inputs and v not in ['If', 'And', 'Or', 'Max', 'Min']]
+    missing = [v for v in vars if v not in cfo_inputs]
     if missing:
+
         print(f"💡 NOTE: The variables {missing} have been automatically calculated to satisfy the agreement.\n")
+
+    return response
