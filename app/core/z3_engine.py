@@ -1,15 +1,25 @@
 from z3 import *
 
 def auditor_z3_pro(logic_json, cfo_inputs):
+
     # 1. Crear el Solver
     s = Solver()
     
     # 2. Declarar variables dinámicamente como Reales
     # Agregamos 'If' al diccionario para que eval() lo reconozca en las fórmulas
     vars = {v['name']: Real(v['name']) for v in logic_json['variables']}
-    vars['If'] = If  
-    vars['And'] = And
-    vars['Or'] = Or
+
+    z3_helpers = {
+        'abs': lambda x: If(x >= 0, x, -x),
+        'max': lambda a, b: If(a > b, a, b),
+        'min': lambda a, b: If(a < b, a, b),
+        'And': And,
+        'Or': Or,
+        'If': If
+    }
+
+    # Este es el diccionario que usarás en el eval
+    contexto_eval = {**vars, **z3_helpers}
 
     print(f"--- Z3 AUDIT: {logic_json.get('contract_name')} ---")
 
@@ -18,7 +28,7 @@ def auditor_z3_pro(logic_json, cfo_inputs):
         try:
             # Reemplazamos '==' por '=' si es necesario para Z3 eval
             # Pero en Python eval, '==' es correcto para comparaciones
-            formula_z3 = eval(rule['formula'], {"__builtins__": None}, vars)
+            formula_z3 = eval(rule['formula'], {"__builtins__": None}, contexto_eval)
             s.add(formula_z3)
         except Exception as e:
             print(f"⚠️ Error en Regla {rule['id']}: {e}")
