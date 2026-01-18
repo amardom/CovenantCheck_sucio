@@ -21,14 +21,15 @@ def auditor_z3_pro(logic_json, cfo_inputs):
     # Este es el diccionario que usarás en el eval
     contexto_eval = {**vars, **z3_helpers}
 
-    print(f"--- Z3 AUDIT: {logic_json.get('contract_name')} ---")
+    print(f"--- Z3 AUDIT: {logic_json.get('contract_name')} ---\n")
 
     # 3. Cargar Reglas (Identidades y Covenants)
-    for rule in logic_json['logical_conditions']:
+    for i, rule in enumerate(logic_json['logical_conditions']):
         try:
             # Reemplazamos '==' por '=' si es necesario para Z3 eval
             # Pero en Python eval, '==' es correcto para comparaciones
             formula_z3 = eval(rule['formula'], {"__builtins__": None}, contexto_eval)
+            print(f"DEBUG - Rule #{i+1}: {formula_z3}\n")
             s.add(formula_z3)
         except Exception as e:
             print(f"⚠️ Error en Regla {rule['id']}: {e}")
