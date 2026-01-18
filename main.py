@@ -1,7 +1,7 @@
 import json
-from app.utils.report_generator import generate_minimalist_report
+from app.utils.report_initial import generate_initial_report
 from app.core.z3_engine import verify_logics
-from app.utils.report_final import create_audit_pdf
+from app.utils.report_final import generate_final_report
 
 def main():
 
@@ -11,7 +11,7 @@ def main():
 
     # 2. Generate initial report from json.
     output_pdf = "report_initial.pdf"
-    generate_minimalist_report(logic_data, output_pdf)
+    generate_initial_report(logic_data, output_pdf)
     print(f"\nReport successfully generated in: {output_pdf}\n")
 
     # 3. Read CFO data.
@@ -22,7 +22,7 @@ def main():
 
     # 5. Generate final report from z3 results.
     output_pdf = "report_final.pdf"
-    create_audit_pdf(res, {logic_data.get('contract_name', 'Unnamed')}, cfo_data, output_pdf)
+    generate_final_report(res, {logic_data.get('contract_name', 'Unnamed')}, cfo_data, output_pdf)
     print(f"\nReport successfully generated in: {output_pdf}\n")
 
 if __name__ == "__main__":

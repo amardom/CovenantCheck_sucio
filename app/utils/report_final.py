@@ -8,7 +8,7 @@ class AgnosticReport(FPDF):
         self.cell(0, 10, 'Z3 FORMAL VERIFICATION - EXECUTIVE SUMMARY', 0, 1, 'R')
         self.ln(5)
 
-def create_audit_pdf(z3_output, title, input_data, output_path="audit_FINAL.pdf"):
+def generate_final_report(z3_output, title, input_data, output_path="audit_FINAL.pdf"):
     pdf = AgnosticReport()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()

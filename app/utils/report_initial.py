@@ -1,7 +1,7 @@
 from fpdf import FPDF
 import os
 
-def generate_minimalist_report(data, output_path):
+def generate_initial_report(data, output_path):
     
     # P = Portrait, mm = millimeters, A4
     pdf = FPDF('P', 'mm', 'A4')

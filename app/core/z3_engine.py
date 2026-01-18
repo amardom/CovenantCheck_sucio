@@ -47,6 +47,7 @@ def verify_logics(logic_json, cfo_inputs):
     if result == sat:
 
         print("STATUS: ✅ COMPLIANT (SAT)")
+        
         m = s.model()
         response["model"] = m
 
