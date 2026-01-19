@@ -6,7 +6,7 @@ def load_json(path):
     with open(path, 'r') as f:
         return json.load(f)
 
-def test_all_scenarios():
+def test_sat_scenarios():
     
     scenarios = [
         ("logic_data_pass_simple.json","cfo_data_pass_simple.json", True, 13085595.147, ['consolidated_ebitda', 
