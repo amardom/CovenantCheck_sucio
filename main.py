@@ -21,7 +21,8 @@ def main():
     print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
 
     # 3. Read CFO data.
-    cfo_data = json.load(open("data/samples/NETFLIX/" + FILENAME_CFO_DATA))
+    with open("data/samples/NETFLIX/" + FILENAME_CFO_DATA, "r") as f:
+        cfo_data = json.load(f)
 
     # 4. Verify logics.
     res = verify_logics(logics, cfo_data)
