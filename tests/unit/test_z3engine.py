@@ -9,10 +9,10 @@ def load_json(path):
 def test_sat_scenarios():
     
     scenarios = [
-        ("logic_data_pass_simple.json","cfo_data_pass_simple.json", True, 13085595.147, ['consolidated_ebitda', 
+        ("logics_pass_simple.json","cfo_data_pass_simple.json", True, 13085595.147, ['consolidated_ebitda', 
                                                                                          'consolidated_total_net_debt', 
                                                                                          'consolidated_total_net_leverage_ratio']),
-        ("logic_data_pass_complex.json","cfo_data_pass_complex.json", True, 15493715.317, {})
+        ("logics_pass_complex.json","cfo_data_pass_complex.json", True, 15493715.317, {})
     ]
 
     print(f"\n--- INITIALIZING SAT TESTING LOOP ---")
@@ -38,7 +38,7 @@ def test_sat_scenarios():
 def test_unsat_scenarios():
     
     scenarios = [
-        ("logic_data_pass_complex.json","cfo_data_pass_complex_fail.json", False, ['consolidated_total_net_leverage_ratio', 
+        ("logics_pass_complex.json","cfo_data_pass_complex_fail.json", False, ['consolidated_total_net_leverage_ratio', 
                                                                                    'unrestricted_cash'], )
     ]
 

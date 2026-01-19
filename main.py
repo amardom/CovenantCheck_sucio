@@ -8,7 +8,7 @@ FILENAME_FINAL_REPORT = "report_final.pdf"
 def main():
 
     # 1. Load json with vars and logics.
-    with open("data/samples/NETFLIX/vars_and_logics_NETFLIX.json", "r") as f:
+    with open("data/samples/NETFLIX/logics_NETFLIX.json", "r") as f:
         logic_data = json.load(f)
 
     # 2. Generate initial report from json.
