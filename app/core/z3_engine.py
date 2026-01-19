@@ -1,32 +1,32 @@
 from z3 import *
 
-def validate_json(logic_json):
+def validate_json(logics):
 
-    _ = logic_json['source_file']
-    _ = logic_json['contract_name']
+    _ = logics['source_file']
+    _ = logics['contract_name']
 
-    for v in logic_json['variables']:
+    for v in logics['variables']:
         _ = v['name']
         
-    for rule in logic_json['logical_conditions']:
+    for rule in logics['logical_conditions']:
         _ = rule['id']
         _ = rule['formula']
         _ = rule['evidence']
     
     print("json validated.")
 
-def verify_logics(logic_json, cfo_inputs):
+def verify_logics(logics, cfo_data):
 
-    validate_json(logic_json)
+    validate_json(logics)
     
-    print(f"----- Z3 ENGINE: {logic_json.get('contract_name')} -----\n")
+    print(f"----- Z3 ENGINE: {logics.get('contract_name')} -----\n")
 
     # 1. Create the solver.
     s = Solver()
     s.set(unsat_core=True)
     
     # 2. Declare variables dynamically as Real.
-    vars = {v['name']: Real(v['name']) for v in logic_json['variables']}
+    vars = {v['name']: Real(v['name']) for v in logics['variables']}
 
     z3_helpers = {
         'abs': lambda x: If(x >= 0, x, -x),
@@ -40,13 +40,13 @@ def verify_logics(logic_json, cfo_inputs):
     context_eval = {**vars, **z3_helpers} # Dictionary for eval().
 
     # 3. Load rules.
-    for i, rule in enumerate(logic_json['logical_conditions']):
+    for i, rule in enumerate(logics['logical_conditions']):
         formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
         print(f"Rule #{rule['id']}: {formula_z3}\n")
         s.assert_and_track(formula_z3, f"RULE_{rule['id']}")
 
     # 4. Load CFO data.
-    for name, value in cfo_inputs.items():
+    for name, value in cfo_data.items():
         if name in vars:
             s.assert_and_track(vars[name] == RealVal(str(value)), f"DATA_{name}")
 
@@ -104,7 +104,7 @@ def verify_logics(logic_json, cfo_inputs):
             rules_str = ", ".join(response["conflict_rules"])
             print(f"👉 Broken rules (IDs): {rules_str}.\n")
 
-    missing = [v for v in vars if v not in cfo_inputs]
+    missing = [v for v in vars if v not in cfo_data]
     if missing:
         
         response["missing"] = missing

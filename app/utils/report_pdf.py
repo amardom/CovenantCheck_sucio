@@ -2,7 +2,7 @@ from fpdf import FPDF
 import os
 from datetime import datetime
 
-def generate_initial_report(data, output_path):
+def generate_initial_report(logics, output_path):
     
     # P = Portrait, mm = millimeters, A4
     pdf = FPDF('P', 'mm', 'A4')
@@ -14,9 +14,9 @@ def generate_initial_report(data, output_path):
 
     # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
-    pdf.cell(eff_width, 10, f"Logical Audit: {data.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 10, f"Logical Audit: {logics.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.cell(eff_width, 8, f"Source file: {data.get('source_file', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Source file: {logics.get('source_file', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
@@ -26,7 +26,7 @@ def generate_initial_report(data, output_path):
     pdf.ln(2)
     
     i = 1
-    for var in data.get('variables', []):
+    for var in logics.get('variables', []):
         pdf.set_font("Helvetica", 'B', 10)
         pdf.write(5, f"{i}. {var['name']}: ")
         pdf.set_font("Helvetica", size=10)
@@ -40,7 +40,7 @@ def generate_initial_report(data, output_path):
     pdf.cell(eff_width, 10, "2. LOGICAL RULES & EVIDENCE", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
     
-    for cond in data.get('logical_conditions', []):
+    for cond in logics.get('logical_conditions', []):
         # Rule ID
         pdf.set_font("Helvetica", 'B', 11)
         pdf.cell(eff_width, 8, f"Rule {cond['id']}:", new_x="LMARGIN", new_y="NEXT")
@@ -67,7 +67,7 @@ def generate_initial_report(data, output_path):
         os.makedirs(dir_name, exist_ok=True)
     pdf.output(output_path)
 
-def generate_final_report(z3_output, data, input_data, output_path):
+def generate_final_report(z3_result, logics, cfo_data, output_path):
 
     # P = Portrait, mm = millimeters, A4
     pdf = FPDF('P', 'mm', 'A4')
@@ -79,14 +79,14 @@ def generate_final_report(z3_output, data, input_data, output_path):
 
     # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
-    pdf.cell(eff_width, 10, f"Formal verification: {data.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 10, f"Formal verification: {logics.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.cell(eff_width, 8, f"Source file: {data.get('source_file', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Source file: {logics.get('source_file', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
     # 2. BLOQUE DEL VEREDICTO (Verde o Rojo)
-    is_compliant = z3_output.get('is_compliant', False)
+    is_compliant = z3_result.get('is_compliant', False)
     if is_compliant:
         status_text = "PASSED: COMPLIANT WITH ALL COVENANTS"
         bg_color = (230, 255, 230)  # Verde muy claro
@@ -119,12 +119,12 @@ def generate_final_report(z3_output, data, input_data, output_path):
     pdf.cell(c3, 10, "Data Origin", 1, 1, 'C', True)
 
     # Datos
-    calc_values = z3_output.get('calculated_values', {})
+    calc_values = z3_result.get('calculated_values', {})
     pdf.set_font('Arial', '', 10)
     
     for var, val in calc_values.items():
         # Lógica de origen
-        is_input = var in input_data
+        is_input = var in cfo_data
         origin = "CFO INPUT" if is_input else "Z3 DERIVED"
         
         # Formateo de número (si es posible)
