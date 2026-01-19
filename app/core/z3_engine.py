@@ -1,7 +1,23 @@
 from z3 import *
 
+def validate_json(logic_json):
+
+    _ = logic_json['contract_name']
+
+    for v in logic_json['variables']:
+        _ = v['name']
+        
+    for rule in logic_json['logical_conditions']:
+        _ = rule['id']
+        _ = rule['formula']
+        _ = rule['evidence']
+    
+    print("json validated.")
+
 def verify_logics(logic_json, cfo_inputs):
 
+    validate_json(logic_json)
+    
     print(f"----- Z3 ENGINE: {logic_json.get('contract_name')} -----\n")
 
     # 1. Create the solver.
