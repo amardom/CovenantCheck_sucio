@@ -2,6 +2,7 @@ from z3 import *
 
 def validate_json(logic_json):
 
+    _ = logic_json['source_file']
     _ = logic_json['contract_name']
 
     for v in logic_json['variables']:
