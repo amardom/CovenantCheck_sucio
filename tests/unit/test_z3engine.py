@@ -38,7 +38,8 @@ def test_sat_scenarios():
 def test_unsat_scenarios():
     
     scenarios = [
-        ("logic_data_pass_complex.json","cfo_data_pass_complex_fail.json", False, ['consolidated_total_net_leverage_ratio', 'unrestricted_cash'])
+        ("logic_data_pass_complex.json","cfo_data_pass_complex_fail.json", False, ['consolidated_total_net_leverage_ratio', 
+                                                                                   'unrestricted_cash'], )
     ]
 
     print(f"\n--- INITIALIZING UNSAT TESTING LOOP ---")

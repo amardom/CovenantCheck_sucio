@@ -31,7 +31,7 @@ def verify_logics(logic_json, cfo_inputs):
     # 4. Load CFO data.
     for name, value in cfo_inputs.items():
         if name in vars:
-            s.assert_and_track(vars[name] == float(value), f"DATA_{name}")
+            s.assert_and_track(vars[name] == RealVal(str(value)), f"DATA_{name}")
 
     # 5. Verify logics.
     result = s.check()
