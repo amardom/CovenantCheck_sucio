@@ -2,6 +2,9 @@ import json
 from app.utils.report_pdf import generate_initial_report, generate_final_report
 from app.core.z3_engine import verify_logics
 
+FILENAME_INITIAL_REPORT = "report_initial.pdf" 
+FILENAME_FINAL_REPORT = "report_final.pdf"
+
 def main():
 
     # 1. Load json with vars and logics.
@@ -9,9 +12,8 @@ def main():
         logic_data = json.load(f)
 
     # 2. Generate initial report from json.
-    output_pdf = "report_initial.pdf"
-    generate_initial_report(logic_data, output_pdf)
-    print(f"\nReport successfully generated in: {output_pdf}\n")
+    generate_initial_report(logic_data, FILENAME_INITIAL_REPORT)
+    print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
 
     # 3. Read CFO data.
     cfo_data = json.load(open('data/samples/NETFLIX/cfo_data_NETFLIX.json'))
@@ -20,9 +22,8 @@ def main():
     res = verify_logics(logic_data, cfo_data)
 
     # 5. Generate final report from z3 results.
-    output_pdf = "report_final.pdf"
-    generate_final_report(res, logic_data.get('contract_name', 'Unnamed'), cfo_data, output_pdf)
-    print(f"\nReport successfully generated in: {output_pdf}\n")
+    generate_final_report(res, logic_data, cfo_data, FILENAME_FINAL_REPORT)
+    print(f"\nReport successfully generated in: {FILENAME_FINAL_REPORT}\n")
 
 if __name__ == "__main__":
     main()

@@ -16,6 +16,7 @@ def generate_initial_report(data, output_path):
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Logical Audit: {data.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
+    pdf.cell(eff_width, 8, f"Source file: {data.get('source_file', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
@@ -66,7 +67,7 @@ def generate_initial_report(data, output_path):
         os.makedirs(dir_name, exist_ok=True)
     pdf.output(output_path)
 
-def generate_final_report(z3_output, title, input_data, output_path):
+def generate_final_report(z3_output, data, input_data, output_path):
 
     # P = Portrait, mm = millimeters, A4
     pdf = FPDF('P', 'mm', 'A4')
@@ -78,8 +79,9 @@ def generate_final_report(z3_output, title, input_data, output_path):
 
     # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
-    pdf.cell(eff_width, 10, f"Formal verification: {title}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 10, f"Formal verification: {data.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
+    pdf.cell(eff_width, 8, f"Source file: {data.get('source_file', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
