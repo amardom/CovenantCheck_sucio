@@ -23,11 +23,13 @@ def generate_initial_report(data, output_path):
     pdf.cell(eff_width, 10, "1. VARIABLE INVENTORY", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
     
+    i = 1
     for var in data.get('variables', []):
         pdf.set_font("Helvetica", 'B', 10)
-        pdf.write(5, f"{var['name']}: ")
+        pdf.write(5, f"{i}. {var['name']}: ")
         pdf.set_font("Helvetica", size=10)
         pdf.write(5, f"{var['context']}\n")
+        i = i + 1
     
     pdf.ln(10)
 

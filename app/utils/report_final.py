@@ -1,28 +1,22 @@
 from fpdf import FPDF
 from datetime import datetime
 
-class AgnosticReport(FPDF):
-    def header(self):
-        self.set_font('Arial', 'B', 10)
-        self.set_text_color(150)
-        self.cell(0, 10, 'Z3 FORMAL VERIFICATION - EXECUTIVE SUMMARY', 0, 1, 'R')
-        self.ln(5)
-
 def generate_final_report(z3_output, title, input_data, output_path="audit_FINAL.pdf"):
-    pdf = AgnosticReport()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.add_page()
-    
-    # Ancho útil de la página
-    page_width = pdf.w - 2 * pdf.l_margin 
 
-    # 1. TÍTULO DEL CONTRATO
-    pdf.set_font('Arial', 'B', 16)
-    pdf.set_text_color(0)
-    pdf.cell(page_width, 10, str(title).upper(), 0, 1, 'L')
-    pdf.set_font('Arial', '', 9)
-    pdf.cell(page_width, 5, f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", 0, 1, 'L')
-    pdf.ln(10)
+    # P = Portrait, mm = millimeters, A4
+    pdf = FPDF('P', 'mm', 'A4')
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    
+    # Ancho efectivo (Margen de 10mm a cada lado)
+    eff_width = pdf.w - 20
+
+    # --- Header ---
+    pdf.set_font("Helvetica", 'B', 16)
+    pdf.cell(eff_width, 10, f"Formal verification: {title}", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", size=10)
+    pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(5)
 
     # 2. BLOQUE DEL VEREDICTO (Verde o Rojo)
     is_compliant = z3_output.get('is_compliant', False)
@@ -39,13 +33,13 @@ def generate_final_report(z3_output, title, input_data, output_path="audit_FINAL
     pdf.set_text_color(*text_color)
     pdf.set_font('Arial', 'B', 14)
     # Dibujamos una caja para el veredicto
-    pdf.cell(page_width, 15, f"  {status_text}", 1, 1, 'L', fill=True)
+    pdf.cell(eff_width, 15, f"  {status_text}", 1, 1, 'L', fill=True)
     pdf.ln(10)
 
     # 3. TABLA DE VARIABLES (Agnóstica)
     pdf.set_text_color(0)
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(page_width, 10, "Calculated Model Values:", 0, 1)
+    pdf.cell(eff_width, 10, "Calculated Model Values:", 0, 1)
     
     # Configuración de columnas
     c1, c2, c3 = 85, 45, 40
