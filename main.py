@@ -1,7 +1,6 @@
 import json
-from app.utils.report_initial import generate_initial_report
+from app.utils.report_pdf import generate_initial_report, generate_final_report
 from app.core.z3_engine import verify_logics
-from app.utils.report_final import generate_final_report
 
 def main():
 
