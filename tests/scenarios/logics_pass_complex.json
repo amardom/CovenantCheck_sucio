@@ -1,5 +1,5 @@
 {
-  "source_file": "logic_data_pass_complex.json",
+  "source_file": "logics_pass_complex.json",
   "contract_name": "Complex Logic Test",
   "variables": [
     { "name": "consolidated_ebitda", "context": "TTM EBITDA" },

@@ -1,5 +1,6 @@
 import json
 import pytest
+from app.utils.integrity_json import validate_json
 from app.core.z3_engine import verify_logics
 
 def load_json(path):
@@ -21,6 +22,8 @@ def test_sat_scenarios():
 
         path_logic_data = f"tests/scenarios/{filename_logic}"
         logic_data = load_json(path_logic_data)
+        validate_json(filename_logic, logic_data)
+
         path_cfo_data = f"tests/scenarios/{filename_cfo}"
         cfo_data = load_json(path_cfo_data)
         
@@ -48,6 +51,8 @@ def test_unsat_scenarios():
 
         path_logic_data = f"tests/scenarios/{filename_logic}"
         logic_data = load_json(path_logic_data)
+        validate_json(filename_logic, logic_data)
+
         path_cfo_data = f"tests/scenarios/{filename_cfo}"
         cfo_data = load_json(path_cfo_data)
         

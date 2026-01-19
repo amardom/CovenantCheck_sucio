@@ -1,23 +1,6 @@
 from z3 import *
 
-def validate_json(logics):
-
-    _ = logics['source_file']
-    _ = logics['contract_name']
-
-    for v in logics['variables']:
-        _ = v['name']
-        
-    for rule in logics['logical_conditions']:
-        _ = rule['id']
-        _ = rule['formula']
-        _ = rule['evidence']
-    
-    print("json validated.")
-
 def verify_logics(logics, cfo_data):
-
-    validate_json(logics)
     
     print(f"----- Z3 ENGINE: {logics.get('contract_name')} -----\n")
 

@@ -1,5 +1,5 @@
 {
-  "source_file": "logic_data_pass_simple.json",
+  "source_file": "logics_pass_simple.json",
   "contract_name": "Test Agreement - Simple Pass",
   "variables": [
     { "name": "consolidated_net_income", "context": "Net income" },
