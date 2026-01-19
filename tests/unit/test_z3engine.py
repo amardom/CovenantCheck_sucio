@@ -9,13 +9,15 @@ def load_json(path):
 def test_all_scenarios():
     
     scenarios = [
-        ("logic_data_pass_simple.json","cfo_data_pass_simple.json", True, 13085595.147),
-        ("logic_data_pass_complex.json","cfo_data_pass_complex.json", True, 15493715.317)
+        ("logic_data_pass_simple.json","cfo_data_pass_simple.json", True, 13085595.147, ['consolidated_ebitda', 
+                                                                                         'consolidated_total_net_debt', 
+                                                                                         'consolidated_total_net_leverage_ratio']),
+        ("logic_data_pass_complex.json","cfo_data_pass_complex.json", True, 15493715.317, {})
     ]
 
     print(f"\n--- INITIALIZING SAT TESTING LOOP ---")
 
-    for filename_logic, filename_cfo, expected_sat_unsat, expected_norm_metric in scenarios:
+    for filename_logic, filename_cfo, expected_sat_unsat, expected_norm_metric, expected_missing in scenarios:
 
         path_logic_data = f"tests/scenarios/{filename_logic}"
         logic_data = load_json(path_logic_data)
@@ -29,6 +31,9 @@ def test_all_scenarios():
 
         print(f"Testing {filename_logic}: Expected {expected_norm_metric} -> Got {result['norm_metric']}")
         assert result["norm_metric"] == pytest.approx(expected_norm_metric), f"Error in {filename_logic}: Result does not match."
+
+        print(f"Testing {filename_logic}: Expected {expected_missing} -> Got {result['missing']}")
+        assert result["missing"] == expected_missing, f"Error in {filename_logic}: Result does not match."
 
 def test_unsat_scenarios():
     
