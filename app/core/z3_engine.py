@@ -60,12 +60,12 @@ def verify_logics(logics, cfo_data):
             var_obj = vars[var_name]
             z3_val = m[var_obj]
             
-            if z3_val is not None:
-                
-                val_float = float(z3_val.as_decimal(2).replace('?', '')) if hasattr(z3_val, 'as_decimal') else z3_val
-                values = values + [val_float]
-                response["calculated_values"][var_name] = val_float
-                print(f"  > {var_name:.<50} {val_float}")
+            assert z3_val is not None
+            
+            val_float = float(z3_val.as_decimal(2).replace('?', '')) if hasattr(z3_val, 'as_decimal') else z3_val
+            values = values + [val_float]
+            response["calculated_values"][var_name] = val_float
+            print(f"  > {var_name:.<50} {val_float}")
 
     elif result == unsat:
 
