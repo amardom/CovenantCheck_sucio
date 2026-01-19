@@ -1,7 +1,6 @@
 {
   "source_file": "vars_and_logics_NETFLIX.json",
   "contract_name": "Credit Agreement - NETFLIX, INC. (2009)",
-  "audit_date": "2026-01-18",
   "variables": [
     { "name": "consolidated_net_income", "context": "Net Income of Netflix and subsidiaries" },
     { "name": "interest_expense", "context": "Total interest expense (add-back)" },

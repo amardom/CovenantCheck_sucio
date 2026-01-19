@@ -1,7 +1,6 @@
 {
   "source_file": "logic_data_pass_complex.json",
   "contract_name": "Complex Logic Test",
-  "audit_date": "2025-03-07",
   "variables": [
     { "name": "consolidated_ebitda", "context": "TTM EBITDA" },
     { "name": "unrestricted_cash", "context": "Liquidity" },

@@ -1,7 +1,6 @@
 {
   "source_file": "logic_data_pass_simple.json",
   "contract_name": "Test Agreement - Simple Pass",
-  "audit_date": "2025-03-07",
   "variables": [
     { "name": "consolidated_net_income", "context": "Net income" },
     { "name": "interest_expense", "context": "Interest expense to be added back" },

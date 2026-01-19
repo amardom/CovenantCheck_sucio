@@ -16,7 +16,7 @@ def generate_initial_report(data, output_path):
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Logical Audit: {data.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.cell(eff_width, 8, f"Date: {data.get('audit_date', 'N/A')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
     # --- 1. Variables Inventory ---
