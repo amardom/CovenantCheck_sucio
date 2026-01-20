@@ -6,8 +6,8 @@ from app.core.z3_engine import verify_logics
 FILENAME_LOGICS = "logics_NETFLIX.json"
 FILENAME_CFO_DATA = "cfo_data_NETFLIX.json"
 
-FILENAME_INITIAL_REPORT = "report_initial.pdf" 
-FILENAME_FINAL_REPORT = "report_final.pdf"
+FILENAME_INITIAL_REPORT = "report_initial" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
+FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 
 def main():
 
