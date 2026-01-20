@@ -35,7 +35,8 @@ def verify_logics(logics, cfo_data):
 
     # 5. Verify logics.
     result = s.check()
-    
+    assert result != unknown
+
     response = {
         "status": str(result).upper(),
         "is_compliant": result == z3.sat,
