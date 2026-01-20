@@ -63,3 +63,28 @@ def test_unsat_scenarios():
 
         print(f"Testing {filename_logic}: Expected {expected_conflict_variables} -> Got {result['conflict_variables']}")
         assert set(result["conflict_variables"]) == set(expected_conflict_variables), f"Error in {filename_logic}: Result does not match."
+
+def test_verify_logics_unknown_should_fail():
+    """
+    Forzamos un UNKNOWN usando una fórmula no lineal compleja.
+    Esto disparará el 'assert result != unknown'.
+    """
+    logics_complex = {
+        "source_file": "complex_math.json",
+        "contract_name": "Complexity Test",
+        "variables": [{"name": "x", "context": "Non-linear math"}],
+        "logical_conditions": [{
+            "id": 999, 
+            # x elevado a x es muy difícil para el solver de Reales estándar
+            "formula": "x**x == 50", 
+            "evidence": "Complexity breach", 
+            "page": 1
+        }]
+    }
+    
+    # cfo_data vacío porque la variable x es la que causará el problema
+    cfo_data = {}
+
+    # El test pasa si el motor lanza un AssertionError por el resultado UNKNOWN
+    with pytest.raises(AssertionError):
+        verify_logics(logics_complex, cfo_data)
