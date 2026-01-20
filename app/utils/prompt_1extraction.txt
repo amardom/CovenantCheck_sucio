@@ -1,0 +1,158 @@
+You are acting as a financial covenant auditor.
+
+Your task is NOT to interpret, calculate, simplify, normalize, or restate covenants.
+Your only goal is to IDENTIFY and CATALOGUE all parts of the contract that may give rise to
+financial variables, ratios, or compliance constraints.
+
+This is a coverage and traceability task, not a modeling task.
+
+CRITICAL RULES:
+- Do NOT derive formulas.
+- Do NOT normalize language.
+- Do NOT invent variables or metrics.
+- Do NOT assume accounting meanings beyond the text.
+- Do NOT merge clauses.
+- Do NOT simplify thresholds.
+- If something is ambiguous, flag it. Do NOT resolve it.
+- If you are not explicitly certain something appears in the text, do NOT include it.
+
+Your output will be used as input to a later formal modeling step.
+
+--------------------------------------------------
+
+TASK 1 — CONTRACT STRUCTURE INDEX
+
+Identify and list all Articles, Sections, and Subsections that contain ANY of the following:
+- financial definitions
+- financial metrics
+- ratios
+- numeric thresholds
+- financial covenants
+- negative covenants with numeric limits
+- reporting or testing timing relevant to covenants
+
+For each item, provide:
+- Article / Section number
+- Title (if any)
+- Why it is relevant (definitions / covenants / timing / thresholds)
+
+--------------------------------------------------
+
+TASK 2 — DEFINITIONS INVENTORY (NO FORMULAS)
+
+List all DEFINED TERMS that are:
+- financial in nature, OR
+- used in any covenant, ratio, or quantitative restriction
+
+For each definition, provide:
+- Term name (exact capitalization)
+- Section where it is defined
+- Short description (1 sentence, paraphrased)
+- Whether it is used in:
+  - a financial covenant
+  - a negative covenant
+  - a ratio
+  - a reporting requirement
+
+Do NOT restate the definition mathematically.
+Do NOT compute anything.
+
+--------------------------------------------------
+
+TASK 3 — COVENANT INVENTORY (NO MATH)
+
+List all covenants that involve:
+- numeric limits
+- ratios
+- thresholds
+- tables
+- schedules
+- conditional permissions based on financial metrics
+
+For each covenant, provide:
+- Section number
+- Covenant name (if any)
+- Covenant type:
+  - Financial covenant
+  - Negative covenant
+  - Incurrence covenant
+  - Reporting covenant
+- Metrics referenced (use the exact defined names)
+- Whether it is:
+  - maintenance
+  - incurrence
+  - springing
+- Testing timing (if stated)
+- Section or page reference
+
+Do NOT express any inequality or formula.
+
+--------------------------------------------------
+
+TASK 4 — THRESHOLDS & SCHEDULES
+
+Identify any:
+- numeric thresholds
+- stepped schedules
+- tables
+- date- or period-based thresholds
+
+For each, provide:
+- Section reference
+- Metric(s) involved
+- How the threshold varies (by date, quarter, leverage level, etc.)
+- Whether interpretation depends on time or events
+
+--------------------------------------------------
+
+TASK 5 — EXCLUSIONS & AMBIGUITIES
+
+Identify:
+- carve-outs
+- exclusions
+- exceptions
+- clauses starting with phrases such as:
+  “except that”
+  “provided however”
+  “subject to”
+
+For each, provide:
+- Section reference
+- Brief description
+- Whether it affects:
+  - scope of a metric
+  - applicability of a covenant
+  - timing of testing
+
+If anything is unclear, explicitly flag it as:
+AMBIGUOUS — requires human review
+
+--------------------------------------------------
+
+MANDATORY OUTPUT FORMAT
+
+Your output MUST follow EXACTLY this structure:
+
+SECTION A — STRUCTURE INDEX
+- Article / Section — Title — Relevance
+
+SECTION B — DEFINITIONS INVENTORY
+- Term — Section — Short description — Usage
+
+SECTION C — COVENANT INVENTORY
+- Section — Covenant name — Type — Metrics — Maintenance/Incurrence/Springing — Timing
+
+SECTION D — THRESHOLDS & SCHEDULES
+- Section — Metrics — Description of thresholds
+
+SECTION E — EXCLUSIONS & AMBIGUITIES
+- Section — Description — Impact — AMBIGUOUS (if applicable)
+
+--------------------------------------------------
+
+FINAL REMINDER
+
+If you are not explicitly certain that something appears in the contract text:
+- do NOT guess
+- do NOT infer
+- do NOT include it
