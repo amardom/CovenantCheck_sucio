@@ -1,5 +1,7 @@
 def validate_json(filename_logics, logics):
 
+    assert isinstance(logics, dict)
+
     assert "source_file" in logics
     assert type(logics["source_file"]) is str and len(logics["source_file"]) > 0
 
@@ -34,5 +36,5 @@ def validate_json(filename_logics, logics):
 
     logic_ids = [l["id"] for l in logics["logical_conditions"]]
     assert len(logic_ids) == len(set(logic_ids))
-    
+
     print("json validated.")
