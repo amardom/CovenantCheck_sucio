@@ -25,6 +25,7 @@ def verify_logics(logics, cfo_data):
     # 3. Load rules.
     for i, rule in enumerate(logics['logical_conditions']):
         formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
+        assert is_expr(formula_z3)
         print(f"Rule #{rule['id']}: {formula_z3}\n")
         s.assert_and_track(formula_z3, f"RULE_{rule['id']}")
 

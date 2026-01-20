@@ -116,3 +116,29 @@ def test_engine_missing_model_value_assert():
     # pero al intentar m[y] el assert z3_val is not None debería saltar.
     with pytest.raises(AssertionError):
         verify_logics(logics_orphan, cfo_data)
+
+def test_verify_logics_not_an_expr_assert():
+    """
+    Forzamos un AssertionError cuando eval() devuelve un bool de Python 
+    en lugar de una expresión simbólica de Z3.
+    """
+    logics_bad_formula = {
+        "source_file": "invalid_z3_expression.json",
+        "contract_name": "Invalid Expr Test",
+        "variables": [{"name": "ebitda", "context": "Finance"}],
+        "logical_conditions": [{
+            "id": 101, 
+            # Esto es un Booleano de Python, no una fórmula de Z3
+            "formula": "1 == 1", 
+            "evidence": "Static check", 
+            "page": 1
+        }]
+    }
+    
+    cfo_data = {"ebitda": 100}
+
+    # El motor debería partir porque '1 == 1' devuelve True (bool)
+    # y is_expr(True) es Falso.
+    with pytest.raises(AssertionError) as excinfo:
+        verify_logics(logics_bad_formula, cfo_data)
+    
