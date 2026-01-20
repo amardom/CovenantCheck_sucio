@@ -29,6 +29,9 @@ def test_validate_json_type_source_file():
     logics["source_file"] = True
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
+    logics["source_file"] = ""
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, logics)
 
 def test_validate_json_wrong_filename():
     logics = VALID_LOGICS.copy()
@@ -39,14 +42,15 @@ def test_validate_json_wrong_filename():
 def test_validate_json_empty_contract_name():
     logics = VALID_LOGICS.copy()
     logics["contract_name"] = []
-    print(logics["contract_name"])
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
 
 def test_validate_json_type_contract_name():
     logics = VALID_LOGICS.copy()
     logics["contract_name"] = True
-    print(logics["contract_name"])
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, logics)
+    logics["contract_name"] = ""
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
 
@@ -79,7 +83,13 @@ def test_validate_json_types_in_variable():
         var["name"] = True
         with pytest.raises(AssertionError):
             validate_json(FILENAME, logics)
+        var["name"] = ""
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, logics)
         var["context"] = True
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, logics)
+        var["context"] = ""
         with pytest.raises(AssertionError):
             validate_json(FILENAME, logics)
 
@@ -110,12 +120,24 @@ def test_validate_json_types_in_logical_conditions():
         var["id"] = "1"
         with pytest.raises(AssertionError):
             validate_json(FILENAME, logics)
+        var["id"] = 0
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, logics)
         var["evidence"] = True
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, logics)
+        var["evidence"] = ""
         with pytest.raises(AssertionError):
             validate_json(FILENAME, logics)
         var["formula"] = True
         with pytest.raises(AssertionError):
             validate_json(FILENAME, logics)
-        var["formula"] = "1"
+        var["formula"] = ""
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, logics)
+        var["page"] = "1"
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, logics)
+        var["page"] = 0
         with pytest.raises(AssertionError):
             validate_json(FILENAME, logics)
