@@ -1,4 +1,4 @@
-import pytest
+import pytest, copy
 from app.utils.integrity_json import validate_json
 
 FILENAME = "logics_NETFLIX.json"
@@ -17,6 +17,12 @@ VALID_LOGICS = {
 
 def test_validate_json_success():
     validate_json(FILENAME, VALID_LOGICS)
+
+def test_validate_json_input_not_a_dict():
+    invalid_inputs = [[], "not a dict", 123, None]
+    for invalid in invalid_inputs:
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, invalid)
 
 def test_validate_json_empty_source_file():
     logics = VALID_LOGICS.copy()
@@ -78,20 +84,29 @@ def test_validate_json_missing_keys_in_variable():
         validate_json(FILENAME, logics)
 
 def test_validate_json_types_in_variable():
-    logics = VALID_LOGICS.copy()
-    for var in logics["variables"]:
-        var["name"] = True
+    logics = copy.deepcopy(VALID_LOGICS)
+
+    for i in range(len(logics["variables"])):
+        
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["name"] = True
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["name"] = ""
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["name"] = ""
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["context"] = True
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["context"] = True
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["context"] = ""
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["context"] = ""
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
+            validate_json(FILENAME, payload)
 
 def test_validate_json_missing_keys_in_logical_conditions():
     logics = VALID_LOGICS.copy()
@@ -115,29 +130,65 @@ def test_validate_json_missing_keys_in_logical_conditions():
         validate_json(FILENAME, logics)
 
 def test_validate_json_types_in_logical_conditions():
-    logics = VALID_LOGICS.copy()
-    for var in logics["logical_conditions"]:
-        var["id"] = "1"
+    logics = copy.deepcopy(VALID_LOGICS)
+
+    for i in range(len(logics["logical_conditions"])):
+        
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["id"] = "1"
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["id"] = 0
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["id"] = 0
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["evidence"] = True
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["evidence"] = True
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["evidence"] = ""
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["evidence"] = ""
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["formula"] = True
+            validate_json(FILENAME, payload)
+        
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["formula"] = True
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["formula"] = ""
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["formula"] = ""
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["page"] = "1"
+            validate_json(FILENAME, payload)
+        
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["page"] = "1"
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
-        var["page"] = 0
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["page"] = 0
         with pytest.raises(AssertionError):
-            validate_json(FILENAME, logics)
+            validate_json(FILENAME, payload)
+
+def test_validate_json_duplicate_variable_names():
+    logics = copy.deepcopy(VALID_LOGICS)
+    # Duplicamos la variable para ver si explota
+    logics["variables"].append({"name": "ebitda", "context": "Duplicate"})
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, logics)
+
+def test_validate_json_duplicate_logic_ids():
+    logics = copy.deepcopy(VALID_LOGICS)
+    # Duplicamos el ID de la condición
+    logics["logical_conditions"].append({
+        "id": 1, 
+        "formula": "x > 1", 
+        "evidence": "Duplicate ID", 
+        "page": 10
+    })
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, logics)
