@@ -88,3 +88,31 @@ def test_verify_logics_unknown_should_fail():
     # El test pasa si el motor lanza un AssertionError por el resultado UNKNOWN
     with pytest.raises(AssertionError):
         verify_logics(logics_complex, cfo_data)
+
+def test_engine_missing_model_value_assert():
+    """
+    Forzamos un AssertionError cuando una variable declarada 
+    no puede ser recuperada del modelo de Z3.
+    """
+    logics_orphan = {
+        "source_file": "useless_var.json",
+        "contract_name": "Orphan Test",
+        "variables": [
+            {"name": "x", "context": "Active"},
+            {"name": "y", "context": "Orphan"} # Esta variable no se usa en nada
+        ],
+        "logical_conditions": [{
+            "id": 1, 
+            "formula": "x > 10", 
+            "evidence": "Test", 
+            "page": 1
+        }]
+    }
+    
+    # Solo damos datos para x
+    cfo_data = {"x": 15}
+
+    # El motor debería encontrar SAT para x, 
+    # pero al intentar m[y] el assert z3_val is not None debería saltar.
+    with pytest.raises(AssertionError):
+        verify_logics(logics_orphan, cfo_data)
