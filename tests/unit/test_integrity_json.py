@@ -1,8 +1,7 @@
 import pytest
-from app.utils.integrity_json import validate_json  # Adjust the import based on your folder structure
+from app.utils.integrity_json import validate_json
 
-# --- MOCK DATA ---
-FILENAME = "netflix_logics.json"
+FILENAME = "logics_NETFLIX.json"
 
 VALID_DATA = {
     "source_file": FILENAME,
@@ -14,8 +13,6 @@ VALID_DATA = {
         "page": 45
     }]
 }
-
-# --- TESTS ---
 
 def test_validate_json_success():
     """Should pass without raising any AssertionError."""
@@ -35,6 +32,13 @@ def test_validate_json_empty_variables():
     with pytest.raises(AssertionError):
         validate_json(FILENAME, data)
 
+def test_validate_json_empty_logical_conditions():
+    """Should explode if variables list is empty."""
+    data = VALID_DATA.copy()
+    data["logical_conditions"] = []
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, data)
+
 def test_validate_json_missing_fields_in_variable():
     """Should explode if a variable is missing the 'name' or 'context' key."""
     data = {
@@ -45,7 +49,15 @@ def test_validate_json_missing_fields_in_variable():
     with pytest.raises(AssertionError):
         validate_json(FILENAME, data)
 
-def test_validate_json_missing_logic_keys():
+    data = {
+    "source_file": FILENAME,
+    "variables": [{"context": "income before itda"}], # Missing 'name'
+    "logical_conditions": VALID_DATA["logical_conditions"]
+    }
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, data)
+
+def test_validate_json_missing_logical_conditions_keys():
     """Should explode if a logical condition is missing required keys like 'formula'."""
     data = VALID_DATA.copy()
     data["logical_conditions"] = [{"id": 1, "evidence": "text"}] # Missing 'formula' and 'page'
