@@ -15,31 +15,31 @@
   ],
   "logical_conditions": [
     {
-      "id": "1",
+      "id": 1,
       "formula": "consolidated_ebitda == consolidated_net_income + interest_expense + tax_expense + depreciation_amortization + capped_ebitda_add_backs",
       "evidence": "Definition of Consolidated EBITDA",
       "page": 10
     },
     {
-      "id": "2",
+      "id": 2,
       "formula": "capped_ebitda_add_backs <= 0.20 * consolidated_ebitda",
       "evidence": "20% cap on non-recurring add-backs",
       "page": 11
     },
     {
-      "id": "3",
+      "id": 3,
       "formula": "consolidated_total_net_debt == consolidated_funded_indebtedness - unrestricted_cash",
       "evidence": "Calculation of Net Debt",
       "page": 3
     },
     {
-      "id": "4",
+      "id": 4,
       "formula": "consolidated_total_net_leverage_ratio == consolidated_total_net_debt / consolidated_ebitda",
       "evidence": "Leverage ratio formula",
       "page": 3
     },
     {
-      "id": "5",
+      "id": 5,
       "formula": "consolidated_total_net_leverage_ratio <= 4.0",
       "evidence": "Maximum leverage limit",
       "page": 50
