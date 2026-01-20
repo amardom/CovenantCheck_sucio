@@ -12,22 +12,26 @@
     {
       "id": 1,
       "formula": "purchase_money_indebtedness <= max(12000000, 0.25 * consolidated_ebitda)",
-      "evidence": "Greater of fixed amount or percentage of EBITDA"
+      "evidence": "Greater of fixed amount or percentage of EBITDA",
+      "page": 10
     },
     {
       "id": 2,
       "formula": "Or(consolidated_total_net_leverage_ratio <= 3.5, unrestricted_cash >= 20000000)",
-      "evidence": "Springing covenant: Compliance if ratio is low OR liquidity is high"
+      "evidence": "Springing covenant: Compliance if ratio is low OR liquidity is high",
+      "page": 11
     },
     {
       "id": 3,
       "formula": "And(consolidated_ebitda > 0, abs(net_income_delta) < 1000000)",
-      "evidence": "EBITDA must be positive AND variance under 1M"
+      "evidence": "EBITDA must be positive AND variance under 1M",
+      "page": 53
     },
     {
       "id": 4,
       "formula": "If(unrestricted_cash > 50000000, purchase_money_indebtedness <= 25000000, purchase_money_indebtedness <= 15000000)",
-      "evidence": "Conditional basket: Higher limit if cash is above 50M"
+      "evidence": "Conditional basket: Higher limit if cash is above 50M",
+      "page": 19
     }
   ]
 }

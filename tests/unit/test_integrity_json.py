@@ -1,40 +1,53 @@
 import pytest
-from app.utils.integrity_json import validate_json
+from app.utils.integrity_json import validate_json  # Adjust the import based on your folder structure
 
-LOGIC_VALIDA = {
-    "source_file": "contrato_real.json",
-    "contract_name": "Senior Facility Agreement",
-    "variables": [{"name": "ebitda"}, {"name": "net_debt"}],
-    "logical_conditions": [
-        {"id": 1, "formula": "ebitda > 0", "evidence": "EBITDA must be positive"}
-    ]
+# --- MOCK DATA ---
+FILENAME = "netflix_logics.json"
+
+VALID_DATA = {
+    "source_file": FILENAME,
+    "variables": [{"name": "ebitda", "context": "LTM"}],
+    "logical_conditions": [{
+        "id": 1, 
+        "formula": "ebitda > 0", 
+        "evidence": "Section 5.03", 
+        "page": 45
+    }]
 }
 
-LOGIC_SIN_FORMULA = {
-    "source_file": "contrato_real.json",
-    "contract_name": "Test",
-    "variables": [],
-    "logical_conditions": [{"id": 1, "evidence": "falta la clave formula"}]
-}
+# --- TESTS ---
 
-def test_validate_json_ok():
-    """Caso de éxito: Todo coincide."""
-    # Simplemente llamamos a la función con la estructura de datos
-    validate_json("contrato_real.json", LOGIC_VALIDA)
+def test_validate_json_success():
+    """Should pass without raising any AssertionError."""
+    validate_json(FILENAME, VALID_DATA)
 
-def test_validate_json_error_nombre():
-    """Caso de fallo: El nombre del archivo no coincide con el source_file."""
+def test_validate_json_wrong_filename():
+    """Should explode if the source_file doesn't match the actual filename."""
+    data = VALID_DATA.copy()
+    data["source_file"] = "wrong_name.json"
     with pytest.raises(AssertionError):
-        # Le pasamos un nombre de archivo que NO es "contrato_real.json"
-        validate_json("otro_nombre_distinto.json", LOGIC_VALIDA)
+        validate_json(FILENAME, data)
 
-def test_validate_json_error_estructura():
-    """Caso de fallo: Falta una clave obligatoria ('formula')."""
-    with pytest.raises(KeyError):
-        validate_json("contrato_real.json", LOGIC_SIN_FORMULA)
+def test_validate_json_empty_variables():
+    """Should explode if variables list is empty."""
+    data = VALID_DATA.copy()
+    data["variables"] = []
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, data)
 
-def test_validate_json_lista_vacia():
-    """Caso de borde: Lista de variables vacía (sigue siendo válido para la estructura)."""
-    logic_vacia = LOGIC_VALIDA.copy()
-    logic_vacia["variables"] = []
-    validate_json("contrato_real.json", logic_vacia)
+def test_validate_json_missing_fields_in_variable():
+    """Should explode if a variable is missing the 'name' or 'context' key."""
+    data = {
+        "source_file": FILENAME,
+        "variables": [{"name": "ebitda"}], # Missing 'context'
+        "logical_conditions": VALID_DATA["logical_conditions"]
+    }
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, data)
+
+def test_validate_json_missing_logic_keys():
+    """Should explode if a logical condition is missing required keys like 'formula'."""
+    data = VALID_DATA.copy()
+    data["logical_conditions"] = [{"id": 1, "evidence": "text"}] # Missing 'formula' and 'page'
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, data)
