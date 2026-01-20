@@ -18,6 +18,9 @@ def validate_json(filename_logics, logics):
         assert type(var["name"]) is str and len(var["name"]) > 0
         assert type(var["context"]) is str and len(var["context"]) > 0
 
+    var_names = [v["name"] for v in logics["variables"]]
+    assert len(var_names) == len(set(var_names))
+
     for var in logics["logical_conditions"]:
         assert "id" in var
         assert "formula" in var
@@ -29,4 +32,7 @@ def validate_json(filename_logics, logics):
         assert type(var["evidence"]) is str and len(var["evidence"]) > 0
         assert type(var["page"]) is int and var["page"] > 0
 
+    logic_ids = [l["id"] for l in logics["logical_conditions"]]
+    assert len(logic_ids) == len(set(logic_ids))
+    
     print("json validated.")
