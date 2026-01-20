@@ -25,10 +25,10 @@ def main():
         cfo_data = json.load(f)
 
     # 4. Verify logics.
-    res = verify_logics(logics, cfo_data)
+    z3_result = verify_logics(logics, cfo_data)
 
     # 5. Generate final report from z3 results.
-    generate_final_report(res, logics, cfo_data, FILENAME_FINAL_REPORT)
+    generate_final_report(z3_result, logics, cfo_data, FILENAME_FINAL_REPORT)
     print(f"\nReport successfully generated in: {FILENAME_FINAL_REPORT}\n")
 
 if __name__ == "__main__":
