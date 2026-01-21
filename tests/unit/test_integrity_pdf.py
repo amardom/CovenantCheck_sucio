@@ -3,12 +3,18 @@ from pypdf import PdfReader
 from app.utils.report_pdf import generate_initial_report, generate_final_report
 from app.core.z3_engine import validate_json, verify_logics
 
+LOGICS_FILENAME = "logics_simple.json"
+PATH_LOGICS = "tests/scenarios/" + LOGICS_FILENAME
+PATH_CFO_DATA = "tests/scenarios/cfo_data_simple.json"
+
+OUTPUT_INITIAL_PDF = "audit_final_report.pdf"
+OUTPUT_FINAL_PDF = "audit_final_report.pdf"
+
 def load_json(path):
     with open(path, 'r') as f:
         return json.load(f)
 
 def get_pdf_metrics(filepath):
-    """Extrae métricas cuantitativas del PDF."""
     reader = PdfReader(filepath)
     text_content = ""
     total_words = 0
@@ -24,66 +30,50 @@ def get_pdf_metrics(filepath):
         "char_count": len(text_content)
     }
 
-def test_pdf_structural_integrity():
-    output_pdf = "audit_report_netflix.pdf"
-    
-    # 1. Ejecutar la generación del PDF (basado en el commit a3f88f)
-    path_logic_data = f"tests/scenarios/logics_simple.json"
-    logics = load_json(path_logic_data)
-    validate_json("logics_simple.json", logics)
-    path_cfo_data = f"tests/scenarios/cfo_data_simple.json"
-    cfo_data = load_json(path_cfo_data)
-    generate_initial_report(logics, output_pdf)
-    
-    metrics = get_pdf_metrics(output_pdf)
-    
-    # 2. Valores esperados (estos los sacas de una ejecución que sepas que es correcta)
-    # Por ejemplo, para Netflix siempre esperamos:
-    EXPECTED_MIN_WORDS = 172  # Un reporte real no debería tener menos de esto
-    EXPECTED_PAGES = 1
-    
-    # 3. Asserts de "Fail Fast"
-    assert metrics["pages"] == EXPECTED_PAGES, "El número de páginas ha cambiado inexplicablemente"
-    assert metrics["word_count"] == EXPECTED_MIN_WORDS, "El PDF parece estar casi vacío o le falta texto crítico"
-    
-    # Métrica de consistencia específica:
-    # Si tenemos 10 variables en el JSON, el nombre de esas 10 variables 
-    # DEBE aparecer al menos una vez en el PDF.
-    reader = PdfReader(output_pdf)
-    full_text = " ".join([p.extract_text() for p in reader.pages])
-    
-    #for var in logics["variables"]:
-        #assert var["name"] in full_text, f"La variable {var['name']} se perdió en la generación del PDF"
-
-def test_pdf_structural_integrity_final():
-    output_pdf = "audit_report_netflix.pdf"
-    
-    # 1. Ejecutar la generación del PDF (basado en el commit a3f88f)
-    path_logic_data = f"tests/scenarios/logics_simple.json"
-    logics = load_json(path_logic_data)
-    validate_json("logics_simple.json", logics)
-    path_cfo_data = f"tests/scenarios/cfo_data_simple.json"
-    cfo_data = load_json(path_cfo_data)
-
-    z3_result = verify_logics(logics, cfo_data)
-    generate_final_report(z3_result, logics, cfo_data, output_pdf)
-    
-    metrics = get_pdf_metrics(output_pdf)
-    
-    # 2. Valores esperados (estos los sacas de una ejecución que sepas que es correcta)
-    # Por ejemplo, para Netflix siempre esperamos:
-    EXPECTED_MIN_WORDS = 64  # Un reporte real no debería tener menos de esto
-    EXPECTED_PAGES = 1
-    
-    # 3. Asserts de "Fail Fast"
-    assert metrics["pages"] == EXPECTED_PAGES, "El número de páginas ha cambiado inexplicablemente"
-    assert metrics["word_count"] == EXPECTED_MIN_WORDS, "El PDF parece estar casi vacío o le falta texto crítico"
-    
-    # Métrica de consistencia específica:
-    # Si tenemos 10 variables en el JSON, el nombre de esas 10 variables 
-    # DEBE aparecer al menos una vez en el PDF.
+def assert_variables(logics, output_pdf):
     reader = PdfReader(output_pdf)
     full_text = " ".join([p.extract_text() for p in reader.pages])
     
     for var in logics["variables"]:
-        assert var["name"] in full_text, f"La variable {var['name']} se perdió en la generación del PDF"
+        assert var["name"] in full_text
+    
+def test_pdf_structural_integrity_initial():
+    
+    logics = load_json(PATH_LOGICS)
+    validate_json(LOGICS_FILENAME, logics)
+
+    generate_initial_report(logics, OUTPUT_INITIAL_PDF)
+    
+    metrics = get_pdf_metrics(OUTPUT_INITIAL_PDF)
+    
+    EXPECTED_PAGES = 1
+    EXPECTED_WORDS = 172
+    EXPECTED_CHARS = 1451
+    
+    assert metrics["pages"] == EXPECTED_PAGES
+    assert metrics["word_count"] == EXPECTED_WORDS
+    assert metrics["char_count"] == EXPECTED_CHARS
+
+    assert_variables(logics, OUTPUT_INITIAL_PDF)
+
+def test_pdf_structural_integrity_final():
+    
+    logics = load_json(PATH_LOGICS)
+    validate_json(LOGICS_FILENAME, logics)
+
+    cfo_data = load_json(PATH_CFO_DATA)
+    z3_result = verify_logics(logics, cfo_data)
+
+    generate_final_report(z3_result, logics, cfo_data, OUTPUT_FINAL_PDF)
+    
+    metrics = get_pdf_metrics(OUTPUT_FINAL_PDF)
+    
+    EXPECTED_PAGES = 1
+    EXPECTED_WORDS = 64
+    EXPECTED_CHARS = 681
+    
+    assert metrics["pages"] == EXPECTED_PAGES
+    assert metrics["word_count"] == EXPECTED_WORDS
+    assert metrics["char_count"] == EXPECTED_CHARS
+    
+    assert_variables(logics, OUTPUT_FINAL_PDF)
