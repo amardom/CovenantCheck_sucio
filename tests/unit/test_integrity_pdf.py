@@ -7,8 +7,8 @@ LOGICS_FILENAME = "logics_simple.json"
 PATH_LOGICS = "tests/scenarios/" + LOGICS_FILENAME
 PATH_CFO_DATA = "tests/scenarios/cfo_data_simple.json"
 
-OUTPUT_INITIAL_PDF = "audit_final_report.pdf"
-OUTPUT_FINAL_PDF = "audit_final_report.pdf"
+OUTPUT_INITIAL_PDF = "test_initial_report.pdf"
+OUTPUT_FINAL_PDF = "test_final_report.pdf"
 
 def load_json(path):
     with open(path, 'r') as f:

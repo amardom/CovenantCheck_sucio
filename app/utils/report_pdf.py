@@ -3,7 +3,6 @@ import os
 from datetime import datetime
 
 def generate_initial_report(logics, output_path):
-    
     # P = Portrait, mm = millimeters, A4
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
@@ -30,7 +29,8 @@ def generate_initial_report(logics, output_path):
         pdf.set_font("Helvetica", 'B', 10)
         pdf.write(5, f"{i}. {var['name']}: ")
         pdf.set_font("Helvetica", size=10)
-        pdf.write(5, f"{var['definition']}. Page: {var['definition_page']}.\n")
+        # Se asume que las keys ahora coinciden con tu JSON actualizado (page)
+        pdf.write(5, f"{var.get('definition', '')}. Page: {var.get('definition_page', 'N/A')}.\n")
         i = i + 1
     
     pdf.ln(10)
@@ -48,7 +48,6 @@ def generate_initial_report(logics, output_path):
         # Bloque de Fórmula (Gris)
         pdf.set_fill_color(245, 245, 245)
         pdf.set_font("Helvetica", "", 9)
-        # El truco: new_x="LMARGIN", new_y="NEXT" obliga al cursor a bajar SIEMPRE
         pdf.multi_cell(eff_width, 8, f"  {cond['formula']}  ", border=0, fill=True, align='L', new_x="LMARGIN", new_y="NEXT")
         
         # Bloque de Evidencia (Debajo de la fórmula)
@@ -68,13 +67,12 @@ def generate_initial_report(logics, output_path):
     pdf.output(output_path)
 
 def generate_final_report(z3_result, logics, cfo_data, output_path):
-
     # P = Portrait, mm = millimeters, A4
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
-    # Ancho efectivo (Margen de 10mm a cada lado)
+    # Ancho efectivo
     eff_width = pdf.w - 20
 
     # --- Header ---
@@ -85,65 +83,67 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
     pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
-    # 2. BLOQUE DEL VEREDICTO (Verde o Rojo)
+    # 2. BLOQUE DEL VEREDICTO
     is_compliant = z3_result.get('is_compliant', False)
     if is_compliant:
         status_text = "PASSED: COMPLIANT WITH ALL COVENANTS"
-        bg_color = (230, 255, 230)  # Verde muy claro
-        text_color = (0, 100, 0)    # Verde oscuro
+        bg_color = (230, 255, 230)
+        text_color = (0, 100, 0)
     else:
         status_text = "FAILED: COVENANT BREACH DETECTED"
-        bg_color = (255, 230, 230)  # Rojo muy claro
-        text_color = (150, 0, 0)    # Rojo oscuro
+        bg_color = (255, 230, 230)
+        text_color = (150, 0, 0)
 
     pdf.set_fill_color(*bg_color)
     pdf.set_text_color(*text_color)
     pdf.set_font('Helvetica', 'B', 14)
-    # Dibujamos una caja para el veredicto
-    pdf.cell(eff_width, 15, f"  {status_text}", 1, 1, 'L', fill=True)
+    # Cambio: ln=1 -> new_x="LMARGIN", new_y="NEXT"
+    pdf.cell(eff_width, 15, f"  {status_text}", border=1, align='L', fill=True, new_x="LMARGIN", new_y="NEXT")
     pdf.ln(10)
 
-    # 3. TABLA DE VARIABLES (Agnóstica)
+    # 3. TABLA DE VARIABLES
     pdf.set_text_color(0)
     pdf.set_font('Helvetica', 'B', 12)
-    pdf.cell(eff_width, 10, "Calculated Model Values:", 0, 1)
+    # Cambio: ln=1 -> new_x="LMARGIN", new_y="NEXT"
+    pdf.cell(eff_width, 10, "Calculated Model Values:", border=0, new_x="LMARGIN", new_y="NEXT")
     
-    # Configuración de columnas
+    # Columnas
     c1, c2, c3 = 85, 45, 40
     
     # Cabecera
     pdf.set_font('Helvetica', 'B', 10)
     pdf.set_fill_color(240, 240, 240)
-    pdf.cell(c1, 10, " Variable Name", 1, 0, 'L', True)
-    pdf.cell(c2, 10, "Value", 1, 0, 'C', True)
-    pdf.cell(c3, 10, "Data Origin", 1, 1, 'C', True)
+    # Cambio: ln=0 -> new_x="RIGHT", new_y="TOP"
+    pdf.cell(c1, 10, " Variable Name", 1, align='L', fill=True, new_x="RIGHT", new_y="TOP")
+    pdf.cell(c2, 10, "Value", 1, align='C', fill=True, new_x="RIGHT", new_y="TOP")
+    # Cambio: ln=1 -> new_x="LMARGIN", new_y="NEXT"
+    pdf.cell(c3, 10, "Data Origin", 1, align='C', fill=True, new_x="LMARGIN", new_y="NEXT")
 
     # Datos
     calc_values = z3_result.get('calculated_values', {})
     pdf.set_font('Helvetica', '', 10)
     
     for var, val in calc_values.items():
-        # Lógica de origen
         is_input = var in cfo_data
         origin = "CFO INPUT" if is_input else "Z3 DERIVED"
         
-        # Formateo de número (si es posible)
         if isinstance(val, (int, float)):
             val_str = f"{val:,.2f}"
         else:
             val_str = str(val)
 
-        # Resaltar si es derivado por el motor
         if not is_input:
             pdf.set_font('Helvetica', 'B', 10)
-            pdf.set_text_color(0, 0, 120) # Azul oscuro para lo que Z3 calculó
+            pdf.set_text_color(0, 0, 120)
         else:
             pdf.set_font('Helvetica', '', 10)
             pdf.set_text_color(0)
 
-        pdf.cell(c1, 8, f" {var}", 1)
-        pdf.cell(c2, 8, f" {val_str}", 1, 0, 'R')
-        pdf.set_font('Helvetica', '', 8) # Origen un poco más pequeño
-        pdf.cell(c3, 8, f"{origin}", 1, 1, 'C')
+        pdf.cell(c1, 8, f" {var}", 1, new_x="RIGHT", new_y="TOP")
+        # Cambio: ln=0 -> new_x="RIGHT", new_y="TOP"
+        pdf.cell(c2, 8, f" {val_str}", 1, align='R', new_x="RIGHT", new_y="TOP")
+        pdf.set_font('Helvetica', '', 8)
+        # Cambio: ln=1 -> new_x="LMARGIN", new_y="NEXT"
+        pdf.cell(c3, 8, f"{origin}", 1, align='C', new_x="LMARGIN", new_y="NEXT")
 
     pdf.output(output_path)
