@@ -1,5 +1,5 @@
 {
-  "source_file": "logics_pass_simple.json",
+  "source_file": "logics_simple.json",
   "contract_name": "Simple Logic Test",
   "variables": [
     {

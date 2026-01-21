@@ -1,7 +1,7 @@
 import pytest, copy
 from app.core.z3_engine import validate_json
 
-FILENAME = "logics_NETFLIX.json"
+FILENAME = "logics_for_a_test.json"
 
 VALID_LOGICS = {
     "source_file": FILENAME,

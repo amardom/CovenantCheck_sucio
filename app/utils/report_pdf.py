@@ -30,7 +30,7 @@ def generate_initial_report(logics, output_path):
         pdf.set_font("Helvetica", 'B', 10)
         pdf.write(5, f"{i}. {var['name']}: ")
         pdf.set_font("Helvetica", size=10)
-        pdf.write(5, f"{var['definition']}. Page: {var['definition_page']} \n")
+        pdf.write(5, f"{var['definition']}. Page: {var['definition_page']}.\n")
         i = i + 1
     
     pdf.ln(10)
