@@ -6,12 +6,15 @@ FILENAME = "logics_NETFLIX.json"
 VALID_LOGICS = {
     "source_file": FILENAME,
     "contract_name": "Real Contrato",
-    "variables": [{"name": "ebitda", "context": "LTM"}],
+    "variables": [{
+        "name": "ebitda",
+        "definition": "LTM",
+        "definition_page": 7}],
     "logical_conditions": [{
         "id": 1, 
         "formula": "ebitda > 0", 
         "evidence": "Section 5.03", 
-        "page": 45
+        "evidence_page": 45
     }]
 }
 
@@ -74,12 +77,17 @@ def test_validate_json_empty_logical_conditions():
 
 def test_validate_json_missing_keys_in_variable():
     logics = VALID_LOGICS.copy()
-    logics["variables"] = [{"name": "ebitda"}] # Missing 'context'
+    logics["variables"] = [{"name": "ebitda"}, {"definition": "income before itda"}] # Missing 'definition_page'
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
 
     logics = VALID_LOGICS.copy()
-    logics["variables"] = [{"context": "income before itda"}] # Missing 'name'
+    logics["variables"] = [{"name": "ebitda"}, {"definition_page": "6"}] # Missing 'definition'
+    with pytest.raises(AssertionError):
+        validate_json(FILENAME, logics)
+    
+    logics = VALID_LOGICS.copy()
+    logics["variables"] = [{"definition": "income before itda"}, {"definition_page": "6"}] # Missing 'name'
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
 
@@ -99,33 +107,43 @@ def test_validate_json_types_in_variable():
             validate_json(FILENAME, payload)
 
         payload = copy.deepcopy(logics)
-        payload["variables"][i]["context"] = True
+        payload["variables"][i]["definition"] = True
         with pytest.raises(AssertionError):
             validate_json(FILENAME, payload)
 
         payload = copy.deepcopy(logics)
-        payload["variables"][i]["context"] = ""
+        payload["variables"][i]["definition"] = ""
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["definition_page"] = "1"
+        with pytest.raises(AssertionError):
+            validate_json(FILENAME, payload)
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["definition_page"] = 0
         with pytest.raises(AssertionError):
             validate_json(FILENAME, payload)
 
 def test_validate_json_missing_keys_in_logical_conditions():
     logics = VALID_LOGICS.copy()
-    logics["logical_conditions"] = [{"id": 1, "formula": "ratio <= 2.1", "evidence": "text"}] # Missing 'page'
+    logics["logical_conditions"] = [{"id": 1, "formula": "ratio <= 2.1", "evidence": "text"}] # Missing 'evidence_page'
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
 
     logics = VALID_LOGICS.copy()
-    logics["logical_conditions"] = [{"id": 1, "formula": "ratio <= 2.1", "page": 31}] # Missing 'evidence'
+    logics["logical_conditions"] = [{"id": 1, "formula": "ratio <= 2.1", "evidence_page": 31}] # Missing 'evidence'
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
 
     logics = VALID_LOGICS.copy()
-    logics["logical_conditions"] = [{"id": 1, "evidence": "text", "page": 31}] # Missing 'formula'
+    logics["logical_conditions"] = [{"id": 1, "evidence": "text", "evidence_page": 31}] # Missing 'formula'
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
     
     logics = VALID_LOGICS.copy()
-    logics["logical_conditions"] = [{"formula": "ratio <= 2.1", "evidence": "text", "page": 31}] # Missing 'id'
+    logics["logical_conditions"] = [{"formula": "ratio <= 2.1", "evidence": "text", "evidence_page": 31}] # Missing 'id'
     with pytest.raises(AssertionError):
         validate_json(FILENAME, logics)
 
@@ -165,12 +183,12 @@ def test_validate_json_types_in_logical_conditions():
             validate_json(FILENAME, payload)
         
         payload = copy.deepcopy(logics)
-        payload["logical_conditions"][i]["page"] = "1"
+        payload["logical_conditions"][i]["evidence_page"] = "1"
         with pytest.raises(AssertionError):
             validate_json(FILENAME, payload)
 
         payload = copy.deepcopy(logics)
-        payload["logical_conditions"][i]["page"] = 0
+        payload["logical_conditions"][i]["evidence_page"] = 0
         with pytest.raises(AssertionError):
             validate_json(FILENAME, payload)
 

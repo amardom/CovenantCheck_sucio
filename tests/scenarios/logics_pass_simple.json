@@ -2,47 +2,87 @@
   "source_file": "logics_pass_simple.json",
   "contract_name": "Simple Logic Test",
   "variables": [
-    { "name": "consolidated_net_income", "context": "Net income" },
-    { "name": "interest_expense", "context": "Interest expense to be added back" },
-    { "name": "tax_expense", "context": "Taxes to be added back" },
-    { "name": "depreciation_amortization", "context": "D&A to be added back" },
-    { "name": "capped_ebitda_add_backs", "context": "Restructuring costs subject to 20% limit" },
-    { "name": "consolidated_ebitda", "context": "Final calculated EBITDA" },
-    { "name": "consolidated_funded_indebtedness", "context": "Total debt" },
-    { "name": "unrestricted_cash", "context": "Cash to net against debt" },
-    { "name": "consolidated_total_net_debt", "context": "Calculated Net Debt" },
-    { "name": "consolidated_total_net_leverage_ratio", "context": "Final Leverage Ratio" }
+    {
+      "name": "consolidated_net_income",
+      "definition": "Net income",
+      "definition_page": 9
+    },
+    {
+      "name": "interest_expense",
+      "definition": "Interest expense to be added back",
+      "definition_page": 9
+    },
+    {
+      "name": "tax_expense",
+      "definition": "Taxes to be added back",
+      "definition_page": 10
+    },
+    {
+      "name": "depreciation_amortization",
+      "definition": "D&A to be added back",
+      "definition_page": 10
+    },
+    {
+      "name": "capped_ebitda_add_backs",
+      "definition": "Restructuring costs subject to 20% limit",
+      "definition_page": 11
+    },
+    {
+      "name": "consolidated_ebitda",
+      "definition": "Final calculated EBITDA",
+      "definition_page": 10
+    },
+    {
+      "name": "consolidated_funded_indebtedness",
+      "definition": "Total debt",
+      "definition_page": 3
+    },
+    {
+      "name": "unrestricted_cash",
+      "definition": "Cash to net against debt",
+      "definition_page": 3
+    },
+    {
+      "name": "consolidated_total_net_debt",
+      "definition": "Calculated Net Debt",
+      "definition_page": 3
+    },
+    {
+      "name": "consolidated_total_net_leverage_ratio",
+      "definition": "Final Leverage Ratio",
+      "definition_page": 3
+    }
   ],
   "logical_conditions": [
     {
       "id": 1,
       "formula": "consolidated_ebitda == consolidated_net_income + interest_expense + tax_expense + depreciation_amortization + capped_ebitda_add_backs",
       "evidence": "Definition of Consolidated EBITDA",
-      "page": 10
+      "evidence_page": 10
     },
     {
       "id": 2,
       "formula": "capped_ebitda_add_backs <= 0.20 * consolidated_ebitda",
       "evidence": "20% cap on non-recurring add-backs",
-      "page": 11
+      "evidence_page": 11
     },
     {
       "id": 3,
       "formula": "consolidated_total_net_debt == consolidated_funded_indebtedness - unrestricted_cash",
       "evidence": "Calculation of Net Debt",
-      "page": 3
+      "evidence_page": 3
     },
     {
       "id": 4,
       "formula": "consolidated_total_net_leverage_ratio == consolidated_total_net_debt / consolidated_ebitda",
       "evidence": "Leverage ratio formula",
-      "page": 3
+      "evidence_page": 3
     },
     {
       "id": 5,
       "formula": "consolidated_total_net_leverage_ratio <= 4.0",
       "evidence": "Maximum leverage limit",
-      "page": 50
+      "evidence_page": 50
     }
   ]
 }
