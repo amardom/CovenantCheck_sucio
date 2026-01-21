@@ -15,8 +15,6 @@ def test_verify_logics_sat_scenarios():
         ("logics_pass_complex.json","cfo_data_pass_complex.json", True, 15493715.317, {})
     ]
 
-    print(f"\n--- INITIALIZING SAT TESTING LOOP ---")
-
     for filename_logic, filename_cfo, expected_sat_unsat, expected_norm_metric, expected_missing in scenarios:
 
         path_logic_data = f"tests/scenarios/{filename_logic}"
@@ -44,8 +42,6 @@ def test_verify_logics_unsat_scenarios():
                                                                                    'unrestricted_cash'], )
     ]
 
-    print(f"\n--- INITIALIZING UNSAT TESTING LOOP ---")
-
     for filename_logic, filename_cfo, expected_sat_unsat, expected_conflict_variables in scenarios:
 
         path_logic_data = f"tests/scenarios/{filename_logic}"
@@ -70,8 +66,7 @@ def test_verify_logics_unknown():
         "variables": [{"name": "x", "context": "Non-linear math"}],
         "logical_conditions": [{
             "id": 999, 
-            # x elevado a x es muy difícil para el solver de Reales estándar
-            "formula": "x**x == 50", 
+            "formula": "x**x == 50", # Non-linear is complicated for z3 using Reals.
             "evidence": "Complexity breach", 
             "page": 1
         }]
@@ -88,7 +83,7 @@ def test_verify_logics_missing_model_value():
         "contract_name": "Orphan Test",
         "variables": [
             {"name": "x", "context": "Active"},
-            {"name": "y", "context": "Orphan"} # Esta variable no se usa en nada
+            {"name": "y", "context": "Orphan"} # Unused variable.
         ],
         "logical_conditions": [{
             "id": 1, 

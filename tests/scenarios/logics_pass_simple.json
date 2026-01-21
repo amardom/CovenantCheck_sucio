@@ -1,6 +1,6 @@
 {
   "source_file": "logics_pass_simple.json",
-  "contract_name": "Test Agreement - Simple Pass",
+  "contract_name": "Simple Logic Test",
   "variables": [
     { "name": "consolidated_net_income", "context": "Net income" },
     { "name": "interest_expense", "context": "Interest expense to be added back" },

@@ -39,7 +39,7 @@ def validate_json(filename_logics, logics):
     logic_ids = [l["id"] for l in logics["logical_conditions"]]
     assert len(logic_ids) == len(set(logic_ids))
 
-    print("json validated.")
+    print("***JSON " + filename_logics + " VALIDATED***")
 
 def verify_logics(logics, cfo_data):
     
