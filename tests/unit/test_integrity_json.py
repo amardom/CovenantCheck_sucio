@@ -1,5 +1,5 @@
 import pytest, copy
-from app.utils.integrity_json import validate_json
+from app.core.z3_engine import validate_json
 
 FILENAME = "logics_NETFLIX.json"
 

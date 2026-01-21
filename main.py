@@ -1,7 +1,6 @@
 import json
-from app.utils.integrity_json import validate_json
 from app.utils.report_pdf import generate_initial_report, generate_final_report
-from app.core.z3_engine import verify_logics
+from app.core.z3_engine import validate_json, verify_logics
 
 FILENAME_LOGICS = "logics_NETFLIX.json"
 FILENAME_CFO_DATA = "cfo_data_NETFLIX.json"
