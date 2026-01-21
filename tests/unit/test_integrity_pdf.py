@@ -48,7 +48,7 @@ def test_pdf_structural_integrity_initial():
     
     EXPECTED_PAGES = 1
     EXPECTED_WORDS = 172
-    EXPECTED_CHARS = 1451
+    EXPECTED_CHARS = 1456
     
     assert metrics["pages"] == EXPECTED_PAGES
     assert metrics["word_count"] == EXPECTED_WORDS

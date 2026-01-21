@@ -53,7 +53,7 @@ def generate_initial_report(logics, output_path):
         # Bloque de Evidencia (Debajo de la fórmula)
         pdf.set_font("Helvetica", 'I', 9)
         pdf.set_text_color(100, 100, 100)
-        evidence_text = f"Source (Page {cond.get('evidence_page', 'N/A')}): {cond['evidence']}"
+        evidence_text = f"Source (Page {cond.get('evidence_page', 'N/A')}): {cond['evidence']}."
         pdf.multi_cell(eff_width, 5, evidence_text, align='L', new_x="LMARGIN", new_y="NEXT")
         
         # Reset color y espacio entre reglas
