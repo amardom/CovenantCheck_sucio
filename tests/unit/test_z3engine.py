@@ -116,6 +116,6 @@ def test_verify_logics_not_a_z3_expr():
 
     # El motor debería partir porque '1 == 1' devuelve True (bool)
     # y is_expr(True) es Falso.
-    with pytest.raises(AssertionError) as excinfo:
+    with pytest.raises(AssertionError):
         verify_logics(logics, cfo_data)
     
