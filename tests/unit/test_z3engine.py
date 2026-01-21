@@ -6,7 +6,7 @@ def load_json(path):
     with open(path, 'r') as f:
         return json.load(f)
 
-def test_sat_scenarios():
+def test_verify_logics_sat_scenarios():
     
     scenarios = [
         ("logics_pass_simple.json","cfo_data_pass_simple.json", True, 13085595.147, ['consolidated_ebitda', 
@@ -37,7 +37,7 @@ def test_sat_scenarios():
         print(f"Testing {filename_logic}: Expected {expected_missing} -> Got {result['missing']}")
         assert result["missing"] == expected_missing, f"Error in {filename_logic}: Result does not match."
 
-def test_unsat_scenarios():
+def test_verify_logics_unsat_scenarios():
     
     scenarios = [
         ("logics_pass_complex.json","cfo_data_pass_complex_fail.json", False, ['consolidated_total_net_leverage_ratio', 
@@ -63,12 +63,8 @@ def test_unsat_scenarios():
         print(f"Testing {filename_logic}: Expected {expected_conflict_variables} -> Got {result['conflict_variables']}")
         assert set(result["conflict_variables"]) == set(expected_conflict_variables), f"Error in {filename_logic}: Result does not match."
 
-def test_verify_logics_unknown_should_fail():
-    """
-    Forzamos un UNKNOWN usando una fórmula no lineal compleja.
-    Esto disparará el 'assert result != unknown'.
-    """
-    logics_complex = {
+def test_verify_logics_unknown():
+    logics = {
         "source_file": "complex_math.json",
         "contract_name": "Complexity Test",
         "variables": [{"name": "x", "context": "Non-linear math"}],
@@ -81,19 +77,13 @@ def test_verify_logics_unknown_should_fail():
         }]
     }
     
-    # cfo_data vacío porque la variable x es la que causará el problema
     cfo_data = {}
 
-    # El test pasa si el motor lanza un AssertionError por el resultado UNKNOWN
     with pytest.raises(AssertionError):
-        verify_logics(logics_complex, cfo_data)
+        verify_logics(logics, cfo_data)
 
-def test_engine_missing_model_value_assert():
-    """
-    Forzamos un AssertionError cuando una variable declarada 
-    no puede ser recuperada del modelo de Z3.
-    """
-    logics_orphan = {
+def test_verify_logics_missing_model_value():
+    logics = {
         "source_file": "useless_var.json",
         "contract_name": "Orphan Test",
         "variables": [
@@ -108,20 +98,13 @@ def test_engine_missing_model_value_assert():
         }]
     }
     
-    # Solo damos datos para x
     cfo_data = {"x": 15}
 
-    # El motor debería encontrar SAT para x, 
-    # pero al intentar m[y] el assert z3_val is not None debería saltar.
     with pytest.raises(AssertionError):
-        verify_logics(logics_orphan, cfo_data)
+        verify_logics(logics, cfo_data)
 
-def test_verify_logics_not_an_expr_assert():
-    """
-    Forzamos un AssertionError cuando eval() devuelve un bool de Python 
-    en lugar de una expresión simbólica de Z3.
-    """
-    logics_bad_formula = {
+def test_verify_logics_not_a_z3_expr():
+    logics = {
         "source_file": "invalid_z3_expression.json",
         "contract_name": "Invalid Expr Test",
         "variables": [{"name": "ebitda", "context": "Finance"}],
@@ -139,5 +122,5 @@ def test_verify_logics_not_an_expr_assert():
     # El motor debería partir porque '1 == 1' devuelve True (bool)
     # y is_expr(True) es Falso.
     with pytest.raises(AssertionError) as excinfo:
-        verify_logics(logics_bad_formula, cfo_data)
+        verify_logics(logics, cfo_data)
     
