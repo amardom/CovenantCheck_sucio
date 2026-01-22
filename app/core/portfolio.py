@@ -12,6 +12,13 @@ FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.js
 
 def process_portfolio(clients, years, quarters):
 
+    assert isinstance(clients, list) and len(clients) > 0
+    assert isinstance(years, list) and len(years) > 0
+    assert isinstance(quarters, list) and len(quarters) > 0
+    assert all(isinstance(c, str) for c in clients)
+    assert all(isinstance(y, str) for y in years)
+    assert all(q in ["Q1", "Q2", "Q3", "Q4"] for q in quarters)
+
     portfolio = {}
 
     for client_ID in clients:
@@ -24,6 +31,7 @@ def process_portfolio(clients, years, quarters):
             for quarter in quarters:
 
                 path = Path(f"data/samples/deal_{deal.id}/{str(year)}_{quarter}")
+                assert path.exists()
 
                 with open(path / FILENAME_LOGICS, "r") as f:
                     logics = json.load(f)
@@ -33,7 +41,8 @@ def process_portfolio(clients, years, quarters):
                     cfo_data = json.load(f)
 
                 deal.process_logics_and_cfo_data(year, quarter, logics, cfo_data)
-
+                assert deal.history[year][quarter] is not None
+                
                 generate_initial_report(deal.history[year][quarter]["logics"], path / FILENAME_INITIAL_REPORT)
                 print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
 
