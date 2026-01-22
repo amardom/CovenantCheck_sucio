@@ -1,4 +1,4 @@
-from app.core.portfolio import process_portfolio
+from app.core.portfolio import create_portfolio
 
 def main():
 
@@ -6,7 +6,7 @@ def main():
     years = ["2026"]
     quarters = ["Q1"]
 
-    portfolio = process_portfolio(clients, years, quarters)
+    portfolio = create_portfolio(clients, years, quarters)
 
 if __name__ == "__main__":
     main()

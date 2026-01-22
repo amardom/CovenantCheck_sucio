@@ -10,7 +10,7 @@ FILENAME_CFO_DATA = "cfo_data.json"
 FILENAME_INITIAL_REPORT = "report_initial" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 
-def process_portfolio(clients, years, quarters):
+def create_portfolio(clients, years, quarters):
 
     assert isinstance(clients, list) and len(clients) > 0
     assert isinstance(years, list) and len(years) > 0
@@ -42,7 +42,7 @@ def process_portfolio(clients, years, quarters):
 
                 deal.process_logics_and_cfo_data(year, quarter, logics, cfo_data)
                 assert deal.history[year][quarter] is not None
-                
+
                 generate_initial_report(deal.history[year][quarter]["logics"], path / FILENAME_INITIAL_REPORT)
                 print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
 
