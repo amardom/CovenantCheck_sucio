@@ -1,25 +1,50 @@
 import json
+from pathlib import Path
 from app.utils.report_pdf import generate_initial_report, generate_final_report
-from app.core.z3_engine import validate_json, verify_logics
+from app.core.z3_engine import validate_json
 from app.core.deal import Deal
 
-FILENAME_LOGICS = "logics_NETFLIX.json"
-FILENAME_CFO_DATA = "cfo_data_NETFLIX.json"
+FILENAME_LOGICS = "logics.json"
+FILENAME_CFO_DATA = "cfo_data.json"
 
 FILENAME_INITIAL_REPORT = "report_initial" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 
 def main():
 
-    base_path = "data/samples/deal_"
-    deal = Deal(1)
-    deal.process_logics_and_cfodata(2026,"Q1", base_path)
+    portfolio = {}
+    clients = ["CompanyTech"]
+    years = ["2026"]
+    quarters = ["Q1"]
 
-    generate_initial_report(deal.history["2026"]["Q1"]["logics"], FILENAME_INITIAL_REPORT)
-    print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
+    for clients_ID in clients:
 
-    generate_final_report(deal.history["2026"]["Q1"]["z3_result"], deal.history["2026"]["Q1"]["logics"], deal.history["2026"]["Q1"]["cfo_data"], FILENAME_FINAL_REPORT)
-    print(f"\nReport successfully generated in: {FILENAME_FINAL_REPORT}\n")
+        portfolio[clients_ID] = Deal(clients_ID); 
+
+    for clients_ID in clients:
+
+        deal = portfolio[clients_ID]
+
+        for year in years:
+
+            for quarter in quarters:
+
+                path = Path(f"data/samples/deal_{deal.id}/{str(year)}_{quarter}")
+
+                with open(path / FILENAME_LOGICS, "r") as f:
+                    logics = json.load(f)
+                validate_json(FILENAME_LOGICS, logics)
+
+                with open(path / FILENAME_CFO_DATA, "r") as f:
+                    cfo_data = json.load(f)
+
+                deal.process_logics_and_cfo_data(year, quarter, logics, cfo_data)
+
+                generate_initial_report(deal.history[year][quarter]["logics"], FILENAME_INITIAL_REPORT)
+                print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
+
+                generate_final_report(deal.history[year][quarter]["z3_result"], deal.history[year][quarter]["logics"], deal.history[year][quarter]["cfo_data"], FILENAME_FINAL_REPORT)
+                print(f"\nReport successfully generated in: {FILENAME_FINAL_REPORT}\n")
 
 if __name__ == "__main__":
     main()
