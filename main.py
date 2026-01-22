@@ -40,10 +40,11 @@ def main():
 
                 deal.process_logics_and_cfo_data(year, quarter, logics, cfo_data)
 
-                generate_initial_report(deal.history[year][quarter]["logics"], FILENAME_INITIAL_REPORT)
+                generate_initial_report(deal.history[year][quarter]["logics"], path / FILENAME_INITIAL_REPORT)
                 print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
 
-                generate_final_report(deal.history[year][quarter]["z3_result"], deal.history[year][quarter]["logics"], deal.history[year][quarter]["cfo_data"], FILENAME_FINAL_REPORT)
+                generate_final_report(deal.history[year][quarter]["z3_result"], deal.history[year][quarter]["logics"], 
+                                      deal.history[year][quarter]["cfo_data"], path / FILENAME_FINAL_REPORT)
                 print(f"\nReport successfully generated in: {FILENAME_FINAL_REPORT}\n")
 
 if __name__ == "__main__":

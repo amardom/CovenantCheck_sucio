@@ -1,8 +1,8 @@
 from app.core.z3_engine import verify_logics
 
 class Deal:
-    def __init__(self, deal_id):
-        self.id = deal_id
+    def __init__(self, id):
+        self.id = id
         self.history = {}
 
     def process_logics_and_cfo_data(self, year, quarter, logics, cfo_data):
