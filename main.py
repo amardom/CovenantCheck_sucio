@@ -1,6 +1,7 @@
 import json
 from app.utils.report_pdf import generate_initial_report, generate_final_report
 from app.core.z3_engine import validate_json, verify_logics
+from app.core.deal import Deal
 
 FILENAME_LOGICS = "logics_NETFLIX.json"
 FILENAME_CFO_DATA = "cfo_data_NETFLIX.json"
@@ -10,24 +11,14 @@ FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.js
 
 def main():
 
-    # 1. Load json with vars and logics.
-    with open("data/samples/NETFLIX/" + FILENAME_LOGICS, "r") as f:
-        logics = json.load(f)
-    validate_json(FILENAME_LOGICS, logics)
+    base_path = "data/samples/deal_"
+    deal = Deal(1)
+    deal.process_logics_and_cfodata(2026,"Q1", base_path)
 
-    # 2. Generate initial report from json.
-    generate_initial_report(logics, FILENAME_INITIAL_REPORT)
+    generate_initial_report(deal.history["2026"]["Q1"]["logics"], FILENAME_INITIAL_REPORT)
     print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
 
-    # 3. Read CFO data.
-    with open("data/samples/NETFLIX/" + FILENAME_CFO_DATA, "r") as f:
-        cfo_data = json.load(f)
-
-    # 4. Verify logics.
-    z3_result = verify_logics(logics, cfo_data)
-
-    # 5. Generate final report from z3 results.
-    generate_final_report(z3_result, logics, cfo_data, FILENAME_FINAL_REPORT)
+    generate_final_report(deal.history["2026"]["Q1"]["z3_result"], deal.history["2026"]["Q1"]["logics"], deal.history["2026"]["Q1"]["cfo_data"], FILENAME_FINAL_REPORT)
     print(f"\nReport successfully generated in: {FILENAME_FINAL_REPORT}\n")
 
 if __name__ == "__main__":
