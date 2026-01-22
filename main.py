@@ -10,20 +10,14 @@ FILENAME_CFO_DATA = "cfo_data.json"
 FILENAME_INITIAL_REPORT = "report_initial" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 
-def main():
+def process_portfolio(clients, years, quarters):
 
     portfolio = {}
-    clients = ["CompanyTech"]
-    years = ["2026"]
-    quarters = ["Q1"]
 
-    for clients_ID in clients:
-
-        portfolio[clients_ID] = Deal(clients_ID); 
-
-    for clients_ID in clients:
-
-        deal = portfolio[clients_ID]
+    for client_ID in clients:
+        
+        deal = Deal(client_ID)
+        portfolio[client_ID] = deal
 
         for year in years:
 
@@ -46,6 +40,16 @@ def main():
                 generate_final_report(deal.history[year][quarter]["z3_result"], deal.history[year][quarter]["logics"], 
                                       deal.history[year][quarter]["cfo_data"], path / FILENAME_FINAL_REPORT)
                 print(f"\nReport successfully generated in: {FILENAME_FINAL_REPORT}\n")
+
+    return portfolio
+
+def main():
+
+    clients = ["CompanyTech"]
+    years = ["2026"]
+    quarters = ["Q1"]
+
+    portfolio = process_portfolio(clients, years, quarters)
 
 if __name__ == "__main__":
     main()
