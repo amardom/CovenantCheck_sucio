@@ -6,7 +6,11 @@ class Deal:
         self.history = {}
 
     def process_logics_and_cfo_data(self, year, quarter, logics, cfo_data):
-        
+
+        assert isinstance(year, str)
+        assert isinstance(quarter, str)
+        assert quarter in ["Q1", "Q2", "Q3", "Q4"]
+
         if year not in self.history:
             self.history[year] = {
                 "Q1": None, "Q2": None, "Q3": None, "Q4": None
