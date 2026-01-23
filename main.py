@@ -9,7 +9,13 @@ def main():
 
     portfolio = create_portfolio(clients, years, quarters)
 
-    generate_portfolio_report(portfolio, output_path="portfolio_status.pdf")
+    ANALYSIS_CONFIG = {
+    "companyHealth": ["leverage_ratio", "ebitda"], # Obligatoria y Opcional
+    "companyRealEstate": ["leverage_ratio"],                 # Solo obligatoria
+    "companyTech": ["leverage_ratio", "ebitda"] # nok si no existe la opcional
+    }
+
+    generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="portfolio_executive_summary.pdf")
 
 if __name__ == "__main__":
     main()
