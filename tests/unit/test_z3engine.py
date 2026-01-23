@@ -118,4 +118,29 @@ def test_verify_logics_not_a_z3_expr():
     # y is_expr(True) es Falso.
     with pytest.raises(AssertionError):
         verify_logics(logics, cfo_data)
+
+def test_verify_logics_bad_cfo_data():
+    logics = {
+        "source_file": "complex_math.json",
+        "contract_name": "Complexity Test",
+        "variables": [{"name": "x", "context": "Test bad cfo_data"},
+                    {"name": "y", "context": "Test bad cfo_data"}],
+        "logical_conditions": [{
+            "id": 9, 
+            "formula": "x+y == 5",
+            "evidence": "Very simple equation",
+            "page": 1
+        }]
+    }
+
+    bad_cfo_data = {
+        "revenue": 1000000.0,
+        "debt": "500000",
+        "x": True,
+        "y": None,
+        "observations": "N/A"
+    }
+
+    with pytest.raises(AssertionError):
+        verify_logics(logics, bad_cfo_data)
     

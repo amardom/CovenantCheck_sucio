@@ -72,6 +72,7 @@ def verify_logics(logics, cfo_data):
 
     # 4. Load CFO data.
     for name, value in cfo_data.items():
+        assert isinstance(value, (int, float))
         if name in vars:
             s.assert_and_track(vars[name] == RealVal(str(value)), f"DATA_{name}")
 
