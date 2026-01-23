@@ -30,7 +30,7 @@ def create_portfolio(clients, years, quarters):
 
             for quarter in quarters:
 
-                path = Path(f"data/samples/deal_{deal.id}/{str(year)}_{quarter}")
+                path = Path(f"tests/scenarios/deal_{deal.id}/{str(year)}_{quarter}")
                 assert path.exists()
 
                 with open(path / FILENAME_LOGICS, "r") as f:
