@@ -1,82 +1,67 @@
 {
-  "source_file": "logics.json",
-  "contract_name": "Credit Agreement - NETFLIX, INC. (2009)",
-  "variables": [
-    {
-      "name": "consolidated_net_income",
-      "definition": "Net Income of Netflix and subsidiaries",
-      "definition_page": 11
-    },
-    {
-      "name": "interest_expense",
-      "definition": "Total interest expense (add-back)",
-      "definition_page": 11
-    },
-    {
-      "name": "tax_expense",
-      "definition": "Provision for taxes (add-back)",
-      "definition_page": 11
-    },
-    {
-      "name": "depreciation_amortization",
-      "definition": "D&A expenses (add-back)",
-      "definition_page": 11
-    },
-    {
-      "name": "share_based_compensation",
-      "definition": "Non-cash compensation (add-back per Section 1.01)",
-      "definition_page": 12
-    },
-    {
-      "name": "consolidated_ebitda",
-      "definition": "Calculated EBITDA for the period",
-      "definition_page": 11
-    },
-    {
-      "name": "consolidated_total_debt",
-      "definition": "Total Indebtedness of Netflix",
-      "definition_page": 13
-    },
-    {
-      "name": "unrestricted_cash",
-      "definition": "Cash and Cash Equivalents",
-      "definition_page": 24
-    },
-    {
-      "name": "consolidated_net_debt",
-      "definition": "Total debt minus unrestricted cash",
-      "definition_page": 13
-    },
-    {
-      "name": "consolidated_leverage_ratio",
-      "definition": "Leverage Ratio (Section 7.12)",
-      "definition_page": 10
-    }
-  ],
-  "logical_conditions": [
-    {
-      "id": 1,
-      "formula": "consolidated_ebitda == consolidated_net_income + interest_expense + tax_expense + depreciation_amortization + share_based_compensation",
-      "evidence": "Definition of Consolidated EBITDA (Section 1.01)",
-      "evidence_page": 11
-    },
-    {
-      "id": 2,
-      "formula": "consolidated_net_debt == consolidated_total_debt - unrestricted_cash",
-      "evidence": "Definition of Consolidated Total Indebtedness and Netting (Section 1.01)",
-      "evidence_page": 13
-    },
-    {
-      "id": 3,
-      "formula": "consolidated_leverage_ratio == consolidated_net_debt / consolidated_ebitda",
-      "evidence": "Consolidated Leverage Ratio calculation (Section 1.01)",
-      "evidence_page": 10
-    },
-    {
-      "id": 4,
-      "formula": "consolidated_leverage_ratio <= 2.5",
-      "evidence": "Financial Covenant: Maximum Leverage Ratio (Section 7.12)",
-      "evidence_page": 76
-    }
-  ]
+    "source_file": "logics.json",
+    "contract_name": "HealthCorp Strategic Credit Facilities",
+    "variables": [
+        {
+            "name": "revenue",
+            "definition": "Total Operating Revenue",
+            "definition_page": 5
+        },
+        {
+            "name": "operating_expenses",
+            "definition": "Total Operating Expenses",
+            "definition_page": 5
+        },
+        {
+            "name": "ebitda",
+            "definition": "Consolidated EBITDA",
+            "definition_page": 6
+        },
+        {
+            "name": "total_debt",
+            "definition": "Total Indebtedness",
+            "definition_page": 8
+        },
+        {
+            "name": "cash",
+            "definition": "Unrestricted Cash",
+            "definition_page": 12
+        },
+        {
+            "name": "net_debt",
+            "definition": "Consolidated Net Debt",
+            "definition_page": 8
+        },
+        {
+            "name": "leverage_ratio",
+            "definition": "Consolidated Leverage Ratio",
+            "definition_page": 15
+        }
+    ],
+    "logical_conditions": [
+        {
+            "id": 1,
+            "formula": "ebitda == revenue - operating_expenses",
+            "evidence": "Definition of EBITDA (Section 1.01)",
+            "evidence_page": 6
+        },
+        {
+            "id": 2,
+            "formula": "net_debt == total_debt - cash",
+            "evidence": "Net Debt Calculation (Section 1.01)",
+            "evidence_page": 8
+        },
+        {
+            "id": 3,
+            "formula": "leverage_ratio == net_debt / ebitda",
+            "evidence": "Ratio Calculation Methodology",
+            "evidence_page": 15
+        },
+        {
+            "id": 4,
+            "formula": "leverage_ratio <= 3.0",
+            "evidence": "Maximum Leverage Ratio (Section 7.12)",
+            "evidence_page": 42
+        }
+    ]
 }
