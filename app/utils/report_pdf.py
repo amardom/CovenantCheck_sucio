@@ -147,3 +147,70 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
         pdf.cell(c3, 8, f"{origin}", 1, align='C', new_x="LMARGIN", new_y="NEXT")
 
     pdf.output(output_path)
+
+def generate_portfolio_report(portfolio, output_path="portfolio_status.pdf"):
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    
+    # Título Principal
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(0, 10, "Executive Portfolio Compliance Report", ln=True, align="C")
+    pdf.ln(10)
+
+    for client_id, deal in portfolio.items():
+        # 1. Subtítulo del Cliente
+        pdf.set_font("Arial", "B", 14)
+        pdf.set_fill_color(240, 240, 240)
+        pdf.cell(0, 10, f" Client: {client_id}", ln=True, fill=True)
+        pdf.ln(2)
+
+        # 2. Configuración de la Tabla
+        # Queremos: Año | Q1 | Q2 | Q3 | Q4
+        col_width = 35
+        row_height = 8
+        pdf.set_font("Arial", "B", 10)
+        
+        # Cabecera de la tabla
+        pdf.cell(col_width, row_height, "Year", border=1, align="C")
+        for q in ["Q1", "Q2", "Q3", "Q4"]:
+            pdf.cell(col_width, row_height, q, border=1, align="C")
+        pdf.ln()
+
+        # 3. Filas de Datos (Años)
+        pdf.set_font("Arial", "", 10)
+        
+        # Ordenamos los años para que el reporte sea cronológico
+        sorted_years = sorted(deal.history.keys())
+        
+        for year in sorted_years:
+            pdf.cell(col_width, row_height, str(year), border=1, align="C")
+            
+            for q in ["Q1", "Q2", "Q3", "Q4"]:
+                entry = deal.history[year].get(q)
+                
+                if entry and "z3_result" in entry:
+                    is_compliant = entry["z3_result"].get("is_compliant")
+                    
+                    if is_compliant is True:
+                        pdf.set_text_color(0, 128, 0) # Verde
+                        status_text = "PASS"
+                    elif is_compliant is False:
+                        pdf.set_text_color(255, 0, 0) # Rojo
+                        status_text = "BREACH"
+                    else:
+                        pdf.set_text_color(100, 100, 100)
+                        status_text = "UNKNOWN"
+                else:
+                    pdf.set_text_color(180, 180, 180) # Gris
+                    status_text = "N/A"
+
+                pdf.cell(col_width, row_height, status_text, border=1, align="C")
+                pdf.set_text_color(0, 0, 0) # Reset color
+            
+            pdf.ln()
+        
+        pdf.ln(10) # Espacio antes del siguiente cliente
+
+    pdf.output(output_path)
+    print(f"✅ Portfolio report generated at: {output_path}")
