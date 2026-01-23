@@ -7,10 +7,13 @@ def test_portfolio_inputs():
         create_portfolio([], ["2026"], ["Q1"])
         
     with pytest.raises(AssertionError):
-        create_portfolio(["Netflix"], [], ["Q5"])
+        create_portfolio(["Netflix"], [], ["Q4"])
 
     with pytest.raises(AssertionError):
-        create_portfolio(["Netflix"], ["2026"], [])
+        create_portfolio(["Netflix"], ["2026"], []
+                         )
+    with pytest.raises(AssertionError):
+        create_portfolio(["Netflix"], ["2026"], ["Q5"])
 
 def test_portfolio_indexing():
     
@@ -38,6 +41,8 @@ def test_portfolio_indexing():
                 
                 expected_contract = f"{client_id} Strategic Credit Facilities"
                 assert entry["logics"]["contract_name"] == expected_contract
-                
+                assert len(entry["cfo_data"]) > 0
+                assert isinstance(entry["cfo_data"]["revenue"], (int, float))
                 assert "is_compliant" in entry["z3_result"]
                 assert isinstance(entry["z3_result"]["is_compliant"], bool)
+                assert "definition" in entry["logics"]["variables"][0]
