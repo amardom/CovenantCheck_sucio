@@ -1,9 +1,6 @@
 {
-  "consolidated_net_income": 120000000,
-  "interest_expense": 5000000,
-  "tax_expense": 45000000,
-  "depreciation_amortization": 30000000,
-  "share_based_compensation": 15000000,
-  "consolidated_total_debt": 200000000,
-  "unrestricted_cash": 350000000
+    "revenue": 500000,
+    "operating_expenses": 350000,
+    "total_debt": 400000,
+    "cash": 100000
 }
