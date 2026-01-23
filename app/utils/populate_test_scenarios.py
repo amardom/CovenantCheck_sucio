@@ -2,13 +2,13 @@ import json
 from pathlib import Path
 
 def populate_company():
-    client_id = "companyHealth"
-    years = ["2025", "2026"]
+    client_id = "companyTech"
+    years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
     
     logics_content = {
         "source_file": "logics.json",
-        "contract_name": "HealthCorp Strategic Credit Facilities",
+        "contract_name": f"{client_id} Strategic Credit Facilities",
         "variables": [
             {"name": "revenue", "definition": "Total Operating Revenue", "definition_page": 5},
             {"name": "operating_expenses", "definition": "Total Operating Expenses", "definition_page": 5},

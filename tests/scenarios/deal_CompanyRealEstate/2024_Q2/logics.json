@@ -1,6 +1,6 @@
 {
     "source_file": "logics.json",
-    "contract_name": "HealthCorp Strategic Credit Facilities",
+    "contract_name": "companyRealEstate Strategic Credit Facilities",
     "variables": [
         {
             "name": "revenue",
