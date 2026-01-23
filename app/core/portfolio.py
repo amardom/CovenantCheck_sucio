@@ -29,6 +29,8 @@ def create_portfolio(clients, years, quarters):
         for year in years:
 
             for quarter in quarters:
+                
+                print(f"\n-- Client: {client_ID} | {year}_{quarter} --")
 
                 path = Path(f"tests/scenarios/deal_{deal.id}/{str(year)}_{quarter}")
                 assert path.exists()
@@ -44,10 +46,8 @@ def create_portfolio(clients, years, quarters):
                 assert deal.history[year][quarter] is not None
 
                 generate_initial_report(deal.history[year][quarter]["logics"], path / FILENAME_INITIAL_REPORT)
-                print(f"\nReport successfully generated in: {FILENAME_INITIAL_REPORT}\n")
 
                 generate_final_report(deal.history[year][quarter]["z3_result"], deal.history[year][quarter]["logics"], 
                                       deal.history[year][quarter]["cfo_data"], path / FILENAME_FINAL_REPORT)
-                print(f"\nReport successfully generated in: {FILENAME_FINAL_REPORT}\n")
 
     return portfolio

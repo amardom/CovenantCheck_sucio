@@ -41,11 +41,9 @@ def validate_json(filename_logics, logics):
     logic_ids = [l["id"] for l in logics["logical_conditions"]]
     assert len(logic_ids) == len(set(logic_ids))
 
-    print("***JSON " + filename_logics + " VALIDATED***")
+    print(f"{filename_logics} validated.")
 
 def verify_logics(logics, cfo_data):
-    
-    print(f"----- Z3 ENGINE: {logics.get('contract_name')} -----\n")
 
     # 1. Create the solver.
     s = Solver()
@@ -69,7 +67,7 @@ def verify_logics(logics, cfo_data):
     for i, rule in enumerate(logics['logical_conditions']):
         formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
         assert is_expr(formula_z3)
-        print(f"Rule #{rule['id']}: {formula_z3}\n")
+        print(f"Rule #{rule['id']}: {formula_z3}")
         s.assert_and_track(formula_z3, f"RULE_{rule['id']}")
 
     # 4. Load CFO data.
@@ -95,7 +93,7 @@ def verify_logics(logics, cfo_data):
     values = []
     if result == sat:
 
-        print("STATUS: ✅ COMPLIANT (SAT)")
+        print("STATUS: ✅ COMPLIANT (SAT).")
         
         m = s.model()
         response["model"] = m
@@ -114,7 +112,7 @@ def verify_logics(logics, cfo_data):
 
     elif result == unsat:
 
-        print("STATUS: ❌ NON-COMPLIANT OR CONFLICT (UNSAT - BREACH)")
+        print("STATUS: ❌ NON-COMPLIANT OR CONFLICT (UNSAT - BREACH).")
 
         core = s.unsat_core()
         for label in core:
@@ -126,17 +124,17 @@ def verify_logics(logics, cfo_data):
 
         if response["conflict_variables"]:
             vars_str = ", ".join(response["conflict_variables"])
-            print(f"👉 Variables causing conflict: {vars_str}.")
+            print(f"Variables causing conflict: {vars_str}.")
         
         if response["conflict_rules"]:
             rules_str = ", ".join(response["conflict_rules"])
-            print(f"👉 Broken rules (IDs): {rules_str}.\n")
+            print(f"Broken rules (IDs): {rules_str}.")
 
     missing = [v for v in vars if v not in cfo_data]
     if missing:
         
         response["missing"] = missing
-        print(f"💡 NOTE: The variables {missing} have been automatically calculated to satisfy the agreement.\n")
+        print(f"NOTE: The variables {missing} have been automatically calculated to satisfy the agreement.")
 
     norm_metric = math.sqrt(sum(v**2 for v in values))/math.pi
     response["norm_metric"] = norm_metric

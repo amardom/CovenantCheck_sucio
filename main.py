@@ -10,9 +10,9 @@ def main():
     portfolio = create_portfolio(clients, years, quarters)
 
     ANALYSIS_CONFIG = {
-    "companyHealth": ["leverage_ratio", "ebitda"], # Obligatoria y Opcional
-    "companyRealEstate": ["leverage_ratio"],                 # Solo obligatoria
-    "companyTech": ["leverage_ratio", "ebitda"] # nok si no existe la opcional
+    "companyHealth": ["leverage_ratio", "ebitda"],
+    "companyRealEstate": ["leverage_ratio"],
+    "companyTech": ["leverage_ratio", "ebitda"]
     }
 
     generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="portfolio_executive_summary.pdf")
