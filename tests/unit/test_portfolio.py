@@ -47,6 +47,14 @@ def test_portfolio_inputs():
         assert str(exc.value) == expected_msg
         print(f"ERROR: {exc.value}")
 
+def test_portfolio_path():
+
+    bad_path = "tests/scenarios/deal_bad"
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], ["2026"], ["Q1"], bad_path)
+    assert str(exc.value) == "PATH_DOES_NOT_EXIST"
+    print(f"ERROR: {exc.value}")
+
 def test_portfolio_indexing():
     return
     clients = ["companyHealth", "companyRealEstate", "companyTech"]
