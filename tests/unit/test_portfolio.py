@@ -2,50 +2,50 @@ import pytest
 from app.core.portfolio import create_portfolio
 
 def test_portfolio_inputs():
+    print("")
+    invalid_inputs = [([], "CLIENTS_LIST_EMPTY"),
+                    ("a string", "CLIENTS_NOT_A_LIST"),
+                    (123, "CLIENTS_NOT_A_LIST"),
+                    (None, "CLIENTS_NOT_A_LIST"),
+                    ([123], "CLIENT_NOT_A_STR")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
+            create_portfolio(invalid, ["2026"], ["Q1"], "tests/scenarios/deal")
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
 
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio([], ["2026"], ["Q1"], "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
+    invalid_inputs = [([], "YEARS_LIST_EMPTY"),
+                    ("a string", "YEARS_NOT_A_LIST"),
+                    (123, "YEARS_NOT_A_LIST"),
+                    (None, "YEARS_NOT_A_LIST"),
+                    ([123], "YEAR_NOT_A_STR")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
+            create_portfolio(["Netflix"], invalid, ["Q1"], "tests/scenarios/deal")
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
 
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio("Netflix", ["2026"], ["Q1"], "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
-        
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], [], ["Q4"], "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], "2026", ["Q4"], "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["26"], ["Q4"], "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], [], "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], "Q3", "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], ["Q5"], "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], ["Q3"], str())
-    print(f"\nERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], ["Q6"], ["tests/scenarios/deal"])
-    print(f"\nERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], ["Q3" "Q5"], "tests/scenarios/deal")
-    print(f"\nERROR: {exc.value}")
+    invalid_inputs = [([], "QUARTERS_LIST_EMPTY"),
+                    ("a string", "QUARTERS_NOT_A_LIST"),
+                    (123, "QUARTERS_NOT_A_LIST"),
+                    (None, "QUARTERS_NOT_A_LIST"),
+                    ([123], "QUARTER_NOT_A_STR"),
+                    (["Q5"], "QUARTER_FORMAT_INVALID")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
+            create_portfolio(["Netflix"], ["2026"], invalid, "tests/scenarios/deal")
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
+    
+    invalid_inputs = [([], "ROOT_PATH_NOT_A_STR"),
+                    (123, "ROOT_PATH_NOT_A_STR"),
+                    (None, "ROOT_PATH_NOT_A_STR"),
+                    (str(), "ROOT_PATH_EMPTY")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
+            create_portfolio(["Netflix"], ["2026"], ["Q4"], invalid)
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
 
 def test_portfolio_indexing():
     return

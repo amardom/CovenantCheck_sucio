@@ -17,14 +17,14 @@ def create_portfolio(clients, years, quarters, root_path):
     assert all(isinstance(c, str) for c in clients), "CLIENT_NOT_A_STR"
     assert isinstance(years, list), "YEARS_NOT_A_LIST"
     assert len(years) > 0, "YEARS_LIST_EMPTY"
-    assert all(len(str(y)) == 4 for y in years), "YEAR_FORMAT_INVALID"
     assert all(isinstance(y, str) for y in years), "YEAR_NOT_A_STR"
+    assert all(len(str(y)) == 4 for y in years), "YEAR_FORMAT_INVALID"
     assert isinstance(quarters, list), "QUARTERS_NOT_A_LIST"
     assert len(quarters) > 0, "QUARTERS_LIST_EMPTY"
-    assert all(len(str(q)) == 2 for q in quarters), "QUARTER_FORMAT_INVALID"
+    assert all(isinstance(q, str) for q in quarters), "QUARTER_NOT_A_STR"
+    assert all(q in ["Q1", "Q2", "Q3", "Q4"] for q in quarters), "QUARTER_FORMAT_INVALID"
     assert isinstance(root_path, str), "ROOT_PATH_NOT_A_STR"
     assert len(root_path) > 0, "ROOT_PATH_EMPTY"
-    assert all(q in ["Q1", "Q2", "Q3", "Q4"] for q in quarters), "QUARTER_NOT_IN_Q1Q2Q3Q4"
 
     portfolio = {}
 
