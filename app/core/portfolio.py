@@ -10,11 +10,12 @@ FILENAME_CFO_DATA = "cfo_data.json"
 FILENAME_INITIAL_REPORT = "report_initial" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
 
-def create_portfolio(clients, years, quarters):
+def create_portfolio(clients, years, quarters, root_path):
 
     assert isinstance(clients, list) and len(clients) > 0
-    assert isinstance(years, list) and len(years) > 0
-    assert isinstance(quarters, list) and len(quarters) > 0
+    assert isinstance(years, list) and len(years) > 0 and all(len(str(y)) == 4 for y in years)
+    assert isinstance(quarters, list) and len(quarters) > 0 and all(len(str(q)) == 2 for q in quarters)
+    assert isinstance(root_path, str) and len(root_path) > 0
     assert all(isinstance(c, str) for c in clients)
     assert all(isinstance(y, str) for y in years)
     assert all(q in ["Q1", "Q2", "Q3", "Q4"] for q in quarters)
@@ -32,7 +33,7 @@ def create_portfolio(clients, years, quarters):
                 
                 print(f"\n-- Client: {client_ID} | {year}_{quarter} --")
 
-                path = Path(f"tests/scenarios/deal_{deal.id}/{str(year)}_{quarter}")
+                path = Path(f"{root_path}_{deal.id}/{str(year)}_{quarter}")
                 assert path.exists()
 
                 with open(path / FILENAME_LOGICS, "r") as f:

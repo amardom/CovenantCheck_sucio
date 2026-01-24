@@ -3,17 +3,26 @@ from app.core.portfolio import create_portfolio
 
 def test_portfolio_inputs():
 
-    with pytest.raises(AssertionError):
-        create_portfolio([], ["2026"], ["Q1"])
+    #create_portfolio(["Netflix"], ["2024", "2025"], ["Q1","Q3"], "tests/scenarios/deal")
+
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio([], ["2026"], ["Q1"], "tests/scenarios/deal")
+    print(f"\n📢 {exc.value}")
         
     with pytest.raises(AssertionError):
-        create_portfolio(["Netflix"], [], ["Q4"])
+        create_portfolio(["Netflix"], [], ["Q4"], "tests/scenarios/deal")
 
     with pytest.raises(AssertionError):
-        create_portfolio(["Netflix"], ["2026"], []
-                         )
+        create_portfolio(["Netflix"], ["2026"], [], "tests/scenarios/deal")
+
     with pytest.raises(AssertionError):
-        create_portfolio(["Netflix"], ["2026"], ["Q5"])
+        create_portfolio(["Netflix"], ["2026"], ["Q3"], "")
+
+    with pytest.raises(AssertionError):
+        create_portfolio(["Netflix"], ["2026"], ["Q2"], ["tests/scenarios/deal"])
+
+    with pytest.raises(AssertionError):
+        create_portfolio(["Netflix"], ["2026"], ["Q3" "Q5"], "tests/scenarios/deal")
 
 def test_portfolio_indexing():
     
@@ -21,7 +30,7 @@ def test_portfolio_indexing():
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
-    portfolio = create_portfolio(clients, years, quarters)
+    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/deal")
 
     assert len(portfolio) == 3
     assert set(portfolio.keys()) == set(clients)
