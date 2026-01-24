@@ -7,9 +7,10 @@ class Deal:
 
     def process_logics_and_cfo_data(self, year, quarter, logics, cfo_data):
 
-        assert isinstance(year, str)
-        assert isinstance(quarter, str)
-        assert quarter in ["Q1", "Q2", "Q3", "Q4"]
+        assert isinstance(year, str), "YEAR_NOT_A_STR"
+        assert len(year) == 4, "YEAR_FORMAT_INVALID"
+        assert isinstance(quarter, str), "QUARTER_NOT_A_STR"
+        assert quarter in ["Q1", "Q2", "Q3", "Q4"], "QUARTER_FORMAT_INVALID"
 
         if year not in self.history:
             self.history[year] = {

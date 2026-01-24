@@ -49,11 +49,26 @@ def test_deal_flow():
 
 def test_deal_year_and_quarter():
 
+    print("")
     client_id = "CompanyTech_2026"
     deal = Deal(client_id)
 
-    with pytest.raises(AssertionError):
-        deal.process_logics_and_cfo_data(2026, "Q1", {}, {})
+    invalid_inputs = [([], "YEAR_NOT_A_STR"),
+                    (123, "YEAR_NOT_A_STR"),
+                    (None, "YEAR_NOT_A_STR"),
+                    ("26", "YEAR_FORMAT_INVALID")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
+            deal.process_logics_and_cfo_data(invalid, "Q1", {}, {})
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
 
-    with pytest.raises(AssertionError):
-        deal.process_logics_and_cfo_data("2026", "Q5", {}, {})
+    invalid_inputs = [([], "QUARTER_NOT_A_STR"),
+                    (123, "QUARTER_NOT_A_STR"),
+                    (None, "QUARTER_NOT_A_STR"),
+                    ("Q5", "QUARTER_FORMAT_INVALID")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
+            deal.process_logics_and_cfo_data("2026", invalid, {}, {})
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
