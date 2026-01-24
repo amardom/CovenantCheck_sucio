@@ -12,13 +12,19 @@ FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.js
 
 def create_portfolio(clients, years, quarters, root_path):
 
-    assert isinstance(clients, list) and len(clients) > 0
-    assert isinstance(years, list) and len(years) > 0 and all(len(str(y)) == 4 for y in years)
-    assert isinstance(quarters, list) and len(quarters) > 0 and all(len(str(q)) == 2 for q in quarters)
-    assert isinstance(root_path, str) and len(root_path) > 0
-    assert all(isinstance(c, str) for c in clients)
-    assert all(isinstance(y, str) for y in years)
-    assert all(q in ["Q1", "Q2", "Q3", "Q4"] for q in quarters)
+    assert isinstance(clients, list), "CLIENTS_NOT_A_LIST" 
+    assert len(clients) > 0, "CLIENTS_LIST_EMPTY"
+    assert all(isinstance(c, str) for c in clients), "CLIENT_NOT_A_STR"
+    assert isinstance(years, list), "YEARS_NOT_A_LIST"
+    assert len(years) > 0, "YEARS_LIST_EMPTY"
+    assert all(len(str(y)) == 4 for y in years), "YEAR_FORMAT_INVALID"
+    assert all(isinstance(y, str) for y in years), "YEAR_NOT_A_STR"
+    assert isinstance(quarters, list), "QUARTERS_NOT_A_LIST"
+    assert len(quarters) > 0, "QUARTERS_LIST_EMPTY"
+    assert all(len(str(q)) == 2 for q in quarters), "QUARTER_FORMAT_INVALID"
+    assert isinstance(root_path, str), "ROOT_PATH_NOT_A_STR"
+    assert len(root_path) > 0, "ROOT_PATH_EMPTY"
+    assert all(q in ["Q1", "Q2", "Q3", "Q4"] for q in quarters), "QUARTER_NOT_IN_Q1Q2Q3Q4"
 
     portfolio = {}
 
@@ -34,7 +40,7 @@ def create_portfolio(clients, years, quarters, root_path):
                 print(f"\n-- Client: {client_ID} | {year}_{quarter} --")
 
                 path = Path(f"{root_path}_{deal.id}/{str(year)}_{quarter}")
-                assert path.exists()
+                assert path.exists(), f"PATH_DOES_NOT_EXIST"
 
                 with open(path / FILENAME_LOGICS, "r") as f:
                     logics = json.load(f)

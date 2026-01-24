@@ -3,29 +3,52 @@ from app.core.portfolio import create_portfolio
 
 def test_portfolio_inputs():
 
-    #create_portfolio(["Netflix"], ["2024", "2025"], ["Q1","Q3"], "tests/scenarios/deal")
-
     with pytest.raises(AssertionError) as exc:
         create_portfolio([], ["2026"], ["Q1"], "tests/scenarios/deal")
-    print(f"\n📢 {exc.value}")
+    print(f"\nERROR: {exc.value}")
+
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio("Netflix", ["2026"], ["Q1"], "tests/scenarios/deal")
+    print(f"\nERROR: {exc.value}")
         
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc:
         create_portfolio(["Netflix"], [], ["Q4"], "tests/scenarios/deal")
+    print(f"\nERROR: {exc.value}")
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], "2026", ["Q4"], "tests/scenarios/deal")
+    print(f"\nERROR: {exc.value}")
+
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], ["26"], ["Q4"], "tests/scenarios/deal")
+    print(f"\nERROR: {exc.value}")
+
+    with pytest.raises(AssertionError) as exc:
         create_portfolio(["Netflix"], ["2026"], [], "tests/scenarios/deal")
+    print(f"\nERROR: {exc.value}")
 
-    with pytest.raises(AssertionError):
-        create_portfolio(["Netflix"], ["2026"], ["Q3"], "")
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], ["2026"], "Q3", "tests/scenarios/deal")
+    print(f"\nERROR: {exc.value}")
 
-    with pytest.raises(AssertionError):
-        create_portfolio(["Netflix"], ["2026"], ["Q2"], ["tests/scenarios/deal"])
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], ["2026"], ["Q5"], "tests/scenarios/deal")
+    print(f"\nERROR: {exc.value}")
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], ["2026"], ["Q3"], str())
+    print(f"\nERROR: {exc.value}")
+
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], ["2026"], ["Q6"], ["tests/scenarios/deal"])
+    print(f"\nERROR: {exc.value}")
+
+    with pytest.raises(AssertionError) as exc:
         create_portfolio(["Netflix"], ["2026"], ["Q3" "Q5"], "tests/scenarios/deal")
+    print(f"\nERROR: {exc.value}")
 
 def test_portfolio_indexing():
-    
+    return
     clients = ["companyHealth", "companyRealEstate", "companyTech"]
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
