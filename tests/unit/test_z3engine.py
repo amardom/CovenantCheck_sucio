@@ -74,8 +74,10 @@ def test_verify_logics_unknown():
     
     cfo_data = {}
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc:
         verify_logics(logics, cfo_data)
+    assert str(exc.value) == "RESULT_UNKNOWN"
+    print(f"ERROR: {exc.value}")
 
 def test_verify_logics_missing_model_value():
     logics = {
@@ -95,8 +97,10 @@ def test_verify_logics_missing_model_value():
     
     cfo_data = {"x": 15}
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc:
         verify_logics(logics, cfo_data)
+    assert str(exc.value) == "Z3_VALUE_IS_NONE"
+    print(f"ERROR: {exc.value}")
 
 def test_verify_logics_not_a_z3_expr():
     logics = {
@@ -116,8 +120,10 @@ def test_verify_logics_not_a_z3_expr():
 
     # El motor debería partir porque '1 == 1' devuelve True (bool)
     # y is_expr(True) es Falso.
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc:
         verify_logics(logics, cfo_data)
+    assert str(exc.value) == "Z3_EXPRESSION_INVALID"
+    print(f"ERROR: {exc.value}")
 
 def test_verify_logics_bad_cfo_data():
     logics = {
@@ -141,6 +147,8 @@ def test_verify_logics_bad_cfo_data():
         "observations": "N/A"
     }
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc:
         verify_logics(logics, bad_cfo_data)
+    assert str(exc.value) == "CFO_DATA_VAR_INVALID"
+    print(f"ERROR: {exc.value}")
     

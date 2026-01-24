@@ -66,19 +66,19 @@ def verify_logics(logics, cfo_data):
     # 3. Load rules.
     for i, rule in enumerate(logics['logical_conditions']):
         formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
-        assert is_expr(formula_z3)
+        assert is_expr(formula_z3), "Z3_EXPRESSION_INVALID"
         print(f"Rule #{rule['id']}: {formula_z3}")
         s.assert_and_track(formula_z3, f"RULE_{rule['id']}")
 
     # 4. Load CFO data.
     for name, value in cfo_data.items():
-        assert isinstance(value, (int, float))
+        assert isinstance(value, (int, float)), "CFO_DATA_VAR_INVALID"
         if name in vars:
             s.assert_and_track(vars[name] == RealVal(str(value)), f"DATA_{name}")
 
     # 5. Verify logics.
     result = s.check()
-    assert result != unknown
+    assert result != unknown, "RESULT_UNKNOWN"
 
     response = {
         "status": str(result).upper(),
@@ -104,7 +104,7 @@ def verify_logics(logics, cfo_data):
             var_obj = vars[var_name]
             z3_val = m[var_obj]
             
-            assert z3_val is not None
+            assert z3_val is not None, "Z3_VALUE_IS_NONE"
             
             val_float = float(z3_val.as_decimal(2).replace('?', '')) if hasattr(z3_val, 'as_decimal') else z3_val
             values = values + [val_float]
