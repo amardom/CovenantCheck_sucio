@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 from app.utils.report_pdf import generate_initial_report, generate_final_report
-from app.core.z3_engine import validate_json
 from app.core.deal import Deal
 
 FILENAME_LOGICS = "logics.json"
@@ -44,7 +43,6 @@ def create_portfolio(clients, years, quarters, root_path):
 
                 with open(path / FILENAME_LOGICS, "r") as f:
                     logics = json.load(f)
-                validate_json(FILENAME_LOGICS, logics)
 
                 with open(path / FILENAME_CFO_DATA, "r") as f:
                     cfo_data = json.load(f)

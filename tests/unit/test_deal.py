@@ -10,20 +10,22 @@ def test_deal_flow():
         "source_file": "logics.json",
         "contract_name": "Credit Agreement - NETFLIX, INC. (2009)",
         "variables": [
-            {"name": "consolidated_ebitda", "definition": "Calculated EBITDA"},
-            {"name": "consolidated_net_debt", "definition": "Total debt minus cash"},
-            {"name": "consolidated_leverage_ratio", "definition": "Leverage Ratio"}
+            {"name": "consolidated_ebitda", "definition": "Calculated EBITDA", "definition_page": 9},
+            {"name": "consolidated_net_debt", "definition": "Total debt minus cash", "definition_page": 19},
+            {"name": "consolidated_leverage_ratio", "definition": "Leverage Ratio", "definition_page": 29}
         ],
         "logical_conditions": [
             {
                 "id": 1,
                 "formula": "consolidated_leverage_ratio == consolidated_net_debt / consolidated_ebitda",
-                "evidence": "Section 1.01"
+                "evidence": "Section 1.01",
+                "evidence_page": 10
             },
             {
                 "id": 2,
                 "formula": "consolidated_leverage_ratio <= 2.5",
-                "evidence": "Section 7.12"
+                "evidence": "Section 7.12",
+                "evidence_page": 11
             }
         ]
     }

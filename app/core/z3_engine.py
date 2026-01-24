@@ -1,13 +1,8 @@
 from z3 import *
 
-def validate_json(filename_logics, logics):
+def validate_json(logics):
 
     assert isinstance(logics, dict)
-
-    assert "source_file" in logics
-    assert type(logics["source_file"]) is str and len(logics["source_file"]) > 0
-
-    assert logics['source_file'] == filename_logics
 
     assert "contract_name" in logics
     assert type(logics["contract_name"]) is str and len(logics["contract_name"]) > 0
@@ -41,9 +36,11 @@ def validate_json(filename_logics, logics):
     logic_ids = [l["id"] for l in logics["logical_conditions"]]
     assert len(logic_ids) == len(set(logic_ids))
 
-    print(f"{filename_logics} validated.")
+    print(f"logics validated.")
 
 def verify_logics(logics, cfo_data):
+
+    validate_json(logics)
 
     # 1. Create the solver.
     s = Solver()

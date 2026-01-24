@@ -1,6 +1,6 @@
 import json
 import pytest
-from app.core.z3_engine import validate_json, verify_logics
+from app.core.z3_engine import verify_logics
 
 def load_json(path):
     with open(path, 'r') as f:
@@ -19,7 +19,6 @@ def test_verify_logics_sat_scenarios():
 
         path_logic_data = f"tests/scenarios/{filename_logic}"
         logic_data = load_json(path_logic_data)
-        validate_json(filename_logic, logic_data)
 
         path_cfo_data = f"tests/scenarios/{filename_cfo}"
         cfo_data = load_json(path_cfo_data)
@@ -46,7 +45,6 @@ def test_verify_logics_unsat_scenarios():
 
         path_logic_data = f"tests/scenarios/{filename_logic}"
         logic_data = load_json(path_logic_data)
-        validate_json(filename_logic, logic_data)
 
         path_cfo_data = f"tests/scenarios/{filename_cfo}"
         cfo_data = load_json(path_cfo_data)
@@ -63,12 +61,12 @@ def test_verify_logics_unknown():
     logics = {
         "source_file": "complex_math.json",
         "contract_name": "Complexity Test",
-        "variables": [{"name": "x", "context": "Non-linear math"}],
+        "variables": [{"name": "x", "definition": "Non-linear math", "definition_page": 9}],
         "logical_conditions": [{
             "id": 999, 
             "formula": "x**x == 50", # Non-linear is complicated for z3 using Reals.
             "evidence": "Complexity breach", 
-            "page": 1
+            "evidence_page": 1
         }]
     }
     
@@ -84,14 +82,14 @@ def test_verify_logics_missing_model_value():
         "source_file": "useless_var.json",
         "contract_name": "Orphan Test",
         "variables": [
-            {"name": "x", "context": "Active"},
-            {"name": "y", "context": "Orphan"} # Unused variable.
+            {"name": "x", "definition": "Active", "definition_page": 9},
+            {"name": "y", "definition": "Orphan", "definition_page": 19} # Unused variable.
         ],
         "logical_conditions": [{
             "id": 1, 
             "formula": "x > 10", 
             "evidence": "Test", 
-            "page": 1
+            "evidence_page": 1
         }]
     }
     
@@ -106,13 +104,13 @@ def test_verify_logics_not_a_z3_expr():
     logics = {
         "source_file": "invalid_z3_expression.json",
         "contract_name": "Invalid Expr Test",
-        "variables": [{"name": "ebitda", "context": "Finance"}],
+        "variables": [{"name": "ebitda", "definition": "Finance", "definition_page": 9}],
         "logical_conditions": [{
             "id": 101, 
             # Esto es un Booleano de Python, no una fórmula de Z3
             "formula": "1 == 1", 
             "evidence": "Static check", 
-            "page": 1
+            "evidence_page": 1
         }]
     }
     
@@ -129,13 +127,13 @@ def test_verify_logics_bad_cfo_data():
     logics = {
         "source_file": "complex_math.json",
         "contract_name": "Complexity Test",
-        "variables": [{"name": "x", "context": "Test bad cfo_data"},
-                    {"name": "y", "context": "Test bad cfo_data"}],
+        "variables": [{"name": "x", "definition": "Test bad cfo_data", "definition_page": 9},
+                    {"name": "y", "definition": "Test bad cfo_data", "definition_page": 10}],
         "logical_conditions": [{
             "id": 9, 
             "formula": "x+y == 5",
             "evidence": "Very simple equation",
-            "page": 1
+            "evidence_page": 1
         }]
     }
 

@@ -40,7 +40,7 @@ def assert_variables(logics, output_pdf):
 def test_pdf_structural_integrity_initial():
     
     logics = load_json(PATH_LOGICS)
-    validate_json(LOGICS_FILENAME, logics)
+    validate_json(logics)
 
     generate_initial_report(logics, OUTPUT_INITIAL_PDF)
     
@@ -59,7 +59,7 @@ def test_pdf_structural_integrity_initial():
 def test_pdf_structural_integrity_final():
     
     logics = load_json(PATH_LOGICS)
-    validate_json(LOGICS_FILENAME, logics)
+    validate_json(logics)
 
     cfo_data = load_json(PATH_CFO_DATA)
     z3_result = verify_logics(logics, cfo_data)
