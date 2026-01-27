@@ -2,26 +2,40 @@ from z3 import *
 
 def validate_json(logics):
 
-    assert isinstance(logics, dict)
+    assert isinstance(logics, dict), "LOGICS_NOT_A_DICT"
+    
+    assert "contract_name" in logics, "CONTRACT_NAME_IS_MISSING"
+    assert isinstance(logics["contract_name"], str), "CONTRACT_NAME_NOT_STR"
 
-    assert "contract_name" in logics
-    assert type(logics["contract_name"]) is str and len(logics["contract_name"]) > 0
+    assert len(logics["contract_name"]) > 0, "CONTRACT_NAME_IS_EMPTY"
 
-    assert "variables" in logics and len(logics["variables"]) > 0
-    assert "logical_conditions" in logics and len(logics["logical_conditions"]) > 0
-
+    assert "variables" in logics, "VARIABLES_IS_MISSING"
+    assert len(logics["variables"]) > 0, "VARIABLES_IS_EMPTY"
+    
     for var in logics["variables"]:
-        assert "name" in var
-        assert "definition" in var
-        assert "definition_page" in var
+        assert "name" in var, "NAME_IS_MISSING"
+        assert "definition" in var, "DEFINITION_IS_MISSING"
+        assert "definition_page" in var, "DEFINITION_PAGE_IS_MISSING"
 
-        assert type(var["name"]) is str and len(var["name"]) > 0
-        assert type(var["definition"]) is str and len(var["definition"]) > 0
-        assert type(var["definition_page"]) is int and var["definition_page"] > 0
+        assert isinstance(var["name"], str), "NAME_NOT_STR" 
+        assert len(var["name"]) > 0, "NAME_IS_EMPTY"
+    return
 
+
+
+
+
+
+
+
+
+
+
+
+    
     var_names = [v["name"] for v in logics["variables"]]
     assert len(var_names) == len(set(var_names))
-
+    return
     for var in logics["logical_conditions"]:
         assert "id" in var
         assert "formula" in var

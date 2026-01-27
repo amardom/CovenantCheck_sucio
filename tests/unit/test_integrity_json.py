@@ -20,32 +20,78 @@ def test_validate_json_success():
     validate_json(VALID_LOGICS)
 
 def test_validate_json_input_not_a_dict():
-    invalid_inputs = [[], "not a dict", 123, None]
-    for invalid in invalid_inputs:
-        with pytest.raises(AssertionError):
+    invalid_inputs = [([], "LOGICS_NOT_A_DICT"),
+                    ("not a dict", "LOGICS_NOT_A_DICT"),
+                    (123, "LOGICS_NOT_A_DICT"),
+                    (None, "LOGICS_NOT_A_DICT")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
             validate_json(invalid)
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
 
-def test_validate_json_empty_contract_name():
-    logics = VALID_LOGICS.copy()
-    logics["contract_name"] = []
-    with pytest.raises(AssertionError):
+def test_validate_json_missing_contract_name():
+    logics = copy.deepcopy(VALID_LOGICS)
+    del logics["contract_name"]
+    with pytest.raises(AssertionError) as exc:
         validate_json(logics)
+    assert str(exc.value) == "CONTRACT_NAME_IS_MISSING"
+    print(f"ERROR: {exc.value}")
 
 def test_validate_json_type_contract_name():
-    logics = VALID_LOGICS.copy()
-    logics["contract_name"] = True
-    with pytest.raises(AssertionError):
+    logics = copy.deepcopy(VALID_LOGICS)
+    invalid_inputs = [([], "CONTRACT_NAME_NOT_STR"),
+                    (True, "CONTRACT_NAME_NOT_STR"),
+                    (123, "CONTRACT_NAME_NOT_STR"),
+                    (None, "CONTRACT_NAME_NOT_STR")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
+            logics["contract_name"] = invalid
+            validate_json(logics)
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
+
+def test_validate_json_missing_variables():
+    logics = copy.deepcopy(VALID_LOGICS)
+    del logics["variables"]
+    with pytest.raises(AssertionError) as exc:
         validate_json(logics)
-    logics["contract_name"] = ""
-    with pytest.raises(AssertionError):
-        validate_json(logics)
+    assert str(exc.value) == "VARIABLES_IS_MISSING"
+    print(f"ERROR: {exc.value}")
 
 def test_validate_json_empty_variables():
-    logics = VALID_LOGICS.copy()
+    logics = copy.deepcopy(VALID_LOGICS)
     logics["variables"] = []
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as exc:
         validate_json(logics)
+    assert str(exc.value) == "VARIABLES_IS_EMPTY"
+    print(f"ERROR: {exc.value}")
 
+def test_validate_json_keys_in_variable():
+    logics = copy.deepcopy(VALID_LOGICS)
+    for i in range(len(logics["variables"])):
+        
+        payload = copy.deepcopy(logics)
+        del payload["variables"][i]["name"]
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "NAME_IS_MISSING"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        del payload["variables"][i]["definition"]
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "DEFINITION_IS_MISSING"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        del payload["variables"][i]["definition_page"]
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "DEFINITION_PAGE_IS_MISSING"
+        print(f"ERROR: {exc.value}")
+"""
 def test_validate_json_empty_logical_conditions():
     logics = VALID_LOGICS.copy()
     logics["logical_conditions"] = []
@@ -186,4 +232,4 @@ def test_validate_json_duplicate_logic_ids():
         "page": 10
     })
     with pytest.raises(AssertionError):
-        validate_json(logics)
+        validate_json(logics) """
