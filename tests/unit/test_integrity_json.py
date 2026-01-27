@@ -131,7 +131,7 @@ def test_validate_json_keys_in_variable():
         payload["variables"][i]["definition_page"] = 0
         with pytest.raises(AssertionError) as exc:
             validate_json(payload)
-        assert str(exc.value) == "DEFINITION_PAGE_IS_ZERO"
+        assert str(exc.value) == "DEFINITION_PAGE_IS_BELOW_ONE"
         print(f"ERROR: {exc.value}")
 
 def test_validate_json_keys_in_logical_conditions():
@@ -153,6 +153,13 @@ def test_validate_json_keys_in_logical_conditions():
         print(f"ERROR: {exc.value}")
 
         payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["id"] = 0
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "ID_IS_BELOW_ONE"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
         del payload["logical_conditions"][i]["formula"]
         with pytest.raises(AssertionError) as exc:
             validate_json(payload)
@@ -164,6 +171,13 @@ def test_validate_json_keys_in_logical_conditions():
         with pytest.raises(AssertionError) as exc:
             validate_json(payload)
         assert str(exc.value) == "FORMULA_NOT_STR"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["formula"] = ""
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "FORMULA_IS_EMPTY"
         print(f"ERROR: {exc.value}")
 
         payload = copy.deepcopy(logics)
@@ -181,6 +195,13 @@ def test_validate_json_keys_in_logical_conditions():
         print(f"ERROR: {exc.value}")
 
         payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["evidence"] = ""
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "EVIDENCE_IS_EMPTY"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
         del payload["logical_conditions"][i]["evidence_page"]
         with pytest.raises(AssertionError) as exc:
             validate_json(payload)
@@ -192,6 +213,13 @@ def test_validate_json_keys_in_logical_conditions():
         with pytest.raises(AssertionError) as exc:
             validate_json(payload)
         assert str(exc.value) == "EVIDENCE_PAGE_NOT_INT"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        payload["logical_conditions"][i]["evidence_page"] = 0
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "EVIDENCE_PAGE_IS_BELOW_ONE"
         print(f"ERROR: {exc.value}")
 
 def test_validate_json_duplicates_in_variables():

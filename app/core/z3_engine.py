@@ -23,7 +23,7 @@ def validate_json(logics):
 
         assert len(var["name"]) > 0, "NAME_IS_EMPTY"
         assert len(var["definition"]) > 0, "DEFINITION_IS_EMPTY"
-        assert var["definition_page"] > 0, "DEFINITION_PAGE_IS_ZERO"
+        assert var["definition_page"] > 0, "DEFINITION_PAGE_IS_BELOW_ONE"
 
     for var in logics["logical_conditions"]:
         assert "id" in var, "ID_IS_MISSING"
@@ -35,6 +35,11 @@ def validate_json(logics):
         assert isinstance(var["formula"], str), "FORMULA_NOT_STR"
         assert isinstance(var["evidence"], str), "EVIDENCE_NOT_STR"
         assert isinstance(var["evidence_page"], int), "EVIDENCE_PAGE_NOT_INT"
+
+        assert var["id"] > 0, "ID_IS_BELOW_ONE"
+        assert len(var["formula"]) > 0, "FORMULA_IS_EMPTY"
+        assert len(var["evidence"]) > 0, "EVIDENCE_IS_EMPTY"
+        assert var["evidence_page"] > 0, "EVIDENCE_PAGE_IS_BELOW_ONE"
 
     var_names = [v["name"] for v in logics["variables"]]
     assert len(var_names) == len(set(var_names)), "DUPLICATES_IN_VARIABLES"
