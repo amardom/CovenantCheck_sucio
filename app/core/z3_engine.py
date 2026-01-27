@@ -17,8 +17,14 @@ def validate_json(logics):
         assert "definition" in var, "DEFINITION_IS_MISSING"
         assert "definition_page" in var, "DEFINITION_PAGE_IS_MISSING"
 
-        assert isinstance(var["name"], str), "NAME_NOT_STR" 
+        assert isinstance(var["name"], str), "NAME_NOT_STR"
+        assert isinstance(var["definition"], str), "DEFINITION_NOT_STR"
+        assert isinstance(var["definition_page"], int), "DEFINITION_PAGE_NOT_INT"
+
         assert len(var["name"]) > 0, "NAME_IS_EMPTY"
+        assert len(var["definition"]) > 0, "DEFINITION_IS_EMPTY"
+        assert var["definition_page"] > 0, "DEFINITION_PAGE_IS_ZERO"
+        
     return
 
 
@@ -32,7 +38,7 @@ def validate_json(logics):
 
 
 
-    
+
     var_names = [v["name"] for v in logics["variables"]]
     assert len(var_names) == len(set(var_names))
     return

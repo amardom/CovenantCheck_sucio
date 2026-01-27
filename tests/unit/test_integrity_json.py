@@ -79,10 +79,38 @@ def test_validate_json_keys_in_variable():
         print(f"ERROR: {exc.value}")
 
         payload = copy.deepcopy(logics)
+        payload["variables"][i]["name"] = True
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "NAME_NOT_STR"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["name"] = ""
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "NAME_IS_EMPTY"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
         del payload["variables"][i]["definition"]
         with pytest.raises(AssertionError) as exc:
             validate_json(payload)
         assert str(exc.value) == "DEFINITION_IS_MISSING"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["definition"] = True
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "DEFINITION_NOT_STR"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["definition"] = ""
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "DEFINITION_IS_EMPTY"
         print(f"ERROR: {exc.value}")
 
         payload = copy.deepcopy(logics)
@@ -91,6 +119,22 @@ def test_validate_json_keys_in_variable():
             validate_json(payload)
         assert str(exc.value) == "DEFINITION_PAGE_IS_MISSING"
         print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["definition_page"] = ""
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "DEFINITION_PAGE_NOT_INT"
+        print(f"ERROR: {exc.value}")
+
+        payload = copy.deepcopy(logics)
+        payload["variables"][i]["definition_page"] = 0
+        with pytest.raises(AssertionError) as exc:
+            validate_json(payload)
+        assert str(exc.value) == "DEFINITION_PAGE_IS_ZERO"
+        print(f"ERROR: {exc.value}")
+
+
 """
 def test_validate_json_empty_logical_conditions():
     logics = VALID_LOGICS.copy()
