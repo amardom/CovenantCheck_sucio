@@ -24,37 +24,23 @@ def validate_json(logics):
         assert len(var["name"]) > 0, "NAME_IS_EMPTY"
         assert len(var["definition"]) > 0, "DEFINITION_IS_EMPTY"
         assert var["definition_page"] > 0, "DEFINITION_PAGE_IS_ZERO"
-        
-    return
 
+    for var in logics["logical_conditions"]:
+        assert "id" in var, "ID_IS_MISSING"
+        assert "formula" in var, "FORMULA_IS_MISSING"
+        assert "evidence" in var, "EVIDENCE_IS_MISSING"
+        assert "evidence_page" in var, "EVIDENCE_PAGE_IS_MISSING"
 
-
-
-
-
-
-
-
-
-
-
+        assert isinstance(var["id"], int), "ID_NOT_INT"
+        assert isinstance(var["formula"], str), "FORMULA_NOT_STR"
+        assert isinstance(var["evidence"], str), "EVIDENCE_NOT_STR"
+        assert isinstance(var["evidence_page"], int), "EVIDENCE_PAGE_NOT_INT"
 
     var_names = [v["name"] for v in logics["variables"]]
-    assert len(var_names) == len(set(var_names))
-    return
-    for var in logics["logical_conditions"]:
-        assert "id" in var
-        assert "formula" in var
-        assert "evidence" in var
-        assert "evidence_page" in var
-
-        assert type(var["id"]) is int and var["id"] > 0
-        assert type(var["formula"]) is str and len(var["formula"]) > 0
-        assert type(var["evidence"]) is str and len(var["evidence"]) > 0
-        assert type(var["evidence_page"]) is int and var["evidence_page"] > 0
+    assert len(var_names) == len(set(var_names)), "DUPLICATES_IN_VARIABLES"
 
     logic_ids = [l["id"] for l in logics["logical_conditions"]]
-    assert len(logic_ids) == len(set(logic_ids))
+    assert len(logic_ids) == len(set(logic_ids)), "DUPLICATES_IN_LOGICAL_CONDITIONS"
 
     print(f"logics validated.")
 
