@@ -59,7 +59,7 @@ def test_verify_logics_unsat_scenarios():
 
 def test_verify_logics_unknown():
     logics = {
-        "source_file": "complex_math.json",
+        "audit_id": "ClientAlpha_2026_Q1.json",
         "contract_name": "Complexity Test",
         "variables": [{"name": "x", "definition": "Non-linear math", "definition_page": 9}],
         "logical_conditions": [{
@@ -79,7 +79,7 @@ def test_verify_logics_unknown():
 
 def test_verify_logics_missing_model_value():
     logics = {
-        "source_file": "useless_var.json",
+        "audit_id": "ClientAlpha_2026_Q1.json",
         "contract_name": "Orphan Test",
         "variables": [
             {"name": "x", "definition": "Active", "definition_page": 9},
@@ -102,7 +102,7 @@ def test_verify_logics_missing_model_value():
 
 def test_verify_logics_not_a_z3_expr():
     logics = {
-        "source_file": "invalid_z3_expression.json",
+        "audit_id": "ClientAlpha_2026_Q1.json",
         "contract_name": "Invalid Expr Test",
         "variables": [{"name": "ebitda", "definition": "Finance", "definition_page": 9}],
         "logical_conditions": [{
@@ -125,7 +125,7 @@ def test_verify_logics_not_a_z3_expr():
 
 def test_verify_logics_bad_cfo_data():
     logics = {
-        "source_file": "complex_math.json",
+        "audit_id": "ClientAlpha_2026_Q1.json",
         "contract_name": "Complexity Test",
         "variables": [{"name": "x", "definition": "Test bad cfo_data", "definition_page": 9},
                     {"name": "y", "definition": "Test bad cfo_data", "definition_page": 10}],

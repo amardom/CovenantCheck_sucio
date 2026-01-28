@@ -15,7 +15,7 @@ def generate_initial_report(logics, output_path):
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Logical Audit: {logics.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.cell(eff_width, 8, f"Source file: {logics.get('source_file', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Audit ID: {logics.get('audit_id', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
@@ -79,7 +79,7 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Formal verification: {logics.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.cell(eff_width, 8, f"Source file: {logics.get('source_file', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Audit ID: {logics.get('audit_id', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 

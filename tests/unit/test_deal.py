@@ -3,11 +3,11 @@ from app.core.deal import Deal
 
 def test_deal_flow():
 
-    client_id = "CompanyTech_2026"
+    client_id = "CompanyTech"
     deal = Deal(client_id)
 
     logics_mock = {
-        "source_file": "logics.json",
+        "audit_id": f"{client_id}_2026_Q1.json",
         "contract_name": "Credit Agreement - NETFLIX, INC. (2009)",
         "variables": [
             {"name": "consolidated_ebitda", "definition": "Calculated EBITDA", "definition_page": 9},
