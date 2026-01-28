@@ -2,7 +2,7 @@ import pytest, copy
 from app.core.z3_engine import validate_json
 
 VALID_LOGICS = {
-    "source_file": "logics.json",
+    "audit_id": "ClientAlpha_2026_Q1.json",
     "contract_name": "Real Contrato",
     "variables": [{
         "name": "ebitda",
@@ -30,6 +30,35 @@ def test_validate_json_input_not_a_dict():
         assert str(exc.value) == expected_msg
         print(f"ERROR: {exc.value}")
 
+def test_validate_json_missing_audit_id():
+    logics = copy.deepcopy(VALID_LOGICS)
+    del logics["audit_id"]
+    with pytest.raises(AssertionError) as exc:
+        validate_json(logics)
+    assert str(exc.value) == "AUDIT_ID_IS_MISSING"
+    print(f"ERROR: {exc.value}")
+
+def test_validate_json_type_audit_id():
+    logics = copy.deepcopy(VALID_LOGICS)
+    invalid_inputs = [([], "AUDIT_ID_NOT_STR"),
+                    (True, "AUDIT_ID_NOT_STR"),
+                    (123, "AUDIT_ID_NOT_STR"),
+                    (None, "AUDIT_ID_NOT_STR")]
+    for invalid, expected_msg in invalid_inputs:
+        with pytest.raises(AssertionError) as exc:
+            logics["audit_id"] = invalid
+            validate_json(logics)
+        assert str(exc.value) == expected_msg
+        print(f"ERROR: {exc.value}")
+
+def test_validate_json_empty_audit_id():
+    logics = copy.deepcopy(VALID_LOGICS)
+    logics["audit_id"] = ""
+    with pytest.raises(AssertionError) as exc:
+        validate_json(logics)
+    assert str(exc.value) == "AUDIT_ID_IS_EMPTY"
+    print(f"ERROR: {exc.value}")
+
 def test_validate_json_missing_contract_name():
     logics = copy.deepcopy(VALID_LOGICS)
     del logics["contract_name"]
@@ -50,6 +79,14 @@ def test_validate_json_type_contract_name():
             validate_json(logics)
         assert str(exc.value) == expected_msg
         print(f"ERROR: {exc.value}")
+
+def test_validate_json_empty_contract_name():
+    logics = copy.deepcopy(VALID_LOGICS)
+    logics["contract_name"] = ""
+    with pytest.raises(AssertionError) as exc:
+        validate_json(logics)
+    assert str(exc.value) == "CONTRACT_NAME_IS_EMPTY"
+    print(f"ERROR: {exc.value}")
 
 def test_validate_json_missing_variables():
     logics = copy.deepcopy(VALID_LOGICS)

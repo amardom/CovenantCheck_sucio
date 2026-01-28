@@ -66,7 +66,7 @@ def test_portfolio_path():
     print(f"ERROR: {exc.value}")
 
 def test_portfolio_indexing():
-    return
+
     clients = ["companyHealth", "companyRealEstate", "companyTech"]
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]

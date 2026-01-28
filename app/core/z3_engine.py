@@ -4,9 +4,12 @@ def validate_json(logics):
 
     assert isinstance(logics, dict), "LOGICS_NOT_A_DICT"
     
+    assert "audit_id" in logics, "AUDIT_ID_IS_MISSING"
+    assert isinstance(logics["audit_id"], str), "AUDIT_ID_NOT_STR"
+    assert len(logics["audit_id"]) > 0, "AUDIT_ID_IS_EMPTY"
+    
     assert "contract_name" in logics, "CONTRACT_NAME_IS_MISSING"
     assert isinstance(logics["contract_name"], str), "CONTRACT_NAME_NOT_STR"
-
     assert len(logics["contract_name"]) > 0, "CONTRACT_NAME_IS_EMPTY"
 
     assert "variables" in logics, "VARIABLES_IS_MISSING"
