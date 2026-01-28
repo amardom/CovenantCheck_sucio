@@ -21,9 +21,9 @@ def create_portfolio(clients, years, quarters, root_path):
     assert all(len(str(y)) == 4 for y in years), "YEAR_FORMAT_INVALID"
     assert isinstance(quarters, list), "QUARTERS_NOT_A_LIST"
     assert len(quarters) > 0, "QUARTERS_LIST_EMPTY"
+    assert all(int(quarters[i][1]) < int(quarters[i+1][1]) for i in range(len(quarters)-1)), "QUARTERS_NOT_SORTED"
     assert all(isinstance(q, str) for q in quarters), "QUARTER_NOT_A_STR"
     assert all(q in ["Q1", "Q2", "Q3", "Q4"] for q in quarters), "QUARTER_FORMAT_INVALID"
-    assert all(int(quarters[i][1]) < int(quarters[i+1][1]) for i in range(len(quarters)-1)), "QUARTERS_NOT_SORTED"
     assert isinstance(root_path, str), "ROOT_PATH_NOT_A_STR"
     assert len(root_path) > 0, "ROOT_PATH_EMPTY"
 
