@@ -6,9 +6,6 @@ from app.core.deal import Deal
 FILENAME_LOGICS = "logics.json"
 FILENAME_CFO_DATA = "cfo_data.json"
 
-FILENAME_INITIAL_REPORT = "report_initial" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
-FILENAME_FINAL_REPORT = "report_final" + "_" + FILENAME_LOGICS.removesuffix('.json') + ".pdf"
-
 def create_portfolio(clients, years, quarters, root_path):
 
     assert isinstance(clients, list), "CLIENTS_NOT_A_LIST" 
@@ -38,23 +35,32 @@ def create_portfolio(clients, years, quarters, root_path):
 
             for quarter in quarters:
                 
-                print(f"\n-- Client: {client_ID} | {year}_{quarter} --")
+                year_quarter = f"{year}_{quarter}"
 
-                path = Path(f"{root_path}_{deal.id}/{str(year)}_{quarter}")
+                print(f"\n-- Client: {client_ID} | {year_quarter} --")
+
+                path = Path(f"{root_path}_{deal.id}/{year_quarter}")
                 assert path.exists(), f"PATH_DOES_NOT_EXIST"
 
-                with open(path / FILENAME_LOGICS, "r") as f:
+                path_logics = path / FILENAME_LOGICS
+                assert path_logics.exists(), f"LOGICS_JSON_DOES_NOT_EXIST"
+                with open(path_logics, "r") as f:
                     logics = json.load(f)
 
-                with open(path / FILENAME_CFO_DATA, "r") as f:
+                path_cfo_data = path / FILENAME_CFO_DATA
+                assert path_cfo_data.exists(), f"CFO_DATA_JSON_DOES_NOT_EXIST"
+                with open(path_cfo_data, "r") as f:
                     cfo_data = json.load(f)
 
                 deal.process_logics_and_cfo_data(year, quarter, logics, cfo_data)
                 assert deal.history[year][quarter] is not None
 
-                generate_initial_report(deal.history[year][quarter]["logics"], path / FILENAME_INITIAL_REPORT)
+                filename_initial_report = f"report_initial_{year_quarter}.pdf"
+                filename_final_report = f"report_final_{year_quarter}.pdf"
+
+                generate_initial_report(deal.history[year][quarter]["logics"], path / filename_initial_report)
 
                 generate_final_report(deal.history[year][quarter]["z3_result"], deal.history[year][quarter]["logics"], 
-                                      deal.history[year][quarter]["cfo_data"], path / FILENAME_FINAL_REPORT)
+                                      deal.history[year][quarter]["cfo_data"], path / filename_final_report)
 
     return portfolio
