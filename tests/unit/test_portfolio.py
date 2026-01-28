@@ -47,6 +47,16 @@ def test_portfolio_inputs():
         assert str(exc.value) == expected_msg
         print(f"ERROR: {exc.value}")
 
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], ["2026", "2025"], ["Q4"], "tests/scenarios/deal")
+    assert str(exc.value) == "YEARS_NOT_SORTED"
+    print(f"ERROR: {exc.value}")
+
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(["Netflix"], ["2026"], ["Q4", "Q3"], "tests/scenarios/deal")
+    assert str(exc.value) == "QUARTERS_NOT_SORTED"
+    print(f"ERROR: {exc.value}")
+
 def test_portfolio_path():
 
     bad_path = "tests/scenarios/deal_bad"
