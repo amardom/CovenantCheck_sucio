@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 import pytest
 from app.core.portfolio import create_portfolio
 
@@ -65,13 +67,51 @@ def test_portfolio_path():
     assert str(exc.value) == "PATH_DOES_NOT_EXIST"
     print(f"ERROR: {exc.value}")
 
+def test_portfolio_logics_json_exist(tmp_path):
+    client_id = "Client1"
+    year_quarter = "2026_Q1"
+    
+    client_folder = tmp_path / f"{client_id}"
+    period_folder = client_folder / year_quarter
+    period_folder.mkdir(parents=True)
+
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(
+            clients=[client_id], 
+            years=["2026"], 
+            quarters=["Q1"], 
+            root_path=str(tmp_path)
+        )
+    assert str(exc.value) == "LOGICS_JSON_DOES_NOT_EXIST"
+    print(f"ERROR: {exc.value}")
+
+def test_portfolio_cfo_data_json_exist(tmp_path):
+    client_id = "Client1"
+    year_quarter = "2026_Q1"
+    
+    client_folder = tmp_path / f"{client_id}"
+    period_folder = client_folder / year_quarter
+    period_folder.mkdir(parents=True)
+
+    (period_folder / "logics.json").write_text("{}")
+
+    with pytest.raises(AssertionError) as exc:
+        create_portfolio(
+            clients=[client_id], 
+            years=["2026"], 
+            quarters=["Q1"], 
+            root_path=str(tmp_path)
+        )
+    assert str(exc.value) == "CFO_DATA_JSON_DOES_NOT_EXIST"
+    print(f"ERROR: {exc.value}")
+
 def test_portfolio_indexing():
 
     clients = ["companyHealth", "companyRealEstate", "companyTech"]
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
-    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01/deal")
+    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01")
 
     assert len(portfolio) == 3
     assert set(portfolio.keys()) == set(clients)

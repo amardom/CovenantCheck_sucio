@@ -39,7 +39,7 @@ def create_portfolio(clients, years, quarters, root_path):
 
                 print(f"\n-- Client: {client_ID} | {year_quarter} --")
 
-                path = Path(f"{root_path}_{deal.id}/{year_quarter}")
+                path = Path(f"{root_path}/{deal.id}/{year_quarter}")
                 assert path.exists(), f"PATH_DOES_NOT_EXIST"
 
                 path_logics = path / FILENAME_LOGICS
