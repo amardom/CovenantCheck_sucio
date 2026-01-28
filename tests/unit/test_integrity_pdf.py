@@ -1,7 +1,8 @@
 import json
 from pypdf import PdfReader
-from app.utils.report_pdf import generate_initial_report, generate_final_report
+from app.utils.report_pdf import generate_initial_report, generate_final_report, generate_portfolio_report
 from app.core.z3_engine import validate_json, verify_logics
+from app.core.portfolio import create_portfolio
 
 LOGICS_FILENAME = "logics_simple.json"
 PATH_LOGICS = "tests/scenarios/" + LOGICS_FILENAME
@@ -71,6 +72,40 @@ def test_pdf_structural_integrity_final():
     EXPECTED_PAGES = 1
     EXPECTED_WORDS = 64
     EXPECTED_CHARS = 681
+    
+    assert metrics["pages"] == EXPECTED_PAGES
+    assert metrics["word_count"] == EXPECTED_WORDS
+    assert metrics["char_count"] == EXPECTED_CHARS
+    
+    assert_variables(logics, OUTPUT_FINAL_PDF)
+
+def test_pdf_structural_integrity_executive_summary():
+    
+    logics = load_json(PATH_LOGICS)
+    validate_json(logics)
+
+    cfo_data = load_json(PATH_CFO_DATA)
+    z3_result = verify_logics(logics, cfo_data)
+
+    clients = ["companyHealth", "companyRealEstate", "companyTech"]
+    years = ["2024", "2025"]
+    quarters = ["Q1", "Q2", "Q3", "Q4"]
+
+    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/deal")
+
+    ANALYSIS_CONFIG = {
+        "companyHealth": ["leverage_ratio", "ebitda"],
+        "companyRealEstate": ["leverage_ratio"],
+        "companyTech": ["leverage_ratio", "ebitda"]
+    }
+
+    generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="portfolio_executive_summary.pdf")
+    
+    metrics = get_pdf_metrics("portfolio_executive_summary.pdf")
+    
+    EXPECTED_PAGES = 2
+    EXPECTED_WORDS = 139
+    EXPECTED_CHARS = 835
     
     assert metrics["pages"] == EXPECTED_PAGES
     assert metrics["word_count"] == EXPECTED_WORDS
