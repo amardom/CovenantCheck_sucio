@@ -85,7 +85,7 @@ def test_pdf_structural_integrity_executive_summary():
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
-    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/deal")
+    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01/deal")
 
     ANALYSIS_CONFIG = {
         "companyHealth": ["leverage_ratio", "ebitda"],
@@ -93,9 +93,9 @@ def test_pdf_structural_integrity_executive_summary():
         "companyTech": ["leverage_ratio", "ebitda"]
     }
 
-    generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="portfolio_executive_summary.pdf")
+    generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="tests/scenarios/Fund_01/portfolio_executive_summary.pdf")
     
-    metrics = get_pdf_metrics("portfolio_executive_summary.pdf")
+    metrics = get_pdf_metrics("tests/scenarios/Fund_01/portfolio_executive_summary.pdf")
     
     EXPECTED_PAGES = 2
     EXPECTED_WORDS = 139

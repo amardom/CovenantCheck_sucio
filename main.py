@@ -7,7 +7,7 @@ def main():
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
-    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/deal")
+    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01/deal")
 
     ANALYSIS_CONFIG = {
         "companyHealth": ["leverage_ratio", "ebitda"],
@@ -15,7 +15,7 @@ def main():
         "companyTech": ["leverage_ratio", "ebitda"]
     }
 
-    generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="portfolio_executive_summary.pdf")
+    generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="tests/scenarios/Fund_01/portfolio_executive_summary.pdf")
 
 if __name__ == "__main__":
     main()

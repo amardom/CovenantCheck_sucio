@@ -10,7 +10,7 @@ def test_portfolio_inputs():
                     ([123], "CLIENT_NOT_A_STR")]
     for invalid, expected_msg in invalid_inputs:
         with pytest.raises(AssertionError) as exc:
-            create_portfolio(invalid, ["2026"], ["Q1"], "tests/scenarios/deal")
+            create_portfolio(invalid, ["2026"], ["Q1"], "tests/scenarios/Fund_01/deal")
         assert str(exc.value) == expected_msg
         print(f"ERROR: {exc.value}")
 
@@ -21,7 +21,7 @@ def test_portfolio_inputs():
                     ([123], "YEAR_NOT_A_STR")]
     for invalid, expected_msg in invalid_inputs:
         with pytest.raises(AssertionError) as exc:
-            create_portfolio(["Netflix"], invalid, ["Q1"], "tests/scenarios/deal")
+            create_portfolio(["Netflix"], invalid, ["Q1"], "tests/scenarios/Fund_01/deal")
         assert str(exc.value) == expected_msg
         print(f"ERROR: {exc.value}")
 
@@ -33,7 +33,7 @@ def test_portfolio_inputs():
                     (["Q5"], "QUARTER_FORMAT_INVALID")]
     for invalid, expected_msg in invalid_inputs:
         with pytest.raises(AssertionError) as exc:
-            create_portfolio(["Netflix"], ["2026"], invalid, "tests/scenarios/deal")
+            create_portfolio(["Netflix"], ["2026"], invalid, "tests/scenarios/Fund_01/deal")
         assert str(exc.value) == expected_msg
         print(f"ERROR: {exc.value}")
     
@@ -48,12 +48,12 @@ def test_portfolio_inputs():
         print(f"ERROR: {exc.value}")
 
     with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026", "2025"], ["Q4"], "tests/scenarios/deal")
+        create_portfolio(["Netflix"], ["2026", "2025"], ["Q4"], "tests/scenarios/Fund_01/deal")
     assert str(exc.value) == "YEARS_NOT_SORTED"
     print(f"ERROR: {exc.value}")
 
     with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], ["Q4", "Q3"], "tests/scenarios/deal")
+        create_portfolio(["Netflix"], ["2026"], ["Q4", "Q3"], "tests/scenarios/Fund_01/deal")
     assert str(exc.value) == "QUARTERS_NOT_SORTED"
     print(f"ERROR: {exc.value}")
 
@@ -71,7 +71,7 @@ def test_portfolio_indexing():
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
-    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/deal")
+    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01/deal")
 
     assert len(portfolio) == 3
     assert set(portfolio.keys()) == set(clients)

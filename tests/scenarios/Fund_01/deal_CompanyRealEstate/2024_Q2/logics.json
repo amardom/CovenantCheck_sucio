@@ -1,0 +1,67 @@
+{
+    "audit_id": "companyRealEstate_2024_Q2.json",
+    "contract_name": "companyRealEstate Strategic Credit Facilities",
+    "variables": [
+        {
+            "name": "revenue",
+            "definition": "Total Operating Revenue",
+            "definition_page": 5
+        },
+        {
+            "name": "operating_expenses",
+            "definition": "Total Operating Expenses",
+            "definition_page": 5
+        },
+        {
+            "name": "ebitda",
+            "definition": "Consolidated EBITDA",
+            "definition_page": 6
+        },
+        {
+            "name": "total_debt",
+            "definition": "Total Indebtedness",
+            "definition_page": 8
+        },
+        {
+            "name": "cash",
+            "definition": "Unrestricted Cash",
+            "definition_page": 12
+        },
+        {
+            "name": "net_debt",
+            "definition": "Consolidated Net Debt",
+            "definition_page": 8
+        },
+        {
+            "name": "leverage_ratio",
+            "definition": "Consolidated Leverage Ratio",
+            "definition_page": 15
+        }
+    ],
+    "logical_conditions": [
+        {
+            "id": 1,
+            "formula": "ebitda == revenue - operating_expenses",
+            "evidence": "Definition of EBITDA (Section 1.01)",
+            "evidence_page": 6
+        },
+        {
+            "id": 2,
+            "formula": "net_debt == total_debt - cash",
+            "evidence": "Net Debt Calculation (Section 1.01)",
+            "evidence_page": 8
+        },
+        {
+            "id": 3,
+            "formula": "leverage_ratio == net_debt / ebitda",
+            "evidence": "Ratio Calculation Methodology",
+            "evidence_page": 15
+        },
+        {
+            "id": 4,
+            "formula": "leverage_ratio <= 3.0",
+            "evidence": "Maximum Leverage Ratio (Section 7.12)",
+            "evidence_page": 42
+        }
+    ]
+}
