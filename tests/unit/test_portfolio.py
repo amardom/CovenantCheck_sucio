@@ -93,7 +93,8 @@ def test_portfolio_cfo_data_json_exist(tmp_path):
     period_folder = client_folder / year_quarter
     period_folder.mkdir(parents=True)
 
-    (period_folder / "logics.json").write_text("{}")
+    logics = {"audit_id": f"{client_id}_{year_quarter}.json"}
+    (period_folder / "logics.json").write_text(json.dumps(logics))
 
     with pytest.raises(AssertionError) as exc:
         create_portfolio(
