@@ -12,7 +12,7 @@ def populate_company():
         for q in quarters:
 
             logics_content = {
-                "audit_id": f"{client_id}_{year}_{q}.json",
+                "audit_id": f"{client_id}_{year}_{q}",
                 "contract_name": f"{client_id} Strategic Credit Facilities",
                 "variables": [
                     {"name": "revenue", "definition": "Total Operating Revenue", "definition_page": 5},
@@ -57,9 +57,9 @@ def populate_company():
             q_index = quarters.index(q)
             cfo_content = {
                 "revenue": 500000,
-                "operating_expenses": 350000 + (q_index * 10000), # Sube el gasto
+                "operating_expenses": 350000 + (q_index * 10000),
                 "total_debt": 500000,
-                "cash": 100000 - (q_index * 5000) # Baja el cash
+                "cash": 100000 - (q_index * 5000)
             }
 
             with open(folder / "logics.json", "w") as f:
@@ -68,7 +68,7 @@ def populate_company():
             with open(folder / "cfo_data.json", "w") as f:
                 json.dump(cfo_content, f, indent=4)
 
-    print(f"✅ Escenario '{client_id}' populado con metadatos completos en {base_path}")
+    print(f"Scenario '{client_id}' populated in {base_path}.")
 
 if __name__ == "__main__":
     populate_company()

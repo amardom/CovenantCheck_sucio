@@ -29,7 +29,7 @@ def create_portfolio(clients, years, quarters, root_path):
     for client_ID in clients:
         
         deal = Deal(client_ID)
-        portfolio[client_ID] = deal
+        portfolio[deal.id] = deal
 
         for year in years:
 
