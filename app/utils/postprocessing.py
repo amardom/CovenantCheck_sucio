@@ -1,7 +1,7 @@
 from z3 import *
 from app.core.z3_engine import verify_logics
 
-def find_max_stress(portfolio, clients, year, quarter, target_var, step):
+def find_max_stress(portfolio, clients, year, quarter, target_var, step, direction):
 
     assert isinstance(clients, list), "CLIENTS_NOT_A_LIST" 
     assert len(clients) > 0, "CLIENTS_LIST_EMPTY"
@@ -22,9 +22,10 @@ def find_max_stress(portfolio, clients, year, quarter, target_var, step):
             
             logics = portfolio[client].history[year][quarter]["logics"]
             cfo_data = portfolio[client].history[year][quarter]["cfo_data"]
-
+            
+            factor = (1 - current_drop) if direction == "down" else (1 + current_drop)
             test_data = cfo_data.copy()
-            test_data[target_var] = cfo_data[target_var] * (1 - current_drop)
+            test_data[target_var] = cfo_data[target_var] * factor
             
             z3_result = verify_logics(logics, test_data)
             print(f"DEBUG {client}: Drop {current_drop} -> Result: {z3_result['is_compliant']}")
@@ -36,7 +37,8 @@ def find_max_stress(portfolio, clients, year, quarter, target_var, step):
 
         last_sat = max(0, current_drop - step)
         max_allowed_drop = last_sat * 100
-        break_value = cfo_data[target_var] * (1 - last_sat)
+        last_sat_factor = (1 - last_sat) if direction == "down" else (1 + last_sat)
+        break_value = cfo_data[target_var] * last_sat_factor
 
         stress_analysis[client] = {
             "target_var" : target_var,

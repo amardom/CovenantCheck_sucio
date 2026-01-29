@@ -18,7 +18,7 @@ def main():
 
     generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="tests/scenarios/Fund_01/portfolio_executive_summary.pdf")
 
-    stress_results = find_max_stress(portfolio, clients, "2024", "Q1", target_var="revenue", step=0.01)
+    stress_results = find_max_stress(portfolio, clients, "2024", "Q1", target_var="revenue", step=0.01, direction="down")
 
     generate_stress_report(stress_results, output_path="tests/scenarios/Fund_01/portfolio_stress_summary.pdf")
 
