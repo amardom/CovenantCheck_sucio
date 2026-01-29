@@ -1,5 +1,5 @@
 from app.core.portfolio import create_portfolio
-from app.utils.report_pdf import generate_portfolio_report
+from app.utils.report import generate_portfolio_report
 
 def main():
 

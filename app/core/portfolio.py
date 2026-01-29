@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from app.utils.report_pdf import generate_initial_report, generate_final_report
+from app.utils.report import generate_initial_report, generate_final_report
 from app.core.deal import Deal
 
 FILENAME_LOGICS = "logics.json"

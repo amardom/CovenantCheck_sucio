@@ -1,5 +1,5 @@
 import pytest
-from app.utils.post_processing import find_max_stress
+from app.utils.postprocessing import find_max_stress
 from app.core.portfolio import create_portfolio
 
 def test_find_max_stress():

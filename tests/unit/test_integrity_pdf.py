@@ -1,6 +1,6 @@
 import json
 from pypdf import PdfReader
-from app.utils.report_pdf import generate_initial_report, generate_final_report, generate_portfolio_report
+from app.utils.report import generate_initial_report, generate_final_report, generate_portfolio_report
 from app.core.z3_engine import validate_json, verify_logics
 from app.core.portfolio import create_portfolio
 
