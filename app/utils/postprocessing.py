@@ -27,8 +27,9 @@ def find_max_stress(portfolio, clients, year, quarter, target_var, step):
             test_data[target_var] = cfo_data[target_var] * (1 - current_drop)
             
             z3_result = verify_logics(logics, test_data)
-
-            if z3_result["is_compliant"] == z3.sat:
+            print(f"DEBUG {client}: Drop {current_drop} -> Result: {z3_result['is_compliant']}")
+            if z3_result["is_compliant"] == True:
+                print(f"DEBUG {client}: Drop {current_drop} -> Result: {z3_result['is_compliant']}")
                 current_drop = current_drop + step
             else:
                 is_safe = False
@@ -38,9 +39,12 @@ def find_max_stress(portfolio, clients, year, quarter, target_var, step):
         break_value = cfo_data[target_var] * (1 - last_sat)
 
         stress_analysis[client] = {
+            "target_var" : target_var,
+            "year_quarter" : f"{year}_{quarter}",
+            "current_value" : cfo_data[target_var],
             "headroom_pct": f"{max_allowed_drop:.1f}%",
             "limit_value": round(break_value, 2),
-            "status": "Safe" if max_allowed_drop > 10 else "Critical"
+            "status": "Safe" if max_allowed_drop > 9 else "Critical"
         }
 
     return stress_analysis

@@ -229,3 +229,75 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
         pdf.ln(8)
 
     pdf.output(output_path)
+
+def generate_stress_report(stress_results, output_path="portfolio_stress_summary.pdf"):
+    pdf = FPDF(orientation='L') 
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    
+    # Título con un toque "Corporate Risk"
+    pdf.set_font("Arial", "B", 18)
+    pdf.set_text_color(100, 30, 30) 
+    pdf.cell(0, 15, f"STRATEGIC STRESS TEST ({list(stress_results.values())[0]["year_quarter"]})", ln=True, align="C")
+    pdf.ln(5)
+
+    pdf.set_font("Arial", "", 10)
+    pdf.set_text_color(0)
+    target_var_name = next(iter(stress_results.values()))["target_var"]
+    pdf.cell(0, 10, f"Stress target variable: {target_var_name}.", ln=True, align="L")
+    pdf.ln(5)
+
+    # Definimos columnas para las 4 métricas (incluyendo el Current Value)
+    # Ancho total en Landscape es ~280mm útiles
+    col_metric, row_h = 65, 12
+
+    for client_id, analysis in stress_results.items():
+        # Header del Cliente
+        pdf.set_fill_color(235, 235, 235)
+        pdf.set_text_color(0)
+        pdf.set_font("Arial", "B", 11)
+        pdf.cell(0, 10, f"Client: {client_id}.", ln=True, fill=True, border="B")
+        pdf.ln(2)
+
+        # Cabecera de la tabla
+        pdf.set_font("Arial", "B", 9)
+        pdf.set_fill_color(245, 245, 245)
+        pdf.cell(col_metric, row_h, "Current Value", border=1, align="C", fill=True)
+        pdf.cell(col_metric, row_h, "Headroom (%)", border=1, align="C", fill=True)
+        pdf.cell(col_metric, row_h, "Covenant Break Value", border=1, align="C", fill=True)
+        pdf.cell(col_metric, row_h, "Risk Status", border=1, align="C", fill=True)
+        pdf.ln()
+
+        # Fila de Datos
+        pdf.set_font("Arial", "", 10)
+        
+        # 1. Valor Actual
+        pdf.cell(col_metric, row_h, f"{analysis['current_value']:,.2f}", border=1, align="C")
+
+        # 2. Headroom %
+        pdf.cell(col_metric, row_h, analysis["headroom_pct"], border=1, align="C")
+
+        # 3. Valor de Ruptura
+        pdf.cell(col_metric, row_h, f"{analysis['limit_value']:,.2f}", border=1, align="C")
+
+        # 4. Status con semáforo
+        status = analysis["status"]
+        if status == "Safe":
+            pdf.set_text_color(34, 139, 34) # Verde Bosque
+        else:
+            pdf.set_text_color(200, 30, 30) # Rojo Alerta
+
+        pdf.set_font("Arial", "B", 10)
+        pdf.cell(col_metric, row_h, status.upper(), border=1, align="C")
+        
+        # Reset para el siguiente bloque
+        pdf.set_text_color(0)
+        pdf.ln(18) 
+
+    # Footer con metadata del análisis
+    pdf.set_y(-20)
+    pdf.set_font("Arial", "I", 8)
+    pdf.set_text_color(150)
+    pdf.cell(0, 5, "Note: Analysis performed via automated SMT (Satisfiability Modulo Theories) verification of credit agreement logical clauses.", align="R")
+
+    pdf.output(output_path)
