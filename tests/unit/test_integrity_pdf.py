@@ -85,7 +85,7 @@ def test_pdf_structural_integrity_executive_summary():
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
-    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01/deal")
+    portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01")
 
     ANALYSIS_CONFIG = {
         "companyHealth": ["leverage_ratio", "ebitda"],
