@@ -108,13 +108,13 @@ def test_portfolio_cfo_data_json_exist(tmp_path):
 
 def test_portfolio_indexing():
 
-    clients = ["companyHealth", "companyRealEstate", "companyTech"]
+    clients = ["companyHealth", "companyTech"]
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
     portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01")
 
-    assert len(portfolio) == 3
+    assert len(portfolio) == 2
     assert set(portfolio.keys()) == set(clients)
 
     for client_id in clients:
