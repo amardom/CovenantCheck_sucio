@@ -108,18 +108,3 @@ def calculate_stress_matrix(portfolio, clients, year, quarter, var_config):
         }
         
     return matrix_results
-
-"""
-def run_stress_test(logics, cfo_data, stress_factors):
-
-    #stress_factors: {"ebitda": 0.9, "interest_rate": 1.2}
-
-    stressed_data = cfo_data.copy()
-    
-    for var, factor in stress_factors.items():
-        if var in stressed_data:
-            stressed_data[var] = stressed_data[var] * factor
-
-    z3_result = verify_logics(logics, stressed_data)
-    return z3_result
-"""

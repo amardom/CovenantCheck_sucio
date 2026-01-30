@@ -301,3 +301,69 @@ def generate_stress_report(stress_results, output_path="portfolio_stress_summary
     pdf.cell(0, 5, "Note: Analysis performed via automated SMT (Satisfiability Modulo Theories) verification of credit agreement logical clauses.", align="R")
 
     pdf.output(output_path)
+
+def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_matrix.pdf"):
+    pdf = FPDF(orientation='L')
+    pdf.set_auto_page_break(auto=True, margin=15)
+    
+    for client_id, data in matrix_results.items():
+        pdf.add_page()
+        meta = data["metadata"]
+        grid = data["grid"] # La matriz de resultados
+        
+        # Título de la página
+        pdf.set_font("Arial", "B", 16)
+        pdf.set_text_color(40, 40, 40)
+        pdf.cell(0, 10, f"SENSITIVITY MATRIX: {client_id}", ln=True, align="C")
+        pdf.set_font("Arial", "I", 10)
+        pdf.cell(0, 10, f"Stress Correlation: {meta['var_y'].upper()} (Y) vs {meta['var_x'].upper()} (X)", ln=True, align="C")
+        pdf.ln(10)
+
+        # Configuración de la tabla
+        # En Landscape tenemos ~270mm. 
+        cell_w = 35  # Ancho de cada celda de la matriz
+        header_y_w = 45 # Ancho de la columna de etiquetas Y
+        row_h = 12
+
+        # --- CABECERA X (Etiqutas de la variable horizontal) ---
+        pdf.set_font("Arial", "B", 9)
+        pdf.set_fill_color(240, 240, 240)
+        pdf.cell(header_y_w, row_h, f"Y: {meta['var_y']} \ X: {meta['var_x']}", border=1, align="C", fill=True)
+        
+        for label_x in meta["labels_x"]:
+            pdf.cell(cell_w, row_h, label_x, border=1, align="C", fill=True)
+        pdf.ln()
+
+        # --- CUERPO DE LA MATRIZ (Filas) ---
+        # Recorremos el grid. Cada 'row' en grid corresponde a un nivel de estrés de Y
+        for i, row in enumerate(grid):
+            # Etiqueta de la fila (Variable Y)
+            pdf.set_font("Arial", "B", 9)
+            pdf.set_fill_color(240, 240, 240)
+            pdf.cell(header_y_w, row_h, meta["labels_y"][i], border=1, align="C", fill=True)
+            
+            # Celdas de resultado
+            for cell in row:
+                if cell["is_compliant"]:
+                    pdf.set_fill_color(200, 255, 200) # Verde claro (PASS)
+                    pdf.set_text_color(0, 100, 0)
+                    txt = "OK"
+                else:
+                    pdf.set_fill_color(255, 200, 200) # Rojo claro (FAIL)
+                    pdf.set_text_color(150, 0, 0)
+                    txt = "BREACH"
+                
+                pdf.set_font("Arial", "B", 8)
+                pdf.cell(cell_w, row_h, txt, border=1, align="C", fill=True)
+            
+            pdf.set_text_color(0) # Reset color texto
+            pdf.ln()
+
+        # Leyenda explicativa al pie de la matriz
+        pdf.ln(15)
+        pdf.set_font("Arial", "I", 9)
+        pdf.set_text_color(100)
+        pdf.multi_cell(0, 5, f"Legend: This matrix explores the combined impact of {meta['var_x']} and {meta['var_y']}. " 
+                            f"Red cells ('BREACH') indicate a violation of one or more logical covenants in the credit agreement.")
+
+    pdf.output(output_path)
