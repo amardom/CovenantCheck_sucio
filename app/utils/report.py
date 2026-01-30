@@ -359,6 +359,25 @@ def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_ma
             pdf.set_text_color(0) # Reset color texto
             pdf.ln()
 
+        # --- (Debajo del bucle de la matriz) ---
+
+        # Añadir Resumen de Headroom de Alta Precisión
+        pdf.ln(5)
+        pdf.set_font("Arial", "B", 10)
+        pdf.set_text_color(40, 40, 40)
+        
+        # Recuperamos los nombres de las variables para el texto
+        v_x = meta['var_x'].replace('_', ' ').title()
+        v_y = meta['var_y'].replace('_', ' ').title()
+        
+        # Imprimimos los valores precisos almacenados en la raíz del diccionario
+        pdf.cell(0, 8, f"Precise Headroom {v_x}: {data[f'headroom_x']}", ln=True)
+        pdf.cell(0, 8, f"Precise Headroom {v_y}: {data[f'headroom_y']}", ln=True)
+
+        # Leyenda explicativa al pie de la matriz (ya estaba en tu código)
+        pdf.ln(5)
+        pdf.set_font("Arial", "I", 9)
+
         # Leyenda explicativa al pie de la matriz
         pdf.ln(15)
         pdf.set_font("Arial", "I", 9)
