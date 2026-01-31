@@ -49,28 +49,31 @@ def test_deal_flow():
     assert entry["logics"]["logical_conditions"][1]["formula"] == "consolidated_leverage_ratio <= 2.5"
     assert entry["z3_result"]["is_compliant"] == True
 
-def test_deal_year_and_quarter():
+@pytest.mark.parametrize("invalid_year, expected_msg", [
+    ([], "YEAR_NOT_A_STR"),
+    (123, "YEAR_NOT_A_STR"),
+    (None, "YEAR_NOT_A_STR"),
+    ("26", "YEAR_FORMAT_INVALID"),
+    ("20265", "YEAR_FORMAT_INVALID"), # Caso extra: año demasiado largo
+])
+def test_deal_year_validation(invalid_year, expected_msg):
+    deal = Deal("CompanyTech_2026")
+    with pytest.raises(AssertionError) as exc:
+        # Mantenemos Q1 como válido para que solo falle el año
+        deal.process_logics_and_cfo_data(invalid_year, "Q1", {}, {})
+    assert str(exc.value) == expected_msg
 
-    print("")
-    client_id = "CompanyTech_2026"
-    deal = Deal(client_id)
-
-    invalid_inputs = [([], "YEAR_NOT_A_STR"),
-                    (123, "YEAR_NOT_A_STR"),
-                    (None, "YEAR_NOT_A_STR"),
-                    ("26", "YEAR_FORMAT_INVALID")]
-    for invalid, expected_msg in invalid_inputs:
-        with pytest.raises(AssertionError) as exc:
-            deal.process_logics_and_cfo_data(invalid, "Q1", {}, {})
-        assert str(exc.value) == expected_msg
-        print(f"ERROR: {exc.value}")
-
-    invalid_inputs = [([], "QUARTER_NOT_A_STR"),
-                    (123, "QUARTER_NOT_A_STR"),
-                    (None, "QUARTER_NOT_A_STR"),
-                    ("Q5", "QUARTER_FORMAT_INVALID")]
-    for invalid, expected_msg in invalid_inputs:
-        with pytest.raises(AssertionError) as exc:
-            deal.process_logics_and_cfo_data("2026", invalid, {}, {})
-        assert str(exc.value) == expected_msg
-        print(f"ERROR: {exc.value}")
+@pytest.mark.parametrize("invalid_quarter, expected_msg", [
+    ([], "QUARTER_NOT_A_STR"),
+    (123, "QUARTER_NOT_A_STR"),
+    (None, "QUARTER_NOT_A_STR"),
+    ("Q5", "QUARTER_FORMAT_INVALID"),
+    ("q1", "QUARTER_FORMAT_INVALID"), # Caso extra: minúsculas (si tu assert es estricto)
+    ("1", "QUARTER_FORMAT_INVALID"),  # Caso extra: solo el número
+])
+def test_deal_quarter_validation(invalid_quarter, expected_msg):
+    deal = Deal("CompanyTech_2026")
+    with pytest.raises(AssertionError) as exc:
+        # Mantenemos 2026 como válido para que solo falle el trimestre
+        deal.process_logics_and_cfo_data("2026", invalid_quarter, {}, {})
+    assert str(exc.value) == expected_msg

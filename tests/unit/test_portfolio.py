@@ -3,69 +3,50 @@ from pathlib import Path
 import pytest
 from app.core.portfolio import create_portfolio
 
-def test_portfolio_inputs():
-    print("")
-    invalid_inputs = [([], "CLIENTS_LIST_EMPTY"),
-                    ("a string", "CLIENTS_NOT_A_LIST"),
-                    (123, "CLIENTS_NOT_A_LIST"),
-                    (None, "CLIENTS_NOT_A_LIST"),
-                    ([123], "CLIENT_NOT_A_STR")]
-    for invalid, expected_msg in invalid_inputs:
-        with pytest.raises(AssertionError) as exc:
-            create_portfolio(invalid, ["2026"], ["Q1"], "tests/scenarios/Fund_01/deal")
-        assert str(exc.value) == expected_msg
-        print(f"ERROR: {exc.value}")
+# --- CONSTANTES PARA TESTS ---
+VALID_CLIENTS = ["Netflix"]
+VALID_YEARS = ["2026"]
+VALID_QUARTERS = ["Q1"]
+VALID_PATH = "tests/scenarios/Fund_01/deal"
 
-    invalid_inputs = [([], "YEARS_LIST_EMPTY"),
-                    ("a string", "YEARS_NOT_A_LIST"),
-                    (123, "YEARS_NOT_A_LIST"),
-                    (None, "YEARS_NOT_A_LIST"),
-                    ([123], "YEAR_NOT_A_STR")]
-    for invalid, expected_msg in invalid_inputs:
-        with pytest.raises(AssertionError) as exc:
-            create_portfolio(["Netflix"], invalid, ["Q1"], "tests/scenarios/Fund_01/deal")
-        assert str(exc.value) == expected_msg
-        print(f"ERROR: {exc.value}")
+# --- 1. VALIDACIÓN DE INPUTS (La "Batería" de Asserts) ---
 
-    invalid_inputs = [([], "QUARTERS_LIST_EMPTY"),
-                    ("a string", "QUARTERS_NOT_A_LIST"),
-                    (123, "QUARTERS_NOT_A_LIST"),
-                    (None, "QUARTERS_NOT_A_LIST"),
-                    ([123], "QUARTER_NOT_A_STR"),
-                    (["Q5"], "QUARTER_FORMAT_INVALID")]
-    for invalid, expected_msg in invalid_inputs:
-        with pytest.raises(AssertionError) as exc:
-            create_portfolio(["Netflix"], ["2026"], invalid, "tests/scenarios/Fund_01/deal")
-        assert str(exc.value) == expected_msg
-        print(f"ERROR: {exc.value}")
+@pytest.mark.parametrize("c, y, q, path, expected_msg", [
+    # Validación de Clientes
+    ([], VALID_YEARS, VALID_QUARTERS, VALID_PATH, "CLIENTS_LIST_EMPTY"),
+    ("string", VALID_YEARS, VALID_QUARTERS, VALID_PATH, "CLIENTS_NOT_A_LIST"),
+    (123, VALID_YEARS, VALID_QUARTERS, VALID_PATH, "CLIENTS_NOT_A_LIST"),
+    (None, VALID_YEARS, VALID_QUARTERS, VALID_PATH, "CLIENTS_NOT_A_LIST"),
+    ([123], VALID_YEARS, VALID_QUARTERS, VALID_PATH, "CLIENT_NOT_A_STR"),
     
-    invalid_inputs = [([], "ROOT_PATH_NOT_A_STR"),
-                    (123, "ROOT_PATH_NOT_A_STR"),
-                    (None, "ROOT_PATH_NOT_A_STR"),
-                    (str(), "ROOT_PATH_EMPTY")]
-    for invalid, expected_msg in invalid_inputs:
-        with pytest.raises(AssertionError) as exc:
-            create_portfolio(["Netflix"], ["2026"], ["Q4"], invalid)
-        assert str(exc.value) == expected_msg
-        print(f"ERROR: {exc.value}")
-
+    # Validación de Años
+    (VALID_CLIENTS, [], VALID_QUARTERS, VALID_PATH, "YEARS_LIST_EMPTY"),
+    (VALID_CLIENTS, "string", VALID_QUARTERS, VALID_PATH, "YEARS_NOT_A_LIST"),
+    (VALID_CLIENTS, 123, VALID_QUARTERS, VALID_PATH, "YEARS_NOT_A_LIST"),
+    (VALID_CLIENTS, None, VALID_QUARTERS, VALID_PATH, "YEARS_NOT_A_LIST"),
+    (VALID_CLIENTS, [123], VALID_QUARTERS, VALID_PATH, "YEAR_NOT_A_STR"),
+    (VALID_CLIENTS, ["2026", "2025"], VALID_QUARTERS, VALID_PATH, "YEARS_NOT_SORTED"),
+    
+    # Validación de Trimestres
+    (VALID_CLIENTS, VALID_YEARS, [], VALID_PATH, "QUARTERS_LIST_EMPTY"),
+    (VALID_CLIENTS, VALID_YEARS, "string", VALID_PATH, "QUARTERS_NOT_A_LIST"),
+    (VALID_CLIENTS, VALID_YEARS, 123, VALID_PATH, "QUARTERS_NOT_A_LIST"),
+    (VALID_CLIENTS, VALID_YEARS, None, VALID_PATH, "QUARTERS_NOT_A_LIST"),
+    (VALID_CLIENTS, VALID_YEARS, [123], VALID_PATH, "QUARTER_NOT_A_STR"),
+    (VALID_CLIENTS, VALID_YEARS, ["Q5"], VALID_PATH, "QUARTER_FORMAT_INVALID"),
+    (VALID_CLIENTS, VALID_YEARS, ["Q4", "Q3"], VALID_PATH, "QUARTERS_NOT_SORTED"),
+    
+    # Validación de Path (Root Path)
+    (VALID_CLIENTS, VALID_YEARS, VALID_QUARTERS, [], "ROOT_PATH_NOT_A_STR"),
+    (VALID_CLIENTS, VALID_YEARS, VALID_QUARTERS, 123, "ROOT_PATH_NOT_A_STR"),
+    (VALID_CLIENTS, VALID_YEARS, VALID_QUARTERS, None, "ROOT_PATH_NOT_A_STR"),
+    (VALID_CLIENTS, VALID_YEARS, VALID_QUARTERS, "", "ROOT_PATH_EMPTY"),
+    (VALID_CLIENTS, VALID_YEARS, VALID_QUARTERS, "tests/scenarios/deal_bad", "PATH_DOES_NOT_EXIST"),
+])
+def test_create_portfolio_assertions(c, y, q, path, expected_msg):
     with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026", "2025"], ["Q4"], "tests/scenarios/Fund_01/deal")
-    assert str(exc.value) == "YEARS_NOT_SORTED"
-    print(f"ERROR: {exc.value}")
-
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], ["Q4", "Q3"], "tests/scenarios/Fund_01/deal")
-    assert str(exc.value) == "QUARTERS_NOT_SORTED"
-    print(f"ERROR: {exc.value}")
-
-def test_portfolio_path():
-
-    bad_path = "tests/scenarios/deal_bad"
-    with pytest.raises(AssertionError) as exc:
-        create_portfolio(["Netflix"], ["2026"], ["Q1"], bad_path)
-    assert str(exc.value) == "PATH_DOES_NOT_EXIST"
-    print(f"ERROR: {exc.value}")
+        create_portfolio(c, y, q, path)
+    assert str(exc.value) == expected_msg
 
 def test_portfolio_logics_json_exist(tmp_path):
     client_id = "Client1"
