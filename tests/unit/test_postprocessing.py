@@ -1,6 +1,5 @@
 import pytest
-from app.utils.postprocessing import calculate_stress_matrix
-from app.core.portfolio import create_portfolio
+from app.core.postprocessing import calculate_stress_matrix
 
 # Mock inicial de datos válidos para que el test no falle por otros motivos
 valid_portfolio = {"Client1": {"history": {"2024": {"Q1": {"logics": [], "cfo_data": {}}}}}}

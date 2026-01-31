@@ -1,6 +1,6 @@
 from app.core.portfolio import create_portfolio
-from app.utils.report import generate_portfolio_report, generate_matrix_report
-from app.utils.postprocessing import calculate_stress_matrix
+from app.core.report import generate_portfolio_report, generate_matrix_report
+from app.core.postprocessing import calculate_stress_matrix
 
 def main():
 
