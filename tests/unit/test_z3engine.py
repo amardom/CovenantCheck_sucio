@@ -64,7 +64,7 @@ def test_verify_logics_unknown():
         "variables": [{"name": "x", "definition": "Non-linear math", "definition_page": 9}],
         "logical_conditions": [{
             "id": 999, 
-            "formula": "x**x == 50", # Non-linear is complicated for z3 using Reals.
+            "formula": "x**x == 50",
             "evidence": "Complexity breach", 
             "evidence_page": 1
         }]
@@ -83,7 +83,7 @@ def test_verify_logics_missing_model_value():
         "contract_name": "Orphan Test",
         "variables": [
             {"name": "x", "definition": "Active", "definition_page": 9},
-            {"name": "y", "definition": "Orphan", "definition_page": 19} # Unused variable.
+            {"name": "y", "definition": "Orphan", "definition_page": 19}
         ],
         "logical_conditions": [{
             "id": 1, 
@@ -106,8 +106,7 @@ def test_verify_logics_not_a_z3_expr():
         "contract_name": "Invalid Expr Test",
         "variables": [{"name": "ebitda", "definition": "Finance", "definition_page": 9}],
         "logical_conditions": [{
-            "id": 101, 
-            # Esto es un Booleano de Python, no una fórmula de Z3
+            "id": 101,
             "formula": "1 == 1", 
             "evidence": "Static check", 
             "evidence_page": 1
