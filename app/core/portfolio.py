@@ -47,7 +47,7 @@ def create_portfolio(clients, years, quarters, root_path):
                 with open(path_logics, "r") as f:
                     logics = json.load(f)
                     
-                assert logics['audit_id'] == f"{client_ID}_{year_quarter}.json", "AUDIT_ID_IS_WRONG"
+                assert logics['audit_id'] == f"{client_ID}_{year_quarter}", "AUDIT_ID_IS_WRONG"
 
                 path_cfo_data = path / FILENAME_CFO_DATA
                 assert path_cfo_data.exists(), f"CFO_DATA_JSON_DOES_NOT_EXIST"
