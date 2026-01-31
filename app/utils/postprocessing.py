@@ -3,6 +3,8 @@ from app.core.z3_engine import verify_logics
 
 def calculate_stress_matrix(portfolio, clients, year, quarter, stress_config):
 
+    assert isinstance(portfolio, dict), "PORTFOLIO_NOT_A_DICT"
+
     assert isinstance(clients, list), "CLIENTS_NOT_A_LIST" 
     assert len(clients) > 0, "CLIENTS_LIST_EMPTY"
     assert all(isinstance(c, str) for c in clients), "CLIENT_NOT_A_STR"
@@ -10,7 +12,7 @@ def calculate_stress_matrix(portfolio, clients, year, quarter, stress_config):
     assert len(year) == 4, "YEAR_FORMAT_INVALID"
     assert isinstance(quarter, str), "QUARTER_NOT_A_STR"
     assert quarter in ["Q1", "Q2", "Q3", "Q4"], "QUARTER_FORMAT_INVALID"
-    assert isinstance(stress_config, dict), "STRESS_CONFIG_NOT_A_LIST"
+    assert isinstance(stress_config, dict), "STRESS_CONFIG_NOT_A_DICT"
     
     assert "var_x" in stress_config, "VAR_X_IS_MISSING"
     assert "var_y" in stress_config, "VAR_Y_IS_MISSING"
@@ -32,7 +34,7 @@ def calculate_stress_matrix(portfolio, clients, year, quarter, stress_config):
         assert len(var["name"]) > 0, f"NAME_IS_EMPTY_IN_{key}"
         assert len(var["direction"]) > 0, f"DIRECTION_IS_EMPTY_IN_{key}"
         assert var["direction"] in ["down", "up"], f"DIRECTION_FORMAT_INVALID_IN_{key}"
-        assert var["steps"] > 0, f"STEPS_IS_BELOW_ONE_IN_{key}"
+        assert var["steps"] > 0 and var["steps"] < 21, f"STEPS_IMPOSSIBLE_VALUE_IN_{key}"
         assert var["max_pct"] > 0.001 and var["max_pct"] < 1.001, f"MAX_PCT_IMPOSSIBLE_VALUE_IN_{key}"
 
     matrix_results = {}
