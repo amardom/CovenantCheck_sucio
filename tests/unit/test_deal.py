@@ -50,9 +50,9 @@ def test_deal_flow():
     assert entry["z3_result"]["is_compliant"] == True
 
 @pytest.mark.parametrize("invalid_year, expected_msg", [
-    ([], "YEAR_NOT_A_STR"),
-    (123, "YEAR_NOT_A_STR"),
-    (None, "YEAR_NOT_A_STR"),
+    ([], "YEAR_NOT_STR"),
+    (123, "YEAR_NOT_STR"),
+    (None, "YEAR_NOT_STR"),
     ("26", "YEAR_FORMAT_INVALID"),
     ("20265", "YEAR_FORMAT_INVALID"), # Caso extra: año demasiado largo
 ])
@@ -64,9 +64,9 @@ def test_deal_year_validation(invalid_year, expected_msg):
     assert str(exc.value) == expected_msg
 
 @pytest.mark.parametrize("invalid_quarter, expected_msg", [
-    ([], "QUARTER_NOT_A_STR"),
-    (123, "QUARTER_NOT_A_STR"),
-    (None, "QUARTER_NOT_A_STR"),
+    ([], "QUARTER_NOT_STR"),
+    (123, "QUARTER_NOT_STR"),
+    (None, "QUARTER_NOT_STR"),
     ("Q5", "QUARTER_FORMAT_INVALID"),
     ("q1", "QUARTER_FORMAT_INVALID"), # Caso extra: minúsculas (si tu assert es estricto)
     ("1", "QUARTER_FORMAT_INVALID"),  # Caso extra: solo el número

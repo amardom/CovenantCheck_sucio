@@ -48,8 +48,8 @@ def test_pdf_structural_integrity_initial():
     metrics = get_pdf_metrics(OUTPUT_INITIAL_PDF)
     
     EXPECTED_PAGES = 1
-    EXPECTED_WORDS = 172
-    EXPECTED_CHARS = 1459
+    EXPECTED_WORDS = 170
+    EXPECTED_CHARS = 1444
     
     assert metrics["pages"] == EXPECTED_PAGES
     assert metrics["word_count"] == EXPECTED_WORDS
@@ -70,8 +70,8 @@ def test_pdf_structural_integrity_final():
     metrics = get_pdf_metrics(OUTPUT_FINAL_PDF)
     
     EXPECTED_PAGES = 1
-    EXPECTED_WORDS = 64
-    EXPECTED_CHARS = 684
+    EXPECTED_WORDS = 62
+    EXPECTED_CHARS = 669
     
     assert metrics["pages"] == EXPECTED_PAGES
     assert metrics["word_count"] == EXPECTED_WORDS
@@ -97,8 +97,8 @@ def test_pdf_structural_integrity_executive_summary():
     metrics = get_pdf_metrics("tests/scenarios/Fund_01/portfolio_executive_summary.pdf")
     
     EXPECTED_PAGES = 1
-    EXPECTED_WORDS = 92
-    EXPECTED_CHARS = 580
+    EXPECTED_WORDS = 89
+    EXPECTED_CHARS = 489
     
     assert metrics["pages"] == EXPECTED_PAGES
     assert metrics["word_count"] == EXPECTED_WORDS

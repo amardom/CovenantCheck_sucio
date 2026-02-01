@@ -3,36 +3,36 @@ from app.core.z3_engine import verify_logics
 
 def calculate_stress_matrix(portfolio, clients, year, quarter, stress_config):
 
-    assert isinstance(portfolio, dict), "PORTFOLIO_NOT_A_DICT"
+    assert isinstance(portfolio, dict), "PORTFOLIO_NOT_DICT"
 
-    assert isinstance(clients, list), "CLIENTS_NOT_A_LIST" 
+    assert isinstance(clients, list), "CLIENTS_NOT_LIST" 
     assert len(clients) > 0, "CLIENTS_LIST_EMPTY"
-    assert all(isinstance(c, str) for c in clients), "CLIENT_NOT_A_STR"
-    assert isinstance(year, str), "YEAR_NOT_A_STR"
+    assert all(isinstance(c, str) for c in clients), "CLIENT_NOT_STR"
+    assert isinstance(year, str), "YEAR_NOT_STR"
     assert len(year) == 4, "YEAR_FORMAT_INVALID"
-    assert isinstance(quarter, str), "QUARTER_NOT_A_STR"
+    assert isinstance(quarter, str), "QUARTER_NOT_STR"
     assert quarter in ["Q1", "Q2", "Q3", "Q4"], "QUARTER_FORMAT_INVALID"
-    assert isinstance(stress_config, dict), "STRESS_CONFIG_NOT_A_DICT"
+    assert isinstance(stress_config, dict), "STRESS_CONFIG_NOT_DICT"
     
-    assert "var_x" in stress_config, "VAR_X_IS_MISSING"
-    assert "var_y" in stress_config, "VAR_Y_IS_MISSING"
+    assert "var_x" in stress_config, "VAR_X_MISSING"
+    assert "var_y" in stress_config, "VAR_Y_MISSING"
 
     for key in ["var_x", "var_y"]:
 
         var = stress_config[key]
 
-        assert "name" in var, f"NAME_IS_MISSING_IN_{key}"
-        assert "direction" in var, f"DIRECTION_IS_MISSING_IN_{key}"
-        assert "steps" in var, f"STEPS_IS_MISSING_IN_{key}"
-        assert "max_pct" in var, f"MAX_PCT_IS_MISSING_IN_{key}"
+        assert "name" in var, f"NAME_MISSING_IN_{key}"
+        assert "direction" in var, f"DIRECTION_MISSING_IN_{key}"
+        assert "steps" in var, f"STEPS_MISSING_IN_{key}"
+        assert "max_pct" in var, f"MAX_PCT_MISSING_IN_{key}"
     
         assert isinstance(var["name"], str), f"NAME_NOT_STR_IN_{key}"
         assert isinstance(var["direction"], str), f"DIRECTION_NOT_STR_IN_{key}"
         assert isinstance(var["steps"], int), f"STEPS_NOT_INT_IN_{key}"
         assert isinstance(var["max_pct"], float), f"MAX_PCT_NOT_FLOAT_IN_{key}"
 
-        assert len(var["name"]) > 0, f"NAME_IS_EMPTY_IN_{key}"
-        assert len(var["direction"]) > 0, f"DIRECTION_IS_EMPTY_IN_{key}"
+        assert len(var["name"]) > 0, f"NAME_EMPTY_IN_{key}"
+        assert len(var["direction"]) > 0, f"DIRECTION_EMPTY_IN_{key}"
         assert var["direction"] in ["down", "up"], f"DIRECTION_FORMAT_INVALID_IN_{key}"
         assert var["steps"] > 0 and var["steps"] < 21, f"STEPS_IMPOSSIBLE_VALUE_IN_{key}"
         assert var["max_pct"] > 0.001 and var["max_pct"] < 1.001, f"MAX_PCT_IMPOSSIBLE_VALUE_IN_{key}"

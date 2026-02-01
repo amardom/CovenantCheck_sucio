@@ -2,47 +2,47 @@ from z3 import *
 
 def validate_json(logics):
 
-    assert isinstance(logics, dict), "LOGICS_NOT_A_DICT"
+    assert isinstance(logics, dict), "LOGICS_NOT_DICT"
     
-    assert "audit_id" in logics, "AUDIT_ID_IS_MISSING"
+    assert "audit_id" in logics, "AUDIT_ID_MISSING"
     assert isinstance(logics["audit_id"], str), "AUDIT_ID_NOT_STR"
-    assert len(logics["audit_id"]) > 0, "AUDIT_ID_IS_EMPTY"
+    assert len(logics["audit_id"]) > 0, "AUDIT_ID_EMPTY"
     
-    assert "contract_name" in logics, "CONTRACT_NAME_IS_MISSING"
+    assert "contract_name" in logics, "CONTRACT_NAME_MISSING"
     assert isinstance(logics["contract_name"], str), "CONTRACT_NAME_NOT_STR"
-    assert len(logics["contract_name"]) > 0, "CONTRACT_NAME_IS_EMPTY"
+    assert len(logics["contract_name"]) > 0, "CONTRACT_NAME_EMPTY"
 
-    assert "variables" in logics, "VARIABLES_IS_MISSING"
-    assert len(logics["variables"]) > 0, "VARIABLES_IS_EMPTY"
+    assert "variables" in logics, "VARIABLES_MISSING"
+    assert len(logics["variables"]) > 0, "VARIABLES_EMPTY"
     
     for var in logics["variables"]:
-        assert "name" in var, "NAME_IS_MISSING"
-        assert "definition" in var, "DEFINITION_IS_MISSING"
-        assert "definition_page" in var, "DEFINITION_PAGE_IS_MISSING"
+        assert "name" in var, "NAME_MISSING"
+        assert "definition" in var, "DEFINITION_MISSING"
+        assert "definition_page" in var, "DEFINITION_PAGE_MISSING"
 
         assert isinstance(var["name"], str), "NAME_NOT_STR"
         assert isinstance(var["definition"], str), "DEFINITION_NOT_STR"
         assert isinstance(var["definition_page"], int), "DEFINITION_PAGE_NOT_INT"
 
-        assert len(var["name"]) > 0, "NAME_IS_EMPTY"
-        assert len(var["definition"]) > 0, "DEFINITION_IS_EMPTY"
-        assert var["definition_page"] > 0, "DEFINITION_PAGE_IS_BELOW_ONE"
+        assert len(var["name"]) > 0, "NAME_EMPTY"
+        assert len(var["definition"]) > 0, "DEFINITION_EMPTY"
+        assert var["definition_page"] > 0, "DEFINITION_PAGE_BELOW_ONE"
 
     for var in logics["logical_conditions"]:
-        assert "id" in var, "ID_IS_MISSING"
-        assert "formula" in var, "FORMULA_IS_MISSING"
-        assert "evidence" in var, "EVIDENCE_IS_MISSING"
-        assert "evidence_page" in var, "EVIDENCE_PAGE_IS_MISSING"
+        assert "id" in var, "ID_MISSING"
+        assert "formula" in var, "FORMULA_MISSING"
+        assert "evidence" in var, "EVIDENCE_MISSING"
+        assert "evidence_page" in var, "EVIDENCE_PAGE_MISSING"
 
         assert isinstance(var["id"], int), "ID_NOT_INT"
         assert isinstance(var["formula"], str), "FORMULA_NOT_STR"
         assert isinstance(var["evidence"], str), "EVIDENCE_NOT_STR"
         assert isinstance(var["evidence_page"], int), "EVIDENCE_PAGE_NOT_INT"
 
-        assert var["id"] > 0, "ID_IS_BELOW_ONE"
-        assert len(var["formula"]) > 0, "FORMULA_IS_EMPTY"
-        assert len(var["evidence"]) > 0, "EVIDENCE_IS_EMPTY"
-        assert var["evidence_page"] > 0, "EVIDENCE_PAGE_IS_BELOW_ONE"
+        assert var["id"] > 0, "ID_BELOW_ONE"
+        assert len(var["formula"]) > 0, "FORMULA_EMPTY"
+        assert len(var["evidence"]) > 0, "EVIDENCE_EMPTY"
+        assert var["evidence_page"] > 0, "EVIDENCE_PAGE_BELOW_ONE"
 
     var_names = [v["name"] for v in logics["variables"]]
     assert len(var_names) == len(set(var_names)), "DUPLICATES_IN_VARIABLES"
