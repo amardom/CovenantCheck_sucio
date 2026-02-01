@@ -149,13 +149,20 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
     pdf.output(output_path)
 
 def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio_executive_summary.pdf"):
-    pdf = FPDF(orientation='L') 
-    pdf.set_auto_page_break(auto=True, margin=15)
+    # P = Portrait, mm = millimeters, A4
+    pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
     
-    pdf.set_font("Helvetica", "B", 18)
-    pdf.set_text_color(30, 50, 100)
-    pdf.cell(0, 15, "PORTFOLIO COMPLIANCE DASHBOARD", align="C", new_x="LMARGIN", new_y="NEXT")
+    # Ancho efectivo
+    eff_width = pdf.w - 20
+
+    # --- Header ---
+    pdf.set_font("Helvetica", 'B', 16)
+    pdf.cell(eff_width, 10, f"Portfolio compliance dashboard", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", size=10)
+    pdf.ln(8)
+    pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
     for client_id, deal in portfolio.items():
@@ -166,7 +173,7 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
         pdf.cell(0, 10, f" Client: {client_id}", fill=True, border="B", new_x="LMARGIN", new_y="NEXT")
         pdf.ln(2)
 
-        col_year, col_q, row_h = 25, 62, 12
+        col_year, col_q, row_h = 25, 41.25, 10
         pdf.set_font("Helvetica", "B", 10)
         pdf.cell(col_year, row_h, "Year", border=1, align="C")
         for q in ["Q1", "Q2", "Q3", "Q4"]:
@@ -224,7 +231,7 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
         # Leyenda
         pdf.set_font("Helvetica", "I", 8)
         pdf.set_text_color(100)
-        legend_text = f"* Metrics displayed (on PASS): (1) {var_main}" + (f"  (2) {var_opt}" if var_opt else "")
+        legend_text = f"*Metrics displayed (on PASS): (1) {var_main}" + (f" (2) {var_opt}." if var_opt else ".")
         pdf.cell(0, 8, legend_text, new_x="LMARGIN", new_y="NEXT")
         pdf.ln(8)
 
@@ -256,7 +263,7 @@ def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_ma
         # --- CABECERA X (Etiqutas de la variable horizontal) ---
         pdf.set_font("Helvetica", "B", 9)
         pdf.set_fill_color(240, 240, 240)
-        pdf.cell(header_y_w, row_h, f"Y: {meta['var_y']} - X: {meta['var_x']}", border=1, align="C", fill=True)
+        pdf.cell(header_y_w, row_h, f"Y \ X", border=1, align="C", fill=True)
         
         for label_x in meta["labels_x"]:
             pdf.cell(cell_w, row_h, label_x, border=1, align="C", fill=True)
@@ -299,8 +306,8 @@ def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_ma
         v_y = meta['var_y'].replace('_', ' ').title()
         
         # Imprimimos los valores precisos almacenados en la raíz del diccionario
-        pdf.cell(0, 8, f"Precise Headroom {v_x}: {data[f'headroom_x']}", ln=True)
-        pdf.cell(0, 8, f"Precise Headroom {v_y}: {data[f'headroom_y']}", ln=True)
+        pdf.cell(0, 8, f"Headroom {v_x}: {data[f'headroom_x']}", ln=True)
+        pdf.cell(0, 8, f"Headroom {v_y}: {data[f'headroom_y']}", ln=True)
 
         # Leyenda explicativa al pie de la matriz (ya estaba en tu código)
         pdf.ln(5)
