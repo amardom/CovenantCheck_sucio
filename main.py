@@ -15,8 +15,8 @@ VAR_X_NAME = "revenue"
 VAR_Y_NAME = "operating_expenses"
 DIRECTION_X = "down"
 DIRECTION_Y = "up"
-STEPS_X = 5
-STEPS_Y = 5
+STEPS_X = 4
+STEPS_Y = 4
 STEPS_X_REFINED = 10 
 STEPS_Y_REFINED = 10
 MAX_PCT_X = 0.2
@@ -24,7 +24,7 @@ MAX_PCT_Y = 0.2
 Y = "2024"
 Q = "Q1"
 
-ANALYSIS_CONFIG = {client: [f"{VAR_CONFIG_1}", f"{VAR_CONFIG_2}"] for client in CLIENTS}
+ANALYSIS_CONFIG = {c: [f"{VAR_CONFIG_1}", f"{VAR_CONFIG_2}"] for c in CLIENTS}
 
 STRESS_CONFIG = {
     "var_x": {"name": f"{VAR_X_NAME}", "direction": f"{DIRECTION_X}", "steps": STEPS_X, "max_pct": MAX_PCT_X},
@@ -50,7 +50,7 @@ def main():
         matrix_results[client]["headroom_x"] = matrix_results_refined[client]["headroom_x"]
         matrix_results[client]["headroom_y"] = matrix_results_refined[client]["headroom_y"]
     
-    generate_matrix_report(matrix_results, f"{ROOT_PATH}/portfolio_sensitivity_matrix.pdf")
+    generate_matrix_report(matrix_results, Y, Q, f"{ROOT_PATH}/portfolio_sensitivity_matrix_{Y}_{Q}.pdf")
 
 if __name__ == "__main__":
     main()

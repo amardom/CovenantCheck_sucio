@@ -13,16 +13,16 @@ def generate_initial_report(logics, output_path):
 
     # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
-    pdf.cell(eff_width, 10, f"Logical Audit: {logics.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 10, f"Logical Audit", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.cell(eff_width, 8, f"Audit ID: {logics.get('audit_id', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(5)
+    pdf.cell(eff_width, 8, f"Contract: {logics.get('contract_name', 'Unnamed')}.", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Audit ID: {logics.get('audit_id', 'Unnamed')}.", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(2)
 
     # --- 1. Variables Inventory ---
     pdf.set_font("Helvetica", 'B', 12)
     pdf.cell(eff_width, 10, "1. VARIABLE INVENTORY", new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(2)
+    pdf.ln(1)
     
     i = 1
     for var in logics.get('variables', []):
@@ -33,12 +33,12 @@ def generate_initial_report(logics, output_path):
         pdf.write(5, f"{var.get('definition', '')}. Page: {var.get('definition_page', 'N/A')}.\n")
         i = i + 1
     
-    pdf.ln(10)
+    pdf.ln(5)
 
     # --- 2. Logical Rules & Evidence ---
     pdf.set_font("Helvetica", 'B', 12)
     pdf.cell(eff_width, 10, "2. LOGICAL RULES & EVIDENCE", new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(2)
+    pdf.ln(1)
     
     for cond in logics.get('logical_conditions', []):
         # Rule ID
@@ -58,7 +58,7 @@ def generate_initial_report(logics, output_path):
         
         # Reset color y espacio entre reglas
         pdf.set_text_color(0, 0, 0)
-        pdf.ln(8)
+        pdf.ln(3)
 
     # Crear carpeta si no existe y guardar
     dir_name = os.path.dirname(output_path)
@@ -77,10 +77,10 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
 
     # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
-    pdf.cell(eff_width, 10, f"Formal verification: {logics.get('contract_name', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 10, f"Formal verification", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.cell(eff_width, 8, f"Audit ID: {logics.get('audit_id', 'Unnamed')}", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Contract: {logics.get('contract_name', 'Unnamed')}.", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Audit ID: {logics.get('audit_id', 'Unnamed')}.", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
     # 2. BLOQUE DEL VEREDICTO
@@ -97,14 +97,12 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
     pdf.set_fill_color(*bg_color)
     pdf.set_text_color(*text_color)
     pdf.set_font('Helvetica', 'B', 14)
-    # Cambio: ln=1 -> new_x="LMARGIN", new_y="NEXT"
     pdf.cell(eff_width, 15, f"  {status_text}", border=1, align='L', fill=True, new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(10)
+    pdf.ln(5)
 
     # 3. TABLA DE VARIABLES
     pdf.set_text_color(0)
     pdf.set_font('Helvetica', 'B', 12)
-    # Cambio: ln=1 -> new_x="LMARGIN", new_y="NEXT"
     pdf.cell(eff_width, 10, "Calculated Model Values:", border=0, new_x="LMARGIN", new_y="NEXT")
     
     # Columnas
@@ -113,10 +111,8 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
     # Cabecera
     pdf.set_font('Helvetica', 'B', 10)
     pdf.set_fill_color(240, 240, 240)
-    # Cambio: ln=0 -> new_x="RIGHT", new_y="TOP"
     pdf.cell(c1, 10, " Variable Name", 1, align='L', fill=True, new_x="RIGHT", new_y="TOP")
     pdf.cell(c2, 10, "Value", 1, align='C', fill=True, new_x="RIGHT", new_y="TOP")
-    # Cambio: ln=1 -> new_x="LMARGIN", new_y="NEXT"
     pdf.cell(c3, 10, "Data Origin", 1, align='C', fill=True, new_x="LMARGIN", new_y="NEXT")
 
     # Datos
@@ -140,10 +136,8 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
             pdf.set_text_color(0)
 
         pdf.cell(c1, 8, f" {var}", 1, new_x="RIGHT", new_y="TOP")
-        # Cambio: ln=0 -> new_x="RIGHT", new_y="TOP"
         pdf.cell(c2, 8, f" {val_str}", 1, align='R', new_x="RIGHT", new_y="TOP")
         pdf.set_font('Helvetica', '', 8)
-        # Cambio: ln=1 -> new_x="LMARGIN", new_y="NEXT"
         pdf.cell(c3, 8, f"{origin}", 1, align='C', new_x="LMARGIN", new_y="NEXT")
 
     pdf.output(output_path)
@@ -161,8 +155,6 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Portfolio compliance dashboard", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.ln(8)
-    pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
     for client_id, deal in portfolio.items():
@@ -170,7 +162,7 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
         pdf.set_fill_color(230, 230, 230)
         pdf.set_text_color(0)
         pdf.set_font("Helvetica", "B", 12)
-        pdf.cell(0, 10, f" Client: {client_id}", fill=True, border="B", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(0, 10, f" Client: {client_id}.", fill=True, border="B", new_x="LMARGIN", new_y="NEXT")
         pdf.ln(2)
 
         col_year, col_q, row_h = 25, 41.25, 10
@@ -213,10 +205,9 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
                     m1 = get_metric(var_main)
                     m2 = get_metric(var_opt)
                     
-                    display = f"PASS |"
-                    if m1: display += f" ({m1})"
-                    if m2: display += f" | ({m2})"
-                    display += "."
+                    display = f"OK |"
+                    if m1: display += f" {m1}"
+                    if m2: display += f" | {m2}"
                 else:
                     # CASO BREACH: Solo el texto, sin métricas
                     pdf.set_text_color(200, 30, 30) # Rojo
@@ -231,13 +222,13 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
         # Leyenda
         pdf.set_font("Helvetica", "I", 8)
         pdf.set_text_color(100)
-        legend_text = f"*Metrics displayed (on PASS): (1) {var_main}" + (f" (2) {var_opt}." if var_opt else ".")
+        legend_text = f"*Metrics displayed (on OK): (1) {var_main}" + (f" (2) {var_opt}." if var_opt else ".")
         pdf.cell(0, 8, legend_text, new_x="LMARGIN", new_y="NEXT")
         pdf.ln(8)
 
     pdf.output(output_path)
 
-def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_matrix.pdf"):
+def generate_matrix_report(matrix_results, year, quarter, output_path="portfolio_sensitivity_matrix.pdf"):
     # P = Portrait, mm = millimeters, A4
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
@@ -250,8 +241,7 @@ def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_ma
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Stress analysis", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
-    pdf.ln(8)
-    pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(eff_width, 8, f"Reporting period: {year}_{quarter}.", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
     
     for client_id, data in matrix_results.items():
@@ -265,7 +255,7 @@ def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_ma
         pdf.set_font("Helvetica", "B", 12)
         pdf.cell(0, 10, f" Client: {client_id}.", fill=True, border="B", new_x="LMARGIN", new_y="NEXT")
         pdf.set_font("Helvetica", "I", 10)
-        pdf.cell(0, 10, f"Stress Correlation: {meta['var_y'].upper()} (Y) vs {meta['var_x'].upper()} (X)", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(0, 10, f"Stress Correlation: {meta['var_y'].upper()} (Y) vs {meta['var_x'].upper()} (X).", new_x="LMARGIN", new_y="NEXT")
         pdf.ln(2)
 
         # Configuración para A4 Portrait (Suma: 30 + 26.6*6 ≈ 190mm)
@@ -308,11 +298,9 @@ def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_ma
             pdf.set_text_color(0) # Reset color texto
             pdf.ln()
 
-        # --- (Debajo del bucle de la matriz) ---
-
-        # Añadir Resumen de Headroom de Alta Precisión
+        # Añadir Resumen de Headroom.
         pdf.ln(5)
-        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_font("Helvetica", "B", 9)
         pdf.set_text_color(40, 40, 40)
         
         # Recuperamos los nombres de las variables para el texto
@@ -323,15 +311,11 @@ def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_ma
         pdf.cell(0, 8, f"Headroom {v_x}: {data[f'headroom_x']}", ln=True)
         pdf.cell(0, 8, f"Headroom {v_y}: {data[f'headroom_y']}", ln=True)
 
-        # Leyenda explicativa al pie de la matriz (ya estaba en tu código)
-        pdf.ln(5)
-        pdf.set_font("Helvetica", "I", 9)
-
         # Leyenda explicativa al pie de la matriz
-        pdf.ln(15)
-        pdf.set_font("Helvetica", "I", 9)
+        pdf.ln(5)
+        pdf.set_font("Helvetica", "I", 8)
         pdf.set_text_color(100)
-        pdf.multi_cell(0, 5, f"Legend: This matrix explores the combined impact of {meta['var_x']} and {meta['var_y']}. " 
+        pdf.multi_cell(0, 5, f"This matrix explores the combined impact of {meta['var_x']} and {meta['var_y']}. " 
                             f"Red cells ('BREACH') indicate a violation of one or more logical covenants in the credit agreement.")
 
     pdf.output(output_path)
