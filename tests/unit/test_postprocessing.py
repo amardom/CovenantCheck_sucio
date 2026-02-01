@@ -1,26 +1,29 @@
 import pytest
 from app.core.postprocessing import calculate_stress_matrix
 
-# Mock inicial de datos válidos para que el test no falle por otros motivos
-valid_portfolio = {"Client1": {"history": {"2024": {"Q1": {"logics": [], "cfo_data": {}}}}}}
-valid_config = {
+VALID_PORTFOLIO = {"Client1": {"history": {"2024": {"Q1": {"logics": [], "cfo_data": {}}}}}}
+VALID_CLIENTS = ["Netflix"]
+VALID_YEAR = "2026"
+VALID_QUARTER = "Q1"
+
+VALID_CONFIG = {
     "var_x": {"name": "ebitda", "direction": "down", "steps": 5, "max_pct": 0.5},
     "var_y": {"name": "euribor", "direction": "up", "steps": 5, "max_pct": 0.5}
 }
 
 @pytest.mark.parametrize("p, c, y, q, config, expected_msg", [
-    ([], ["C1"], "2024", "Q1", valid_config, "PORTFOLIO_NOT_DICT"),
-    ({}, "NoLista", "2024", "Q1", valid_config, "CLIENTS_NOT_LIST"),
-    ({}, [], "2024", "Q1", valid_config, "CLIENTS_LIST_EMPTY"),
-    ({}, [123], "2024", "Q1", valid_config, "CLIENT_NOT_STR"),
-    ({}, ["C1"], 2024, "Q1", valid_config, "YEAR_NOT_STR"),
-    ({}, ["C1"], "24", "Q1", valid_config, "YEAR_FORMAT_INVALID"),
-    ({}, ["C1"], "2024", 1, valid_config, "QUARTER_NOT_STR"),
-    ({}, ["C1"], "2024", "Q5", valid_config, "QUARTER_FORMAT_INVALID"),
-    ({}, ["C1"], "2024", "Q1", "NoDict", "STRESS_CONFIG_NOT_DICT"),
+    ([], ["C1"], VALID_YEAR, VALID_QUARTER, VALID_CONFIG, "PORTFOLIO_NOT_DICT"),
+    (VALID_PORTFOLIO, "NoLista", VALID_YEAR, VALID_QUARTER, VALID_CONFIG, "CLIENTS_NOT_LIST"),
+    (VALID_PORTFOLIO, [], VALID_YEAR, VALID_QUARTER, VALID_CONFIG, "CLIENTS_LIST_EMPTY"),
+    (VALID_PORTFOLIO, [123], VALID_YEAR, VALID_QUARTER, VALID_CONFIG, "CLIENT_NOT_STR"),
+    (VALID_PORTFOLIO, VALID_CLIENTS, 2024, VALID_QUARTER, VALID_CONFIG, "YEAR_NOT_STR"),
+    (VALID_PORTFOLIO, VALID_CLIENTS, "24", VALID_QUARTER, VALID_CONFIG, "YEAR_FORMAT_INVALID"),
+    (VALID_PORTFOLIO, VALID_CLIENTS, VALID_YEAR, 1, VALID_CONFIG, "QUARTER_NOT_STR"),
+    (VALID_PORTFOLIO, VALID_CLIENTS, VALID_YEAR, "Q5", VALID_CONFIG, "QUARTER_FORMAT_INVALID"),
+    (VALID_PORTFOLIO, VALID_CLIENTS, VALID_YEAR, VALID_QUARTER, "NoDict", "STRESS_CONFIG_NOT_DICT"),
     
-    ({}, ["C1"], "2024", "Q1", {"var_y": {}}, "VAR_X_MISSING"),
-    ({}, ["C1"], "2024", "Q1", {"var_x": {}}, "VAR_Y_MISSING"),
+    (VALID_PORTFOLIO, VALID_CLIENTS, VALID_YEAR, VALID_QUARTER, {"var_y": {}}, "VAR_X_MISSING"),
+    (VALID_PORTFOLIO, VALID_CLIENTS, VALID_YEAR, VALID_QUARTER, {"var_x": {}}, "VAR_Y_MISSING"),
 ])
 def test_matrix_basic_assertions(p, c, y, q, config, expected_msg):
     with pytest.raises(AssertionError) as exc:
