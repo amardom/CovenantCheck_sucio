@@ -238,27 +238,41 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
     pdf.output(output_path)
 
 def generate_matrix_report(matrix_results, output_path="portfolio_sensitivity_matrix.pdf"):
-    pdf = FPDF(orientation='L')
+    # P = Portrait, mm = millimeters, A4
+    pdf = FPDF('P', 'mm', 'A4')
+    pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
+    # Ancho efectivo
+    eff_width = pdf.w - 20
+
+    # --- Header ---
+    pdf.set_font("Helvetica", 'B', 16)
+    pdf.cell(eff_width, 10, f"Stress analysis", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", size=10)
+    pdf.ln(8)
+    pdf.cell(eff_width, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(5)
+    
     for client_id, data in matrix_results.items():
-        pdf.add_page()
+        #pdf.add_page()
         meta = data["metadata"]
         grid = data["grid"] # La matriz de resultados
         
-        # Título de la página
-        pdf.set_font("Helvetica", "B", 16)
-        pdf.set_text_color(40, 40, 40)
-        pdf.cell(0, 10, f"SENSITIVITY MATRIX: {client_id}", ln=True, align="C")
+        # Fondo gris para el cliente
+        pdf.set_fill_color(230, 230, 230)
+        pdf.set_text_color(0)
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.cell(0, 10, f" Client: {client_id}.", fill=True, border="B", new_x="LMARGIN", new_y="NEXT")
         pdf.set_font("Helvetica", "I", 10)
-        pdf.cell(0, 10, f"Stress Correlation: {meta['var_y'].upper()} (Y) vs {meta['var_x'].upper()} (X)", ln=True, align="C")
-        pdf.ln(10)
+        pdf.cell(0, 10, f"Stress Correlation: {meta['var_y'].upper()} (Y) vs {meta['var_x'].upper()} (X)", new_x="LMARGIN", new_y="NEXT")
+        pdf.ln(2)
 
-        # Configuración de la tabla
-        # En Landscape tenemos ~270mm. 
-        cell_w = 35  # Ancho de cada celda de la matriz
-        header_y_w = 45 # Ancho de la columna de etiquetas Y
-        row_h = 12
+        # Configuración para A4 Portrait (Suma: 30 + 26.6*6 ≈ 190mm)
+        header_y_w = 30  # Ancho columna etiquetas Y
+        num_cols = len(meta["labels_x"])
+        cell_w = (190 - header_y_w) / num_cols 
+        row_h = 10
 
         # --- CABECERA X (Etiqutas de la variable horizontal) ---
         pdf.set_font("Helvetica", "B", 9)
