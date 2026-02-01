@@ -74,7 +74,7 @@ def test_portfolio_cfo_data_json_exist(tmp_path):
     period_folder = client_folder / year_quarter
     period_folder.mkdir(parents=True)
 
-    logics = {"audit_id": f"{client_id}_{year_quarter}.json"}
+    logics = {"audit_id": f"{client_id}_{year_quarter}"}
     (period_folder / "logics.json").write_text(json.dumps(logics))
 
     with pytest.raises(AssertionError) as exc:
@@ -89,7 +89,7 @@ def test_portfolio_cfo_data_json_exist(tmp_path):
 
 def test_portfolio_indexing():
 
-    clients = ["companyHealth", "companyTech"]
+    clients = ["TechCorp", "HealthCorp"]
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
@@ -111,7 +111,7 @@ def test_portfolio_indexing():
                 entry = deal.history[year][q]
                 assert entry is not None
                 
-                expected_contract = f"{client_id} Strategic Credit Facilities"
+                expected_contract = "Senior Secured Credit Agreement"
                 assert entry["logics"]["contract_name"] == expected_contract
                 assert len(entry["cfo_data"]) > 0
                 assert isinstance(entry["cfo_data"]["revenue"], (int, float))

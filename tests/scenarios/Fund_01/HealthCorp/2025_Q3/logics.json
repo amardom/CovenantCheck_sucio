@@ -1,0 +1,78 @@
+{
+    "audit_id": "HealthCorp_2025_Q3",
+    "contract_name": "Senior Secured Credit Agreement",
+    "variables": [
+        {
+            "name": "revenue",
+            "definition": "Net Sales",
+            "definition_page": 4
+        },
+        {
+            "name": "operating_expenses",
+            "definition": "SG&A",
+            "definition_page": 5
+        },
+        {
+            "name": "ebitda",
+            "definition": "Consolidated EBITDA",
+            "definition_page": 6
+        },
+        {
+            "name": "total_debt",
+            "definition": "Total Indebtedness",
+            "definition_page": 9
+        },
+        {
+            "name": "cash",
+            "definition": "Unrestricted Cash",
+            "definition_page": 12
+        },
+        {
+            "name": "net_debt",
+            "definition": "Total Debt - Cash",
+            "definition_page": 9
+        },
+        {
+            "name": "leverage_ratio",
+            "definition": "Net Leverage",
+            "definition_page": 18
+        },
+        {
+            "name": "min_ebitda_threshold",
+            "definition": "Covenant Floor",
+            "definition_page": 45
+        }
+    ],
+    "logical_conditions": [
+        {
+            "id": 1,
+            "formula": "ebitda == revenue - operating_expenses",
+            "evidence": "Def. EBITDA",
+            "evidence_page": 6
+        },
+        {
+            "id": 2,
+            "formula": "net_debt == total_debt - cash",
+            "evidence": "Def. Net Debt",
+            "evidence_page": 9
+        },
+        {
+            "id": 3,
+            "formula": "leverage_ratio == net_debt / ebitda",
+            "evidence": "Ratio Calc",
+            "evidence_page": 18
+        },
+        {
+            "id": 4,
+            "formula": "leverage_ratio <= 4.5",
+            "evidence": "Max Leverage",
+            "evidence_page": 44
+        },
+        {
+            "id": 5,
+            "formula": "ebitda >= min_ebitda_threshold",
+            "evidence": "Min EBITDA",
+            "evidence_page": 45
+        }
+    ]
+}

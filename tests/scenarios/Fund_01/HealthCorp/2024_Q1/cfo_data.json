@@ -1,0 +1,7 @@
+{
+    "revenue": 900000.0,
+    "operating_expenses": 630000.0,
+    "total_debt": 1200000,
+    "cash": 250000,
+    "min_ebitda_threshold": 120000.0
+}

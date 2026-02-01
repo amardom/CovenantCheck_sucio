@@ -81,15 +81,15 @@ def test_pdf_structural_integrity_final():
 
 def test_pdf_structural_integrity_executive_summary():
 
-    clients = ["companyHealth", "companyTech"]
+    clients = ["TechCorp", "HealthCorp"]
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
     portfolio = create_portfolio(clients, years, quarters, root_path="tests/scenarios/Fund_01")
 
     ANALYSIS_CONFIG = {
-        "companyHealth": ["leverage_ratio", "ebitda"],
-        "companyTech": ["leverage_ratio", "ebitda"]
+        "TechCorp": ["leverage_ratio", "ebitda"],
+        "HealthCorp": ["leverage_ratio", "ebitda"]
     }
 
     generate_portfolio_report(portfolio, ANALYSIS_CONFIG, output_path="tests/scenarios/Fund_01/portfolio_executive_summary.pdf")
@@ -97,8 +97,8 @@ def test_pdf_structural_integrity_executive_summary():
     metrics = get_pdf_metrics("tests/scenarios/Fund_01/portfolio_executive_summary.pdf")
     
     EXPECTED_PAGES = 1
-    EXPECTED_WORDS = 103
-    EXPECTED_CHARS = 628
+    EXPECTED_WORDS = 92
+    EXPECTED_CHARS = 580
     
     assert metrics["pages"] == EXPECTED_PAGES
     assert metrics["word_count"] == EXPECTED_WORDS
