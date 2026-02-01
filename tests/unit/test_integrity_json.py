@@ -1,7 +1,6 @@
 import pytest, copy
 from app.core.z3_engine import validate_json
 
-# Caso de éxito base
 VALID_LOGICS = {
     "audit_id": "ClientAlpha_2026_Q1.json",
     "contract_name": "Real Contrato",
@@ -16,11 +15,9 @@ def test_validate_json_success():
     ([], "LOGICS_NOT_DICT"),
     ("not a dict", "LOGICS_NOT_DICT"),
     (None, "LOGICS_NOT_DICT"),
-    # Missing Keys
     ({k: v for k, v in VALID_LOGICS.items() if k != "audit_id"}, "AUDIT_ID_MISSING"),
     ({k: v for k, v in VALID_LOGICS.items() if k != "contract_name"}, "CONTRACT_NAME_MISSING"),
     ({k: v for k, v in VALID_LOGICS.items() if k != "variables"}, "VARIABLES_MISSING"),
-    # Tipos y Vacíos de Root Keys
     ({**VALID_LOGICS, "audit_id": 123}, "AUDIT_ID_NOT_STR"),
     ({**VALID_LOGICS, "audit_id": ""}, "AUDIT_ID_EMPTY"),
     ({**VALID_LOGICS, "contract_name": True}, "CONTRACT_NAME_NOT_STR"),
@@ -33,7 +30,6 @@ def test_validate_json_root_errors(invalid_input, expected_msg):
     assert str(exc.value) == expected_msg
 
 @pytest.mark.parametrize("list_key, patch, expected_msg", [
-    # Sabotajes en 'variables'
     ("variables", {"name": None}, "NAME_MISSING"),
     ("variables", {"name": 123}, "NAME_NOT_STR"),
     ("variables", {"name": ""}, "NAME_EMPTY"),
@@ -43,8 +39,6 @@ def test_validate_json_root_errors(invalid_input, expected_msg):
     ("variables", {"definition_page": None}, "DEFINITION_PAGE_MISSING"),
     ("variables", {"definition_page": "p7"}, "DEFINITION_PAGE_NOT_INT"),
     ("variables", {"definition_page": 0}, "DEFINITION_PAGE_BELOW_ONE"),
-
-    # Sabotajes en 'logical_conditions'
     ("logical_conditions", {"id": None}, "ID_MISSING"),
     ("logical_conditions", {"id": "1"}, "ID_NOT_INT"),
     ("logical_conditions", {"id": 0}, "ID_BELOW_ONE"),
@@ -74,7 +68,6 @@ def test_validate_json_list_details(list_key, patch, expected_msg):
     ("variable", "DUPLICATES_IN_VARIABLES"),
     ("logic_id", "DUPLICATES_IN_LOGICAL_CONDITIONS"),
 ])
-
 def test_validate_json_duplicates(duplicate_type, expected_msg):
     logics = copy.deepcopy(VALID_LOGICS)
     if duplicate_type == "variable":

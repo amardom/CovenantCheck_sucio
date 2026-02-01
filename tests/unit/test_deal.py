@@ -6,8 +6,11 @@ def test_deal_flow():
     client_id = "CompanyTech"
     deal = Deal(client_id)
 
+    year = "2026"
+    quarter = "Q1"
+
     logics_mock = {
-        "audit_id": f"{client_id}_2026_Q1.json",
+        "audit_id": f"{client_id}_{year}_{quarter}",
         "contract_name": "Credit Agreement - NETFLIX, INC. (2009)",
         "variables": [
             {"name": "consolidated_ebitda", "definition": "Calculated EBITDA", "definition_page": 9},
@@ -35,8 +38,6 @@ def test_deal_flow():
         "consolidated_net_debt": 4000000
     }
 
-    year = "2026"
-    quarter = "Q1"
     deal.process_logics_and_cfo_data(year, quarter, logics_mock, cfo_data_mock)
 
     assert deal.id == client_id
@@ -54,12 +55,11 @@ def test_deal_flow():
     (123, "YEAR_NOT_STR"),
     (None, "YEAR_NOT_STR"),
     ("26", "YEAR_FORMAT_INVALID"),
-    ("20265", "YEAR_FORMAT_INVALID"), # Caso extra: año demasiado largo
+    ("20265", "YEAR_FORMAT_INVALID"),
 ])
 def test_deal_year_validation(invalid_year, expected_msg):
-    deal = Deal("CompanyTech_2026")
+    deal = Deal("CompanyTech")
     with pytest.raises(AssertionError) as exc:
-        # Mantenemos Q1 como válido para que solo falle el año
         deal.process_logics_and_cfo_data(invalid_year, "Q1", {}, {})
     assert str(exc.value) == expected_msg
 
@@ -68,12 +68,11 @@ def test_deal_year_validation(invalid_year, expected_msg):
     (123, "QUARTER_NOT_STR"),
     (None, "QUARTER_NOT_STR"),
     ("Q5", "QUARTER_FORMAT_INVALID"),
-    ("q1", "QUARTER_FORMAT_INVALID"), # Caso extra: minúsculas (si tu assert es estricto)
-    ("1", "QUARTER_FORMAT_INVALID"),  # Caso extra: solo el número
+    ("q1", "QUARTER_FORMAT_INVALID"),
+    ("1", "QUARTER_FORMAT_INVALID"),
 ])
 def test_deal_quarter_validation(invalid_quarter, expected_msg):
-    deal = Deal("CompanyTech_2026")
+    deal = Deal("CompanyTech")
     with pytest.raises(AssertionError) as exc:
-        # Mantenemos 2026 como válido para que solo falle el trimestre
         deal.process_logics_and_cfo_data("2026", invalid_quarter, {}, {})
     assert str(exc.value) == expected_msg

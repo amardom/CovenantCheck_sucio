@@ -9,8 +9,7 @@ valid_config = {
 }
 
 @pytest.mark.parametrize("p, c, y, q, config, expected_msg", [
-    # Validaciones de estructura principal
-    ([], ["C1"], "2024", "Q1", valid_config, "PORTFOLIO_NOT_DICT"), # (Debería ser NOT_A_DICT según tu código, ojo)
+    ([], ["C1"], "2024", "Q1", valid_config, "PORTFOLIO_NOT_DICT"),
     ({}, "NoLista", "2024", "Q1", valid_config, "CLIENTS_NOT_LIST"),
     ({}, [], "2024", "Q1", valid_config, "CLIENTS_LIST_EMPTY"),
     ({}, [123], "2024", "Q1", valid_config, "CLIENT_NOT_STR"),
