@@ -2,16 +2,15 @@ from app.core.portfolio import create_portfolio
 from app.core.report import generate_portfolio_report, generate_matrix_report
 from app.core.postprocessing import calculate_stress_matrix
 
+# GENERAL PARAMETERS.
 CLIENTS = ["TechCorp"]
 YEARS = ["2024", "2025"]
 QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
 ROOT_PATH = "tests/scenarios/Fund_01"
+VAR_CONFIG_1 = "leverage_ratio"
+VAR_CONFIG_2 = "ebitda"
 
-ANALYSIS_CONFIG = {
-    "TechCorp": ["leverage_ratio", "ebitda"]
-}
-
-# STRESS PARAMETERS
+# STRESS PARAMETERS.
 VAR_X_NAME = "revenue"
 VAR_Y_NAME = "operating_expenses"
 DIRECTION_X = "down"
@@ -24,6 +23,8 @@ MAX_PCT_X = 0.2
 MAX_PCT_Y = 0.2
 Y = "2024"
 Q = "Q1"
+
+ANALYSIS_CONFIG = {client: [f"{VAR_CONFIG_1}", f"{VAR_CONFIG_2}"] for client in CLIENTS}
 
 STRESS_CONFIG = {
     "var_x": {"name": f"{VAR_X_NAME}", "direction": f"{DIRECTION_X}", "steps": STEPS_X, "max_pct": MAX_PCT_X},
