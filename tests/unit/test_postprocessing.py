@@ -1,4 +1,4 @@
-import pytest
+import pytest, copy
 from app.core.postprocessing import calculate_stress_matrix
 
 VALID_PORTFOLIO = {"Client1": {"history": {"2024": {"Q1": {"logics": [], "cfo_data": {}}}}}}
@@ -46,13 +46,8 @@ def test_matrix_basic_assertions(p, c, y, q, config, expected_msg):
     ({"max_pct": 2.0}, "MAX_PCT_IMPOSSIBLE_VALUE_IN_")
 ])
 def test_matrix_config_details(target_key, patch, expected_msg):
-    # Creamos una config válida y saboteamos solo un campo
-    test_config = {
-        "var_x": {"name": "rev", "direction": "down", "steps": 5, "max_pct": 0.5},
-        "var_y": {"name": "opex", "direction": "up", "steps": 5, "max_pct": 0.5}
-    }
+    test_config = copy.deepcopy(VALID_CONFIG)
     
-    # Aplicamos el sabotaje
     for k, v in patch.items():
         if v is None: del test_config[target_key][k]
         else: test_config[target_key][k] = v
