@@ -69,7 +69,8 @@ def test_deal_full_flow():
     assert entry["logics"]["logical_conditions"][1]["evidence"] == "Section 7.12"
     assert entry["logics"]["logical_conditions"][1]["evidence_page"] == 11
     assert entry["z3_result"]["is_compliant"] == True
-
+    assert entry["z3_result"]["norm_metric"] == pytest.approx(1423525)
+    
 VALID_ID = "CompanyTech"
 VALID_YEAR = "2026"
 VALID_QUARTER = "Q1"

@@ -31,11 +31,11 @@ def create_portfolio(clients, years, quarters, root_path):
         deal = Deal(client_ID)
         portfolio[deal.id] = deal
 
-        for year in years:
+        for y in years:
 
-            for quarter in quarters:
+            for q in quarters:
                 
-                year_quarter = f"{year}_{quarter}"
+                year_quarter = f"{y}_{q}"
 
                 print(f"\n-- Client: {client_ID} | {year_quarter} --")
 
@@ -54,15 +54,15 @@ def create_portfolio(clients, years, quarters, root_path):
                 with open(path_cfo_data, "r") as f:
                     cfo_data = json.load(f)
 
-                deal.process_logics_and_cfo_data(year, quarter, logics, cfo_data)
-                assert deal.history[year][quarter] is not None
+                deal.process_logics_and_cfo_data(y, q, logics, cfo_data)
+                assert deal.history[y][q] is not None
 
                 filename_initial_report = f"report_initial_{year_quarter}.pdf"
                 filename_final_report = f"report_final_{year_quarter}.pdf"
 
-                generate_initial_report(deal.history[year][quarter]["logics"], path / filename_initial_report)
+                generate_initial_report(deal.history[y][q]["logics"], path / filename_initial_report)
 
-                generate_final_report(deal.history[year][quarter]["z3_result"], deal.history[year][quarter]["logics"], 
-                                      deal.history[year][quarter]["cfo_data"], path / filename_final_report)
+                generate_final_report(deal.history[y][q]["z3_result"], deal.history[y][q]["logics"],
+                                      deal.history[y][q]["cfo_data"], path / filename_final_report)
 
     return portfolio

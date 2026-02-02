@@ -39,14 +39,13 @@ def calculate_stress_matrix(portfolio, clients, year, quarter, stress_config):
 
     matrix_results = {}
 
-    for client in clients:
-        logics = portfolio[client].history[year][quarter]["logics"]
-        cfo_data = portfolio[client].history[year][quarter]["cfo_data"]
+    for c in clients:
+        logics = portfolio[c].history[year][quarter]["logics"]
+        cfo_data = portfolio[c].history[year][quarter]["cfo_data"]
         
         conf_x = stress_config["var_x"]
         conf_y = stress_config["var_y"]
 
-        # Generamos los rangos de estrés (ej: 0.0, 0.1, 0.2...)
         range_x = [i * (conf_x["max_pct"] / conf_x["steps"]) for i in range(conf_x["steps"] + 1)]
         range_y = [i * (conf_y["max_pct"] / conf_y["steps"]) for i in range(conf_y["steps"] + 1)]
 
@@ -56,15 +55,12 @@ def calculate_stress_matrix(portfolio, clients, year, quarter, stress_config):
             for drop_x in range_x:
                 test_data = cfo_data.copy()
                 
-                # Aplicar estrés Variable X
                 factor_x = (1 - drop_x) if conf_x["direction"] == "down" else (1 + drop_x)
                 test_data[conf_x["name"]] = cfo_data[conf_x["name"]] * factor_x
                 
-                # Aplicar estrés Variable Y
                 factor_y = (1 - drop_y) if conf_y["direction"] == "down" else (1 + drop_y)
                 test_data[conf_y["name"]] = cfo_data[conf_y["name"]] * factor_y
                 
-                # Verificación Z3
                 z3_res = verify_logics(logics, test_data)
                 
                 row.append({
@@ -76,15 +72,13 @@ def calculate_stress_matrix(portfolio, clients, year, quarter, stress_config):
                 })
             grid.append(row)
         
-        # Buscamos el último índice 'True' en la fila donde Y = 0%
         last_safe_x = max([i for i, cell in enumerate(grid[0]) if cell["is_compliant"]], default=0)
         headroom_x = range_x[last_safe_x] * 100
 
-        # Buscamos el último índice 'True' en la columna donde X = 0%
         last_safe_y = max([i for i, r in enumerate(grid) if r[0]["is_compliant"]], default=0)
         headroom_y = range_y[last_safe_y] * 100
 
-        matrix_results[client] = {
+        matrix_results[c] = {
             "grid": grid,
             f"headroom_x": f"{headroom_x:.1f}%",
             f"headroom_y": f"{headroom_y:.1f}%",

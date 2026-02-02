@@ -1,6 +1,5 @@
 from fpdf import FPDF
 import os
-from datetime import datetime
 
 def generate_initial_report(logics, output_path):
     # P = Portrait, mm = millimeters, A4
