@@ -8,9 +8,9 @@ def populate_company():
     base_path = Path(f"tests/scenarios/Fund_02/{client_id}")
     
     # Valores iniciales coherentes
-    revenue_base = 800000
-    total_debt_base = 1200000
-    cash_base = 250000
+    revenue_base = 800000.0
+    total_debt_base = 1200000.0
+    cash_base = 250000.0
     min_ebitda_req = 120000.0  # El suelo del contrato
 
     for year in years:
@@ -21,8 +21,8 @@ def populate_company():
             current_rev = revenue_base * (1.02 ** q_idx) # Crece poco a poco
             # El ratio de gastos sube: del 70% al 86% (en Q8 será insostenible)
             current_opex = current_rev * (0.70 + (q_idx * 0.02)) 
-            current_debt = total_debt_base + (q_idx * 20000)
-            current_cash = max(cash_base - (q_idx * 30000), 10000)
+            current_debt = total_debt_base + (q_idx * 20000.0)
+            current_cash = max(cash_base - (q_idx * 30000.0), 10000.0)
 
             logics_content = {
                 "audit_id": f"{client_id}_{year}_{q}",
@@ -46,13 +46,12 @@ def populate_company():
                 ]
             }
 
-            # EL CAMBIO CLAVE: Definimos TODO en el CFO para cerrar el problema
             cfo_content = {
                 "revenue": round(current_rev, 2),
                 "operating_expenses": round(current_opex, 2),
                 "total_debt": round(current_debt, 2),
                 "cash": round(current_cash, 2),
-                "min_ebitda_threshold": min_ebitda_req # Ya no es una variable libre
+                "min_ebitda_threshold": min_ebitda_req
             }
 
             folder = base_path / f"{year}_{q}"
