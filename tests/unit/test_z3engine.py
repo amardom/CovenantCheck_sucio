@@ -1,6 +1,6 @@
 import json
 import pytest
-from app.core.z3_engine import verify_logics
+from app.core.z3engine import verify_logics
 
 def load_json(path):
     with open(path, 'r') as f:

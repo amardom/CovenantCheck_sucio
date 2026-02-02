@@ -93,16 +93,17 @@ def test_portfolio_indexing():
         
         assert len(deal.history) == len(years)
         
-        for year in years:
-            assert year in deal.history
+        for y in years:
+            assert y in deal.history
             
             for q in quarters:
                 
-                entry = deal.history[year][q]
+                entry = deal.history[y][q]
                 assert entry is not None
                 
                 expected_contract = "Senior Secured Credit Agreement"
                 assert entry["logics"]["contract_name"] == expected_contract
+                assert entry["logics"]["audit_id"] == f"{client_id}_{y}_{q}"
                 assert len(entry["cfo_data"]) > 0
                 assert isinstance(entry["cfo_data"]["revenue"], (float))
                 assert "is_compliant" in entry["z3_result"]

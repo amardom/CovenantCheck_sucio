@@ -1,4 +1,4 @@
-from app.core.z3_engine import verify_logics
+from app.core.z3engine import verify_logics
 
 class Deal:
     def __init__(self, id):

@@ -1,5 +1,5 @@
 import pytest, copy
-from app.core.z3_engine import validate_json
+from app.core.z3engine import validate_json
 
 VALID_LOGICS = {
     "audit_id": "ClientAlpha_2026_Q1.json",

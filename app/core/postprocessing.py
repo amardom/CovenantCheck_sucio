@@ -1,5 +1,5 @@
 from z3 import *
-from app.core.z3_engine import verify_logics
+from app.core.z3engine import verify_logics
 
 def calculate_stress_matrix(portfolio, clients, year, quarter, stress_config):
 
