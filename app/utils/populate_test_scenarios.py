@@ -2,10 +2,10 @@ import json
 from pathlib import Path
 
 def populate_company():
-    client_id = "TechGrowth"
+    client_id = "TechCorp"
     years = ["2024", "2025"]
     quarters = ["Q1", "Q2", "Q3", "Q4"]
-    base_path = Path(f"tests/scenarios/Fund_02/{client_id}")
+    base_path = Path(f"tests/scenarios/Fund_01/{client_id}")
     
     # Valores iniciales coherentes
     revenue_base = 800000.0
