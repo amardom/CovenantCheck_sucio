@@ -2,6 +2,10 @@ from app.core.z3engine import verify_logics
 
 class Deal:
     def __init__(self, id):
+
+        assert isinstance(id, str), "ID_NOT_STR"
+        assert len(id) > 0, "ID_EMPTY"
+
         self.id = id
         self.history = {}
 
@@ -11,6 +15,8 @@ class Deal:
         assert len(year) == 4, "YEAR_FORMAT_INVALID"
         assert isinstance(quarter, str), "QUARTER_NOT_STR"
         assert quarter in ["Q1", "Q2", "Q3", "Q4"], "QUARTER_FORMAT_INVALID"
+        assert isinstance(logics, dict), "LOGICS_NOT_DICT"
+        assert isinstance(cfo_data, dict), "CFO_DATA_NOT_DICT"
 
         if year not in self.history:
             self.history[year] = {
