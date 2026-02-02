@@ -104,7 +104,7 @@ def test_portfolio_indexing():
                 expected_contract = "Senior Secured Credit Agreement"
                 assert entry["logics"]["contract_name"] == expected_contract
                 assert len(entry["cfo_data"]) > 0
-                assert isinstance(entry["cfo_data"]["revenue"], (int, float))
+                assert isinstance(entry["cfo_data"]["revenue"], (float))
                 assert "is_compliant" in entry["z3_result"]
                 assert isinstance(entry["z3_result"]["is_compliant"], bool)
                 assert "definition" in entry["logics"]["variables"][0]

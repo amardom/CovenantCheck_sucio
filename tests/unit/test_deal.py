@@ -34,8 +34,8 @@ def test_deal_flow():
     }
 
     cfo_data_mock = {
-        "consolidated_ebitda": 2000000,
-        "consolidated_net_debt": 4000000
+        "consolidated_ebitda": 2000000.0,
+        "consolidated_net_debt": 4000000.0
     }
 
     deal.process_logics_and_cfo_data(year, quarter, logics_mock, cfo_data_mock)
@@ -45,7 +45,7 @@ def test_deal_flow():
 
     entry = deal.history[year][quarter]
     assert len(entry["cfo_data"]) == 2
-    assert entry["cfo_data"]["consolidated_ebitda"] == 2000000
+    assert entry["cfo_data"]["consolidated_ebitda"] == 2000000.0
     assert entry["logics"]["variables"][1]["name"] == "consolidated_net_debt"
     assert entry["logics"]["logical_conditions"][1]["formula"] == "consolidated_leverage_ratio <= 2.5"
     assert entry["z3_result"]["is_compliant"] == True

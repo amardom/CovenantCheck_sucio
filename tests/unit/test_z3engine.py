@@ -83,7 +83,7 @@ def test_verify_logics_missing_model_value():
         }]
     }
     
-    cfo_data = {"x": 15}
+    cfo_data = {"x": 15.0}
 
     with pytest.raises(AssertionError) as exc:
         verify_logics(logics, cfo_data)
@@ -103,7 +103,7 @@ def test_verify_logics_invalid_z3_expression():
         }]
     }
     
-    cfo_data = {"ebitda": 100}
+    cfo_data = {"ebitda": 100.0}
 
     # Z3 will fail since '1 == 1' returns True (bool), and is_expr(True) is False.
     with pytest.raises(AssertionError) as exc:
@@ -127,7 +127,7 @@ def test_verify_logics_bad_cfo_data():
 
     bad_cfo_data = {
         "revenue": 1000000.0,
-        "debt": "500000",
+        "debt": "500000.0",
         "x": True,
         "y": None,
         "observations": "N/A"
