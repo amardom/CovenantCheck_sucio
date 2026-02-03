@@ -38,7 +38,7 @@ def assert_variables(logics, output_pdf):
     for var in logics["variables"]:
         assert var["name"] in full_text
     
-def test_pdf_structural_integrity_initial():
+def test_generate_initial_report():
     
     logics = load_json(PATH_LOGICS)
     validate_json(logics)
@@ -57,7 +57,7 @@ def test_pdf_structural_integrity_initial():
 
     assert_variables(logics, OUTPUT_INITIAL_PDF)
 
-def test_pdf_structural_integrity_final():
+def test_generate_final_report():
     
     logics = load_json(PATH_LOGICS)
     validate_json(logics)
@@ -79,7 +79,7 @@ def test_pdf_structural_integrity_final():
     
     assert_variables(logics, OUTPUT_FINAL_PDF)
 
-def test_pdf_structural_integrity_executive_summary():
+def test_generate_portfolio_report():
 
     clients = ["TechCorp", "HealthCorp"]
     years = ["2024", "2025"]

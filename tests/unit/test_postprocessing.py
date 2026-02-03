@@ -25,7 +25,7 @@ VALID_CONFIG = {
     (VALID_PORTFOLIO, VALID_CLIENTS, VALID_YEAR, VALID_QUARTER, {"var_y": {}}, "VAR_X_MISSING"),
     (VALID_PORTFOLIO, VALID_CLIENTS, VALID_YEAR, VALID_QUARTER, {"var_x": {}}, "VAR_Y_MISSING"),
 ])
-def test_stress_matrix_basic_assertions(p, c, y, q, config, expected_msg):
+def test_calculate_stress_matrix_basic_assertions(p, c, y, q, config, expected_msg):
     with pytest.raises(AssertionError) as exc:
         calculate_stress_matrix(p, c, y, q, config)
     assert str(exc.value) == expected_msg
@@ -45,7 +45,7 @@ def test_stress_matrix_basic_assertions(p, c, y, q, config, expected_msg):
     ({"max_pct": "0.5"}, "MAX_PCT_NOT_FLOAT_IN_"),
     ({"max_pct": 2.0}, "MAX_PCT_IMPOSSIBLE_VALUE_IN_")
 ])
-def test_stress_matrix_config_details(target_key, patch, expected_msg):
+def test_calculate_stress_matrix_config_details(target_key, patch, expected_msg):
     test_config = copy.deepcopy(VALID_CONFIG)
     
     for k, v in patch.items():
