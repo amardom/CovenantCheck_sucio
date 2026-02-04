@@ -2,55 +2,35 @@ from app.core.portfolio import create_portfolio
 from app.core.report import generate_portfolio_report, generate_matrix_report
 from app.core.postprocessing import calculate_stress_matrix
 
-# GENERAL PARAMETERS.
-CLIENTS = ["TechCorp"]
-YEARS = ["2024", "2025"]
-QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
-ROOT_PATH = "tests/scenarios/Fund_01"
-VAR_CONFIG_1 = "leverage_ratio"
-VAR_CONFIG_2 = "ebitda"
+def main(clients,
+        years,
+        quarters,
+        root_path,
+        analysis_config,
+        y_stress,
+        q_stress,
+        stress_config,
+        steps_x_refined,
+        steps_y_refined):
 
-# STRESS PARAMETERS.
-VAR_X_NAME = "revenue"
-VAR_Y_NAME = "operating_expenses"
-DIRECTION_X = "down"
-DIRECTION_Y = "up"
-STEPS_X = 4
-STEPS_Y = 4
-STEPS_X_REFINED = 10 
-STEPS_Y_REFINED = 10
-MAX_PCT_X = 0.2
-MAX_PCT_Y = 0.2
-Y = "2024"
-Q = "Q1"
+    portfolio = create_portfolio(clients, years, quarters, root_path)
+    generate_portfolio_report(portfolio, analysis_config, f"{root_path}/portfolio_executive_summary.pdf")
 
-ANALYSIS_CONFIG = {c: [f"{VAR_CONFIG_1}", f"{VAR_CONFIG_2}"] for c in CLIENTS}
+    matrix_results = calculate_stress_matrix(portfolio, clients, y_stress, q_stress, stress_config)
 
-STRESS_CONFIG = {
-    "var_x": {"name": f"{VAR_X_NAME}", "direction": f"{DIRECTION_X}", "steps": STEPS_X, "max_pct": MAX_PCT_X},
-    "var_y": {"name": f"{VAR_Y_NAME}", "direction": f"{DIRECTION_Y}", "steps": STEPS_Y, "max_pct": MAX_PCT_Y}
-}
-
-def main():
-
-    # We create and analyse portfolio.
-    portfolio = create_portfolio(CLIENTS, YEARS, QUARTERS, ROOT_PATH)
-    generate_portfolio_report(portfolio, ANALYSIS_CONFIG, f"{ROOT_PATH}/portfolio_executive_summary.pdf")
-
-    # We compute stress matrix for a pair of variables.
-    matrix_results = calculate_stress_matrix(portfolio, CLIENTS, Y, Q, STRESS_CONFIG)
-
-    STRESS_CONFIG["var_x"]["steps"] = STEPS_X_REFINED
-    STRESS_CONFIG["var_y"]["steps"] = STEPS_Y_REFINED
+    stress_config["var_x"]["steps"] = steps_x_refined
+    stress_config["var_y"]["steps"] = steps_y_refined
     
-    matrix_results_refined = calculate_stress_matrix(portfolio, CLIENTS, Y, Q, STRESS_CONFIG)
+    matrix_results_refined = calculate_stress_matrix(portfolio, clients, y_stress, q_stress, stress_config)
 
     for client in matrix_results_refined:
 
         matrix_results[client]["headroom_x"] = matrix_results_refined[client]["headroom_x"]
         matrix_results[client]["headroom_y"] = matrix_results_refined[client]["headroom_y"]
     
-    generate_matrix_report(matrix_results, Y, Q, f"{ROOT_PATH}/portfolio_sensitivity_matrix_{Y}_{Q}.pdf")
+    generate_matrix_report(matrix_results, y_stress, q_stress, f"{root_path}/portfolio_sensitivity_matrix_{y_stress}_{q_stress}.pdf")
+
+    return True
 
 if __name__ == "__main__":
     main()
