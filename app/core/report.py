@@ -241,10 +241,11 @@ def generate_matrix_report(matrix_results, year, quarter, output_path="portfolio
     pdf.cell(eff_width, 10, f"Stress analysis", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
     pdf.cell(eff_width, 8, f"Reporting period: {year}_{quarter}.", new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(5)
+    pdf.ln(7)
     
-    for client_id, data in matrix_results.items():
-        #pdf.add_page()
+    for i, (client_id, data) in enumerate(matrix_results.items()):
+        if i > 0: 
+            pdf.add_page()
         meta = data["metadata"]
         grid = data["grid"] # La matriz de resultados
         
