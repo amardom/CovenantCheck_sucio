@@ -267,7 +267,7 @@ def generate_matrix_report(matrix_results, year, quarter, output_path="portfolio
         # --- CABECERA X (Etiqutas de la variable horizontal) ---
         pdf.set_font("Helvetica", "B", 9)
         pdf.set_fill_color(240, 240, 240)
-        pdf.cell(header_y_w, row_h, f"Y \ X", border=1, align="C", fill=True)
+        pdf.cell(header_y_w, row_h, f"Y \\ X", border=1, align="C", fill=True)
         
         for label_x in meta["labels_x"]:
             pdf.cell(cell_w, row_h, label_x, border=1, align="C", fill=True)
@@ -308,8 +308,8 @@ def generate_matrix_report(matrix_results, year, quarter, output_path="portfolio
         v_y = meta['var_y'].replace('_', ' ').title()
         
         # Imprimimos los valores precisos almacenados en la raíz del diccionario
-        pdf.cell(0, 8, f"Headroom {v_x}: {data[f'headroom_x']}", ln=True)
-        pdf.cell(0, 8, f"Headroom {v_y}: {data[f'headroom_y']}", ln=True)
+        pdf.cell(0, 8, f"Headroom {v_x}: {data[f'headroom_x']}", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(0, 8, f"Headroom {v_y}: {data[f'headroom_y']}", new_x="LMARGIN", new_y="NEXT")
 
         # Leyenda explicativa al pie de la matriz
         pdf.ln(5)

@@ -27,7 +27,7 @@ def main(clients,
 
         matrix_results[client]["headroom_x"] = matrix_results_refined[client]["headroom_x"]
         matrix_results[client]["headroom_y"] = matrix_results_refined[client]["headroom_y"]
-    
+        
     generate_matrix_report(matrix_results, y_stress, q_stress, f"{root_path}/portfolio_sensitivity_matrix_{y_stress}_{q_stress}.pdf")
 
     return True

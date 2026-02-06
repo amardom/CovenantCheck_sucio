@@ -1,0 +1,420 @@
+{
+    "TechCorp": {
+        "grid": [
+            [
+                {
+                    "val_x": 800000.0,
+                    "val_y": 560000.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.0,
+                    "is_compliant": true
+                },
+                {
+                    "val_x": 760000.0,
+                    "val_y": 560000.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.0,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 560000.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.0,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 680000.0,
+                    "val_y": 560000.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.0,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 640000.0,
+                    "val_y": 560000.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.0,
+                    "is_compliant": false
+                }
+            ],
+            [
+                {
+                    "val_x": 800000.0,
+                    "val_y": 588000.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.05,
+                    "is_compliant": true
+                },
+                {
+                    "val_x": 760000.0,
+                    "val_y": 588000.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.05,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 588000.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.05,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 680000.0,
+                    "val_y": 588000.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.05,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 640000.0,
+                    "val_y": 588000.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.05,
+                    "is_compliant": false
+                }
+            ],
+            [
+                {
+                    "val_x": 800000.0,
+                    "val_y": 616000.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 760000.0,
+                    "val_y": 616000.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 616000.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 680000.0,
+                    "val_y": 616000.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 640000.0,
+                    "val_y": 616000.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                }
+            ],
+            [
+                {
+                    "val_x": 800000.0,
+                    "val_y": 644000.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 760000.0,
+                    "val_y": 644000.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 644000.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 680000.0,
+                    "val_y": 644000.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 640000.0,
+                    "val_y": 644000.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                }
+            ],
+            [
+                {
+                    "val_x": 800000.0,
+                    "val_y": 672000.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 760000.0,
+                    "val_y": 672000.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 672000.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 680000.0,
+                    "val_y": 672000.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 640000.0,
+                    "val_y": 672000.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                }
+            ]
+        ],
+        "headroom_x": "2.0%",
+        "headroom_y": "4.0%",
+        "metadata": {
+            "var_x": "revenue",
+            "var_y": "operating_expenses",
+            "labels_x": [
+                "-0%",
+                "-5%",
+                "-10%",
+                "-15%",
+                "-20%"
+            ],
+            "labels_y": [
+                "+0%",
+                "+5%",
+                "+10%",
+                "+15%",
+                "+20%"
+            ]
+        }
+    },
+    "HealthCorp": {
+        "grid": [
+            [
+                {
+                    "val_x": 900000.0,
+                    "val_y": 630000.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.0,
+                    "is_compliant": true
+                },
+                {
+                    "val_x": 855000.0,
+                    "val_y": 630000.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.0,
+                    "is_compliant": true
+                },
+                {
+                    "val_x": 810000.0,
+                    "val_y": 630000.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.0,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 765000.0,
+                    "val_y": 630000.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.0,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 630000.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.0,
+                    "is_compliant": false
+                }
+            ],
+            [
+                {
+                    "val_x": 900000.0,
+                    "val_y": 661500.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.05,
+                    "is_compliant": true
+                },
+                {
+                    "val_x": 855000.0,
+                    "val_y": 661500.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.05,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 810000.0,
+                    "val_y": 661500.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.05,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 765000.0,
+                    "val_y": 661500.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.05,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 661500.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.05,
+                    "is_compliant": false
+                }
+            ],
+            [
+                {
+                    "val_x": 900000.0,
+                    "val_y": 693000.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 855000.0,
+                    "val_y": 693000.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 810000.0,
+                    "val_y": 693000.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 765000.0,
+                    "val_y": 693000.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 693000.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.1,
+                    "is_compliant": false
+                }
+            ],
+            [
+                {
+                    "val_x": 900000.0,
+                    "val_y": 724500.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 855000.0,
+                    "val_y": 724500.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 810000.0,
+                    "val_y": 724500.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 765000.0,
+                    "val_y": 724500.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 724500.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.15000000000000002,
+                    "is_compliant": false
+                }
+            ],
+            [
+                {
+                    "val_x": 900000.0,
+                    "val_y": 756000.0,
+                    "pct_x": 0.0,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 855000.0,
+                    "val_y": 756000.0,
+                    "pct_x": 0.05,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 810000.0,
+                    "val_y": 756000.0,
+                    "pct_x": 0.1,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 765000.0,
+                    "val_y": 756000.0,
+                    "pct_x": 0.15000000000000002,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                },
+                {
+                    "val_x": 720000.0,
+                    "val_y": 756000.0,
+                    "pct_x": 0.2,
+                    "pct_y": 0.2,
+                    "is_compliant": false
+                }
+            ]
+        ],
+        "headroom_x": "6.0%",
+        "headroom_y": "8.0%",
+        "metadata": {
+            "var_x": "revenue",
+            "var_y": "operating_expenses",
+            "labels_x": [
+                "-0%",
+                "-5%",
+                "-10%",
+                "-15%",
+                "-20%"
+            ],
+            "labels_y": [
+                "+0%",
+                "+5%",
+                "+10%",
+                "+15%",
+                "+20%"
+            ]
+        }
+    }
+}

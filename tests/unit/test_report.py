@@ -1,6 +1,6 @@
 import json
 from pypdf import PdfReader
-from app.core.report import generate_initial_report, generate_final_report, generate_portfolio_report
+from app.core.report import *
 from app.core.z3engine import validate_json, verify_logics
 from app.core.portfolio import create_portfolio
 
@@ -104,3 +104,24 @@ def test_generate_portfolio_report():
     assert metrics["word_count"] == EXPECTED_WORDS
     assert metrics["char_count"] == EXPECTED_CHARS
     
+def test_generate_matrix_report():
+
+    matrix_results = 0
+
+    y_stress = "2024"
+    q_stress = "Q1"
+    root_path = "tests/scenarios/Fund_01"
+
+    matrix_results = load_json(f"{root_path}/matrix_results.json")
+
+    generate_matrix_report(matrix_results, y_stress, q_stress, f"{root_path}/portfolio_sensitivity_matrix_{y_stress}_{q_stress}_test.pdf")
+
+    EXPECTED_PAGES = 2
+    EXPECTED_WORDS = 165
+    EXPECTED_CHARS = 1099
+    
+    metrics = get_pdf_metrics(f"{root_path}/portfolio_sensitivity_matrix_{y_stress}_{q_stress}_test.pdf")
+
+    assert metrics["pages"] == EXPECTED_PAGES
+    assert metrics["word_count"] == EXPECTED_WORDS
+    assert metrics["char_count"] == EXPECTED_CHARS

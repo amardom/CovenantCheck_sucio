@@ -1,4 +1,5 @@
 import pytest
+import json
 import main
 
 # GENERAL PARAMETERS.
@@ -29,6 +30,10 @@ STRESS_CONFIG = {
     "var_x": {"name": f"{VAR_X_NAME}", "direction": f"{DIRECTION_X}", "steps": STEPS_X, "max_pct": MAX_PCT_X},
     "var_y": {"name": f"{VAR_Y_NAME}", "direction": f"{DIRECTION_Y}", "steps": STEPS_Y, "max_pct": MAX_PCT_Y}
 }
+
+def load_json(path):
+    with open(path, 'r') as f:
+        return json.load(f)
 
 def test_main_full_flow():
     
