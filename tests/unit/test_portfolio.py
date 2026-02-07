@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 import pytest
 from app.core.portfolio import create_portfolio
 

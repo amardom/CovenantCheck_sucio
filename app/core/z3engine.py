@@ -56,11 +56,9 @@ def verify_logics(logics, cfo_data):
 
     validate_json(logics)
 
-    # 1. Create the solver.
     s = Solver()
     s.set(unsat_core=True)
     
-    # 2. Declare variables dynamically as Real.
     vars = {v['name']: Real(v['name']) for v in logics['variables']}
 
     z3_helpers = {
@@ -72,22 +70,19 @@ def verify_logics(logics, cfo_data):
         'If': If
     }
 
-    context_eval = {**vars, **z3_helpers} # Dictionary for eval().
+    context_eval = {**vars, **z3_helpers}
 
-    # 3. Load rules.
     for i, rule in enumerate(logics['logical_conditions']):
         formula_z3 = eval(rule['formula'], {"__builtins__": None}, context_eval)
         assert is_expr(formula_z3), "Z3_EXPRESSION_INVALID"
         print(f"Rule #{rule['id']}: {formula_z3}")
         s.assert_and_track(formula_z3, f"RULE_{rule['id']}")
 
-    # 4. Load CFO data.
     for name, value in cfo_data.items():
         assert isinstance(value, (float)), "CFO_DATA_VAR_INVALID"
         if name in vars:
             s.assert_and_track(vars[name] == RealVal(str(value)), f"DATA_{name}")
 
-    # 5. Verify logics.
     result = s.check()
     assert result != unknown, "RESULT_UNKNOWN"
 

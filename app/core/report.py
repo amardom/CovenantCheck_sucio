@@ -2,15 +2,13 @@ from fpdf import FPDF
 import os
 
 def generate_initial_report(logics, output_path):
-    # P = Portrait, mm = millimeters, A4
+
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
-    # Ancho efectivo (Margen de 10mm a cada lado)
     eff_width = pdf.w - 20 
 
-    # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Logical Audit", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
@@ -18,7 +16,6 @@ def generate_initial_report(logics, output_path):
     pdf.cell(eff_width, 8, f"Audit ID: {logics.get('audit_id', 'Unnamed')}.", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
-    # --- 1. Variables Inventory ---
     pdf.set_font("Helvetica", 'B', 12)
     pdf.cell(eff_width, 10, "1. VARIABLE INVENTORY", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(1)
@@ -28,53 +25,45 @@ def generate_initial_report(logics, output_path):
         pdf.set_font("Helvetica", 'B', 10)
         pdf.write(5, f"{i}. {var['name']}: ")
         pdf.set_font("Helvetica", size=10)
-        # Se asume que las keys ahora coinciden con tu JSON actualizado (page)
         pdf.write(5, f"{var.get('definition', '')}. Page: {var.get('definition_page', 'N/A')}.\n")
         i = i + 1
     
     pdf.ln(5)
 
-    # --- 2. Logical Rules & Evidence ---
     pdf.set_font("Helvetica", 'B', 12)
     pdf.cell(eff_width, 10, "2. LOGICAL RULES & EVIDENCE", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(1)
     
     for cond in logics.get('logical_conditions', []):
-        # Rule ID
+
         pdf.set_font("Helvetica", 'B', 11)
         pdf.cell(eff_width, 8, f"Rule {cond['id']}:", new_x="LMARGIN", new_y="NEXT")
         
-        # Bloque de Fórmula (Gris)
         pdf.set_fill_color(245, 245, 245)
         pdf.set_font("Helvetica", "", 9)
         pdf.multi_cell(eff_width, 8, f"  {cond['formula']}  ", border=0, fill=True, align='L', new_x="LMARGIN", new_y="NEXT")
         
-        # Bloque de Evidencia (Debajo de la fórmula)
         pdf.set_font("Helvetica", 'I', 9)
         pdf.set_text_color(100, 100, 100)
         evidence_text = f"Source (Page {cond.get('evidence_page', 'N/A')}): {cond['evidence']}."
         pdf.multi_cell(eff_width, 5, evidence_text, align='L', new_x="LMARGIN", new_y="NEXT")
         
-        # Reset color y espacio entre reglas
         pdf.set_text_color(0, 0, 0)
         pdf.ln(3)
 
-    # Crear carpeta si no existe y guardar
     dir_name = os.path.dirname(output_path)
     if dir_name:
         os.makedirs(dir_name, exist_ok=True)
     pdf.output(output_path)
 
 def generate_final_report(z3_result, logics, cfo_data, output_path):
-    # P = Portrait, mm = millimeters, A4
+
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
-    # Ancho efectivo
     eff_width = pdf.w - 20
 
-    # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Formal verification", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
@@ -82,7 +71,6 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
     pdf.cell(eff_width, 8, f"Audit ID: {logics.get('audit_id', 'Unnamed')}.", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
-    # 2. BLOQUE DEL VEREDICTO
     is_compliant = z3_result.get('is_compliant', False)
     if is_compliant:
         status_text = "PASSED: COMPLIANT WITH ALL COVENANTS"
@@ -99,22 +87,18 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
     pdf.cell(eff_width, 15, f"  {status_text}", border=1, align='L', fill=True, new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
-    # 3. TABLA DE VARIABLES
     pdf.set_text_color(0)
     pdf.set_font('Helvetica', 'B', 12)
     pdf.cell(eff_width, 10, "Calculated Model Values:", border=0, new_x="LMARGIN", new_y="NEXT")
     
-    # Columnas
     c1, c2, c3 = 85, 45, 40
     
-    # Cabecera
     pdf.set_font('Helvetica', 'B', 10)
     pdf.set_fill_color(240, 240, 240)
     pdf.cell(c1, 10, " Variable Name", 1, align='L', fill=True, new_x="RIGHT", new_y="TOP")
     pdf.cell(c2, 10, "Value", 1, align='C', fill=True, new_x="RIGHT", new_y="TOP")
     pdf.cell(c3, 10, "Data Origin", 1, align='C', fill=True, new_x="LMARGIN", new_y="NEXT")
 
-    # Datos
     calc_values = z3_result.get('calculated_values', {})
     pdf.set_font('Helvetica', '', 10)
     
@@ -141,23 +125,21 @@ def generate_final_report(z3_result, logics, cfo_data, output_path):
 
     pdf.output(output_path)
 
-def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio_executive_summary.pdf"):
-    # P = Portrait, mm = millimeters, A4
+def generate_portfolio_report(portfolio, analysis_config, output_path):
+    
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
-    # Ancho efectivo
     eff_width = pdf.w - 20
 
-    # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Portfolio compliance dashboard", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
     pdf.ln(5)
 
     for client_id, deal in portfolio.items():
-        # Fondo gris para el cliente
+
         pdf.set_fill_color(230, 230, 230)
         pdf.set_text_color(0)
         pdf.set_font("Helvetica", "B", 12)
@@ -190,9 +172,8 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
                 z3_res = entry.get("z3_result", {})
                 is_ok = z3_res.get("is_compliant")
                 
-                # Solo buscamos métricas si el resultado es PASS
                 if is_ok:
-                    pdf.set_text_color(34, 139, 34) # Verde
+                    pdf.set_text_color(34, 139, 34)
                     
                     def get_metric(var_name):
                         if not var_name: return None
@@ -208,8 +189,7 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
                     if m1: display += f" {m1}"
                     if m2: display += f" | {m2}"
                 else:
-                    # CASO BREACH: Solo el texto, sin métricas
-                    pdf.set_text_color(200, 30, 30) # Rojo
+                    pdf.set_text_color(200, 30, 30)
                     display = "BREACH"
 
                 pdf.set_font("Helvetica", "B", 9)
@@ -218,7 +198,6 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
 
             pdf.ln()
 
-        # Leyenda
         pdf.set_font("Helvetica", "I", 8)
         pdf.set_text_color(100)
         legend_text = f"*Metrics displayed (on OK): (1) {var_main}" + (f" (2) {var_opt}." if var_opt else ".")
@@ -227,16 +206,14 @@ def generate_portfolio_report(portfolio, analysis_config, output_path="portfolio
 
     pdf.output(output_path)
 
-def generate_matrix_report(matrix_results, year, quarter, output_path="portfolio_sensitivity_matrix.pdf"):
-    # P = Portrait, mm = millimeters, A4
+def generate_matrix_report(matrix_results, year, quarter, output_path):
+
     pdf = FPDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
-    # Ancho efectivo
     eff_width = pdf.w - 20
 
-    # --- Header ---
     pdf.set_font("Helvetica", 'B', 16)
     pdf.cell(eff_width, 10, f"Stress analysis", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
@@ -247,9 +224,8 @@ def generate_matrix_report(matrix_results, year, quarter, output_path="portfolio
         if i > 0: 
             pdf.add_page()
         meta = data["metadata"]
-        grid = data["grid"] # La matriz de resultados
+        grid = data["grid"]
         
-        # Fondo gris para el cliente
         pdf.set_fill_color(230, 230, 230)
         pdf.set_text_color(0)
         pdf.set_font("Helvetica", "B", 12)
@@ -264,7 +240,6 @@ def generate_matrix_report(matrix_results, year, quarter, output_path="portfolio
         cell_w = (190 - header_y_w) / num_cols 
         row_h = 10
 
-        # --- CABECERA X (Etiqutas de la variable horizontal) ---
         pdf.set_font("Helvetica", "B", 9)
         pdf.set_fill_color(240, 240, 240)
         pdf.cell(header_y_w, row_h, f"Y \\ X", border=1, align="C", fill=True)
@@ -273,45 +248,38 @@ def generate_matrix_report(matrix_results, year, quarter, output_path="portfolio
             pdf.cell(cell_w, row_h, label_x, border=1, align="C", fill=True)
         pdf.ln()
 
-        # --- CUERPO DE LA MATRIZ (Filas) ---
-        # Recorremos el grid. Cada 'row' en grid corresponde a un nivel de estrés de Y
         for i, row in enumerate(grid):
-            # Etiqueta de la fila (Variable Y)
+
             pdf.set_font("Helvetica", "B", 9)
             pdf.set_fill_color(240, 240, 240)
             pdf.cell(header_y_w, row_h, meta["labels_y"][i], border=1, align="C", fill=True)
             
-            # Celdas de resultado
             for cell in row:
                 if cell["is_compliant"]:
-                    pdf.set_fill_color(200, 255, 200) # Verde claro (PASS)
+                    pdf.set_fill_color(200, 255, 200)
                     pdf.set_text_color(0, 100, 0)
                     txt = "OK"
                 else:
-                    pdf.set_fill_color(255, 200, 200) # Rojo claro (FAIL)
+                    pdf.set_fill_color(255, 200, 200)
                     pdf.set_text_color(150, 0, 0)
                     txt = "BREACH"
                 
                 pdf.set_font("Helvetica", "B", 8)
                 pdf.cell(cell_w, row_h, txt, border=1, align="C", fill=True)
             
-            pdf.set_text_color(0) # Reset color texto
+            pdf.set_text_color(0)
             pdf.ln()
 
-        # Añadir Resumen de Headroom.
         pdf.ln(5)
         pdf.set_font("Helvetica", "B", 9)
         pdf.set_text_color(40, 40, 40)
         
-        # Recuperamos los nombres de las variables para el texto
         v_x = meta['var_x'].replace('_', ' ').title()
         v_y = meta['var_y'].replace('_', ' ').title()
         
-        # Imprimimos los valores precisos almacenados en la raíz del diccionario
         pdf.cell(0, 8, f"Headroom {v_x}: {data[f'headroom_x']}", new_x="LMARGIN", new_y="NEXT")
         pdf.cell(0, 8, f"Headroom {v_y}: {data[f'headroom_y']}", new_x="LMARGIN", new_y="NEXT")
 
-        # Leyenda explicativa al pie de la matriz
         pdf.ln(5)
         pdf.set_font("Helvetica", "I", 8)
         pdf.set_text_color(100)

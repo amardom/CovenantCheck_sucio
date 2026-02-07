@@ -7,19 +7,16 @@ def populate_company():
     quarters = ["Q1", "Q2", "Q3", "Q4"]
     base_path = Path(f"tests/scenarios/Fund_01/{client_id}")
     
-    # Valores iniciales coherentes
     revenue_base = 800000.0
     total_debt_base = 1200000.0
     cash_base = 250000.0
-    min_ebitda_req = 120000.0  # El suelo del contrato
+    min_ebitda_req = 120000.0
 
     for year in years:
         for q in quarters:
             q_idx = (int(year) - 2024) * 4 + quarters.index(q)
             
-            # Simulamos el deterioro real
-            current_rev = revenue_base * (1.02 ** q_idx) # Crece poco a poco
-            # El ratio de gastos sube: del 70% al 86% (en Q8 será insostenible)
+            current_rev = revenue_base * (1.02 ** q_idx)
             current_opex = current_rev * (0.70 + (q_idx * 0.02)) 
             current_debt = total_debt_base + (q_idx * 20000.0)
             current_cash = max(cash_base - (q_idx * 30000.0), 10000.0)
