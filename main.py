@@ -30,7 +30,7 @@ def main(clients,
         
     generate_matrix_report(matrix_results, y_stress, q_stress, f"{root_path}/portfolio_sensitivity_matrix_{y_stress}_{q_stress}.pdf")
 
-    return True
+    return matrix_results
 
 if __name__ == "__main__":
     main()

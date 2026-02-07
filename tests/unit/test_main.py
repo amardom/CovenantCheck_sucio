@@ -48,4 +48,6 @@ def test_main_full_flow():
                 STEPS_X_REFINED,
                 STEPS_Y_REFINED)
     
-    assert res == True
+    matrix_results = load_json(f"{ROOT_PATH}/matrix_results.json")
+
+    assert res == matrix_results
